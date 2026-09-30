@@ -1,0 +1,28 @@
+name: Feature
+description: A new capability for the army builder
+labels: ['type:feature']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe cards and army lists by name only. Do not paste battle card text or army list contents into the issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What and why
+      description: What players should be able to do, and the problem it solves.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What the change touches, open questions, and anything out of scope.
+  - type: textarea
+    id: done-when
+    attributes:
+      label: Done when
+      description: How we know it is finished.
+      placeholder: |
+        - A player can ...
+        - Existing lists behave the same as before.
