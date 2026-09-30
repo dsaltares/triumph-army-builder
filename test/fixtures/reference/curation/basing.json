@@ -1,0 +1,304 @@
+{
+  "ARC": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "BLV": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "LFT": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "LSP": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "RBL": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "RDR": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "SKM": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 2,
+      "max": 2
+    }
+  },
+  "WBD": {
+    "depths": {
+      "40": 20,
+      "60": 30,
+      "80": 40
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "ART": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "modelWithCrew"
+    }
+  },
+  "EFT": {
+    "depths": {
+      "40": 15,
+      "60": 20,
+      "80": 30
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "HFT": {
+    "depths": {
+      "40": 15,
+      "60": 20,
+      "80": 30
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "HRD": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 7,
+      "max": 8
+    }
+  },
+  "PAV": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 8,
+      "max": 8
+    }
+  },
+  "PIK": {
+    "depths": {
+      "40": 15,
+      "60": 20,
+      "80": 30
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "SPR": {
+    "depths": {
+      "40": 15,
+      "60": 20,
+      "80": 30
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "WWG": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "modelWithCrew"
+    }
+  },
+  "WRR": {
+    "depths": {
+      "40": 15,
+      "60": 20,
+      "80": 30
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "BAD": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "BTX": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "modelWithCrew"
+    }
+  },
+  "CHT": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "modelWithCrew"
+    }
+  },
+  "ECV": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "HBW": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 2,
+      "max": 2
+    }
+  },
+  "JCV": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 2,
+      "max": 2
+    }
+  },
+  "KNT": {
+    "depths": {
+      "40": 30,
+      "60": 40,
+      "80": 60
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 3,
+      "max": 3
+    }
+  },
+  "CAT": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "figures",
+      "min": 4,
+      "max": 4
+    }
+  },
+  "ELE": {
+    "depths": {
+      "40": 40,
+      "60": 60,
+      "80": 80
+    },
+    "figures": {
+      "kind": "modelWithCrew"
+    }
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "BLV.name": {
+    "source": "Bow Levy",
+    "target": "Leva de arco"
+  },
+  "BLV.description": {
+    "source": "Massed levies who loose arrows by the bucket and hope some land.",
+    "target": "Levas en masa que disparan flechas a cubos y esperan que alguna acierte."
+  },
+  "RBL.name": {
+    "source": "Rabble",
+    "target": "Chusma"
+  },
+  "RBL.description": {
+    "source": "A mob with pitchforks, torches and strong opinions.",
+    "target": "Una turba con horcas, antorchas y opiniones firmes."
+  },
+  "HRD.name": {
+    "source": "Horde",
+    "target": "Horda"
+  },
+  "HRD.description": {
+    "source": "A shambling multitude that wins by simply being too many.",
+    "target": "Una multitud tambaleante que gana por ser demasiados."
+  },
+  "ARC.name": {
+    "source": "Archers",
+    "target": "Arqueros"
+  },
+  "ARC.description": {
+    "source": "Trained bowmen who shoot straight and keep their distance.",
+    "target": "Arqueros entrenados que disparan recto y guardan la distancia."
+  },
+  "LFT.name": {
+    "source": "Light Foot",
+    "target": "Infantería ligera"
+  },
+  "LFT.description": {
+    "source": "Nimble foot who fight in loose order from cover.",
+    "target": "Infantería ágil que combate en orden abierto desde la cobertura."
+  },
+  "LSP.name": {
+    "source": "Light Spear",
+    "target": "Lanza ligera"
+  },
+  "LSP.description": {
+    "source": "Loose-order spearmen, quick on their feet and on rough ground.",
+    "target": "Lanceros en orden abierto, rápidos en terreno difícil."
+  },
+  "RDR.name": {
+    "source": "Raiders",
+    "target": "Saqueadores"
+  },
+  "RDR.description": {
+    "source": "Plunderers who hit hard, grab what they can and run.",
+    "target": "Saqueadores que golpean fuerte, cogen lo que pueden y huyen."
+  },
+  "SKM.name": {
+    "source": "Skirmishers",
+    "target": "Hostigadores"
+  },
+  "SKM.description": {
+    "source": "Scouts and slingers who pester and are gone before the charge lands.",
+    "target": "Exploradores y honderos que hostigan y desaparecen antes de la carga."
+  },
+  "WBD.name": {
+    "source": "Warband",
+    "target": "Banda de guerra"
+  },
+  "WBD.description": {
+    "source": "Wild warriors who charge in a howling rush.",
+    "target": "Guerreros salvajes que cargan entre aullidos."
+  },
+  "ART.name": {
+    "source": "Artillery",
+    "target": "Artillería"
+  },
+  "ART.description": {
+    "source": "Engines that hurl bolts, stones or worse.",
+    "target": "Ingenios que lanzan virotes, piedras o cosas peores."
+  },
+  "EFT.name": {
+    "source": "Elite Foot",
+    "target": "Infantería de élite"
+  },
+  "EFT.description": {
+    "source": "Veteran foot, the finest blades in the host.",
+    "target": "Infantería veterana, las mejores hojas de la hueste."
+  },
+  "HFT.name": {
+    "source": "Heavy Foot",
+    "target": "Infantería pesada"
+  },
+  "HFT.description": {
+    "source": "Armoured foot who hold their ground with axe and shield.",
+    "target": "Infantería acorazada que aguanta con hacha y escudo."
+  },
+  "PAV.name": {
+    "source": "Pavisiers",
+    "target": "Paveseros"
+  },
+  "PAV.description": {
+    "source": "Crossbows or bows sheltered behind tall shields.",
+    "target": "Ballestas o arcos tras escudos altos."
+  },
+  "PIK.name": {
+    "source": "Pikes",
+    "target": "Picas"
+  },
+  "PIK.description": {
+    "source": "A hedge of long pikes, deadly while it keeps its shape.",
+    "target": "Un seto de picas largas, letal mientras mantiene la forma."
+  },
+  "SPR.name": {
+    "source": "Spear",
+    "target": "Lanza"
+  },
+  "SPR.description": {
+    "source": "A wall of shields and spears, the backbone of many a host.",
+    "target": "Un muro de escudos y lanzas, espina dorsal de muchas huestes."
+  },
+  "WWG.name": {
+    "source": "War Wagons",
+    "target": "Carros de guerra"
+  },
+  "WWG.description": {
+    "source": "Armoured carts bristling with shooters.",
+    "target": "Carros blindados erizados de tiradores."
+  },
+  "WRR.name": {
+    "source": "Warriors",
+    "target": "Guerreros"
+  },
+  "WRR.description": {
+    "source": "Fighters without drill, strong in the first clash.",
+    "target": "Combatientes sin instrucción, fuertes en el primer choque."
+  },
+  "BAD.name": {
+    "source": "Bad Horse",
+    "target": "Caballería mediocre"
+  },
+  "BAD.description": {
+    "source": "Riders on beasts nobody else would mount.",
+    "target": "Jinetes sobre bestias que nadie más montaría."
+  },
+  "BTX.name": {
+    "source": "Battle Taxi",
+    "target": "Carro de transporte"
+  },
+  "BTX.description": {
+    "source": "Mounts that carry foot soldiers to the fight and leave them there.",
+    "target": "Monturas que llevan a la infantería al combate y la dejan allí."
+  },
+  "CHT.name": {
+    "source": "Chariots",
+    "target": "Carros"
+  },
+  "CHT.description": {
+    "source": "Chariots that race in, shoot and wheel away.",
+    "target": "Carros que llegan, disparan y dan media vuelta."
+  },
+  "ECV.name": {
+    "source": "Elite Cavalry",
+    "target": "Caballería de élite"
+  },
+  "ECV.description": {
+    "source": "The best-mounted riders, fighting in close order.",
+    "target": "Los jinetes mejor montados, en orden cerrado."
+  },
+  "HBW.name": {
+    "source": "Horse Bow",
+    "target": "Arqueros a caballo"
+  },
+  "HBW.description": {
+    "source": "Riders who shoot from the saddle and never quite close.",
+    "target": "Jinetes que disparan desde la silla y nunca llegan a cerrar."
+  },
+  "JCV.name": {
+    "source": "Javelin Cavalry",
+    "target": "Caballería de jabalina"
+  },
+  "JCV.description": {
+    "source": "Light riders who throw javelins and wheel away.",
+    "target": "Jinetes ligeros que lanzan jabalinas y se retiran."
+  },
+  "KNT.name": {
+    "source": "Knights",
+    "target": "Caballeros"
+  },
+  "KNT.description": {
+    "source": "Armoured riders who charge knee to knee.",
+    "target": "Jinetes acorazados que cargan rodilla con rodilla."
+  },
+  "CAT.name": {
+    "source": "Cataphracts",
+    "target": "Catafractos"
+  },
+  "CAT.description": {
+    "source": "Riders armoured head to hoof, mount included.",
+    "target": "Jinetes acorazados de pies a cabeza, montura incluida."
+  },
+  "ELE.name": {
+    "source": "Elephants",
+    "target": "Elefantes"
+  },
+  "ELE.description": {
+    "source": "Great beasts that trample what they cannot frighten.",
+    "target": "Grandes bestias que pisotean lo que no logran asustar."
+  }
+}

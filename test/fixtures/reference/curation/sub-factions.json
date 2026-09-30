@@ -1,0 +1,162 @@
+{
+  "2a": {
+    "army": "Sylvan Courts",
+    "label": "Court",
+    "variants": [
+      {
+        "id": "summer",
+        "name": "Summer Court"
+      },
+      {
+        "id": "winter",
+        "name": "Winter Court"
+      },
+      {
+        "id": "twilight",
+        "name": "Twilight Court"
+      },
+      {
+        "id": "moonfall",
+        "name": "At the Moonfall",
+        "year": -120
+      },
+      {
+        "id": "other",
+        "name": "Any other court"
+      }
+    ],
+    "rules": {
+      "Summer or Winter Court": {
+        "only": [
+          "summer",
+          "winter"
+        ]
+      },
+      "all except Summer or Winter Court": {
+        "except": [
+          "summer",
+          "winter"
+        ]
+      },
+      "not Twilight Court": {
+        "except": [
+          "twilight"
+        ]
+      },
+      "only at the Moonfall": {
+        "only": [
+          "moonfall"
+        ]
+      }
+    }
+  },
+  "3a": {
+    "army": "Ember Principalities",
+    "label": "Sub-faction",
+    "variants": [
+      {
+        "id": "ashen",
+        "name": "Ashen"
+      },
+      {
+        "id": "cinder",
+        "name": "Cinder"
+      }
+    ],
+    "rules": {
+      "only Ashen": {
+        "only": [
+          "ashen"
+        ]
+      },
+      "only Cinder": {
+        "only": [
+          "cinder"
+        ]
+      },
+      "only Cinder, or Ashen until 1400 only": {
+        "only": [
+          "cinder",
+          {
+            "variant": "ashen",
+            "to": 1400
+          }
+        ]
+      },
+      "only Ashen after 1400; or Cinder after 1455": {
+        "only": [
+          {
+            "variant": "ashen",
+            "from": 1401
+          },
+          {
+            "variant": "cinder",
+            "from": 1456
+          }
+        ]
+      }
+    }
+  },
+  "4a": {
+    "army": "Tidewrack Corsairs",
+    "label": "Anchorage",
+    "variants": [
+      {
+        "id": "deeps",
+        "name": "In the Deeps"
+      },
+      {
+        "id": "other",
+        "name": "Any other anchorage"
+      }
+    ],
+    "rules": {
+      "only in the Deeps": {
+        "only": [
+          "deeps"
+        ]
+      },
+      "before 800, or except in the Deeps": {
+        "only": [
+          {
+            "variant": "deeps",
+            "to": 799
+          },
+          "other"
+        ]
+      }
+    }
+  },
+  "6a": {
+    "army": "Mammoth Clans",
+    "label": "Chieftain",
+    "variants": [
+      {
+        "id": "grask",
+        "name": "Grask"
+      },
+      {
+        "id": "urm",
+        "name": "Urm"
+      },
+      {
+        "id": "other",
+        "name": "Any other chieftain"
+      }
+    ],
+    "rules": {
+      "only if  Grask before 1405 or his son Urm after": {
+        "only": [
+          {
+            "variant": "grask",
+            "to": 1404
+          },
+          {
+            "variant": "urm",
+            "from": 1405
+          }
+        ]
+      }
+    }
+  }
+}

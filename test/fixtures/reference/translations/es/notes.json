@@ -1,0 +1,22 @@
+{
+  "nt0000": {
+    "source": "Without Rabble",
+    "target": "Sin chusma"
+  },
+  "nt0001": {
+    "source": "Only in the mountain warrens",
+    "target": "Solo en las madrigueras de montaña"
+  },
+  "nt0002": {
+    "source": "Only from the sea",
+    "target": "Solo desde el mar"
+  },
+  "nt0003": {
+    "source": "Along the river of glass",
+    "target": "A lo largo del río de cristal"
+  },
+  "nt0004": {
+    "source": "Only against Sylvan Courts",
+    "target": "Solo contra las Cortes silvanas"
+  }
+}

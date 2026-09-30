@@ -1,0 +1,548 @@
+[
+  {
+    "id": "troop-type-01-blv",
+    "permanentCode": "BLV",
+    "importName": "Bow Levy",
+    "displayName": "Bow Levy",
+    "displayCode": "BL",
+    "description": "Massed levies who loose arrows by the bucket and hope some land.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 2,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-02-rbl",
+    "permanentCode": "RBL",
+    "importName": "Rabble",
+    "displayName": "Rabble",
+    "displayCode": "Rb",
+    "description": "A mob with pitchforks, torches and strong opinions.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 2,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 1
+      }
+    }
+  },
+  {
+    "id": "troop-type-03-hrd",
+    "permanentCode": "HRD",
+    "importName": "Horde",
+    "displayName": "Horde",
+    "displayCode": "Hd",
+    "description": "A shambling multitude that wins by simply being too many.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 2,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-04-arc",
+    "permanentCode": "ARC",
+    "importName": "Archer",
+    "displayName": "Archers",
+    "displayCode": "Arc",
+    "description": "Trained bowmen who shoot straight and keep their distance.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 3,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-05-lft",
+    "permanentCode": "LFT",
+    "importName": "Light Foot",
+    "displayName": "Light Foot",
+    "displayCode": "LFt",
+    "description": "Nimble foot who fight in loose order from cover.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-06-lsp",
+    "permanentCode": "LSP",
+    "importName": "Light Spear",
+    "displayName": "Light Spear",
+    "displayCode": "LSp",
+    "description": "Loose-order spearmen, quick on their feet and on rough ground.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-07-rdr",
+    "permanentCode": "RDR",
+    "importName": "Raider",
+    "displayName": "Raiders",
+    "displayCode": "Rd",
+    "description": "Plunderers who hit hard, grab what they can and run.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 4,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-08-skm",
+    "permanentCode": "SKM",
+    "importName": "Skirmisher",
+    "displayName": "Skirmishers",
+    "displayCode": "Sk",
+    "description": "Scouts and slingers who pester and are gone before the charge lands.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 1
+      }
+    }
+  },
+  {
+    "id": "troop-type-09-wbd",
+    "permanentCode": "WBD",
+    "importName": "Warband",
+    "displayName": "Warband",
+    "displayCode": "Wb",
+    "description": "Wild warriors who charge in a howling rush.",
+    "category": "foot",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-10-art",
+    "permanentCode": "ART",
+    "importName": "Artillery",
+    "displayName": "Artillery",
+    "displayCode": "Art",
+    "description": "Engines that hurl bolts, stones or worse.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 4,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-11-eft",
+    "permanentCode": "EFT",
+    "importName": "Elite Foot",
+    "displayName": "Elite Foot",
+    "displayCode": "EFt",
+    "description": "Veteran foot, the finest blades in the host.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 5,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-12-hft",
+    "permanentCode": "HFT",
+    "importName": "Heavy Foot",
+    "displayName": "Heavy Foot",
+    "displayCode": "HFt",
+    "description": "Armoured foot who hold their ground with axe and shield.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 4,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-13-pav",
+    "permanentCode": "PAV",
+    "importName": "Pavise",
+    "displayName": "Pavisiers",
+    "displayCode": "Pv",
+    "description": "Crossbows or bows sheltered behind tall shields.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 3,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-14-pik",
+    "permanentCode": "PIK",
+    "importName": "Pike",
+    "displayName": "Pikes",
+    "displayCode": "Pk",
+    "description": "A hedge of long pikes, deadly while it keeps its shape.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-15-spr",
+    "permanentCode": "SPR",
+    "importName": "Spear",
+    "displayName": "Spear",
+    "displayCode": "Sp",
+    "description": "A wall of shields and spears, the backbone of many a host.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 4,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-16-wwg",
+    "permanentCode": "WWG",
+    "importName": "Warwagon",
+    "displayName": "War Wagons",
+    "displayCode": "WWg",
+    "description": "Armoured carts bristling with shooters.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 3,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-17-wrr",
+    "permanentCode": "WRR",
+    "importName": "Warrior",
+    "displayName": "Warriors",
+    "displayCode": "Wr",
+    "description": "Fighters without drill, strong in the first clash.",
+    "category": "foot",
+    "order": "Close",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-18-bad",
+    "permanentCode": "BAD",
+    "importName": "Bad Horse",
+    "displayName": "Bad Horse",
+    "displayCode": "BH",
+    "description": "Riders on beasts nobody else would mount.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-19-btx",
+    "permanentCode": "BTX",
+    "importName": "Battle Taxi",
+    "displayName": "Battle Taxi",
+    "displayCode": "BTx",
+    "description": "Mounts that carry foot soldiers to the fight and leave them there.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 3,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-20-cht",
+    "permanentCode": "CHT",
+    "importName": "Chariot",
+    "displayName": "Chariots",
+    "displayCode": "Ch",
+    "description": "Chariots that race in, shoot and wheel away.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-21-ecv",
+    "permanentCode": "ECV",
+    "importName": "Elite Cavalry",
+    "displayName": "Elite Cavalry",
+    "displayCode": "ECv",
+    "description": "The best-mounted riders, fighting in close order.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-22-hbw",
+    "permanentCode": "HBW",
+    "importName": "Horsebow",
+    "displayName": "Horse Bow",
+    "displayCode": "HBw",
+    "description": "Riders who shoot from the saddle and never quite close.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 2,
+        "vsMounted": 3
+      }
+    }
+  },
+  {
+    "id": "troop-type-23-jcv",
+    "permanentCode": "JCV",
+    "importName": "JavCav",
+    "displayName": "Javelin Cavalry",
+    "displayCode": "JCv",
+    "description": "Light riders who throw javelins and wheel away.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 2
+      }
+    }
+  },
+  {
+    "id": "troop-type-24-knt",
+    "permanentCode": "KNT",
+    "importName": "Knight",
+    "displayName": "Knights",
+    "displayCode": "Kn",
+    "description": "Armoured riders who charge knee to knee.",
+    "category": "mounted",
+    "order": "Open",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 2
+      },
+      "closeCombat": {
+        "vsFoot": 3,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-25-cat",
+    "permanentCode": "CAT",
+    "importName": "Cataphract",
+    "displayName": "Cataphracts",
+    "displayCode": "Cat",
+    "description": "Riders armoured head to hoof, mount included.",
+    "category": "mounted",
+    "order": "Close",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 4,
+        "vsMounted": 4
+      }
+    }
+  },
+  {
+    "id": "troop-type-26-ele",
+    "permanentCode": "ELE",
+    "importName": "Elephant",
+    "displayName": "Elephants",
+    "displayCode": "El",
+    "description": "Great beasts that trample what they cannot frighten.",
+    "category": "mounted",
+    "order": "Close",
+    "cost": 4,
+    "combatFactors": {
+      "rangedCombat": {
+        "shooting": 0,
+        "shotAt": 3
+      },
+      "closeCombat": {
+        "vsFoot": 5,
+        "vsMounted": 4
+      }
+    }
+  }
+]

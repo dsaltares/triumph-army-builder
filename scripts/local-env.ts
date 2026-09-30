@@ -1,0 +1,63 @@
+// Turns the environment production's service runs with into a `.env` for `yarn dev`: the
+// secrets and settings carry over, and what only means something in the container or behind the
+// tunnel does not.
+
+export const localUrl = 'http://localhost:3013';
+
+// Paths inside the image, the proxies in front of the homelab, and the mode the image sets. Left
+// unset, each falls back to its local default.
+const containerOnly = [
+  'NODE_ENV',
+  'REFERENCE_PACK',
+  'GEO_DATABASE_DIR',
+  'PHOTO_DIR',
+  'BACKUP_DIR',
+  'TRUSTED_PROXIES',
+  'IP_ADDRESS_HEADERS',
+];
+
+type Environment = Record<string, string | null | undefined>;
+
+export const localEnvironment = (
+  production: Environment,
+  local: Environment,
+  databaseFile: string,
+) => {
+  const merged: Record<string, string> = {};
+  for (const [name, value] of Object.entries({ ...local, ...production })) {
+    if (value != null && !containerOnly.includes(name)) {
+      merged[name] = value;
+    }
+  }
+  merged.DATABASE_URL = databaseFile;
+  merged.BETTER_AUTH_URL = localUrl;
+  return merged;
+};
+
+const bare = /^[\w./:@,+-]*$/;
+
+const quote = (value: string) => {
+  if (bare.test(value)) {
+    return value;
+  }
+  if (!value.includes("'") && !value.includes('\n')) {
+    return `'${value}'`;
+  }
+  return JSON.stringify(value);
+};
+
+// Next expands `$NAME` in `.env` whatever the quotes, and Node's `--env-file`, which the `db:*`
+// scripts read it with, never does, so no spelling of a `$` means the same to both.
+export const formatEnvFile = (environment: Record<string, string>) => {
+  const expanded = Object.entries(environment)
+    .filter(([, value]) => value.includes('$'))
+    .map(([name]) => name);
+  if (expanded.length > 0) {
+    throw new Error(
+      `${expanded.join(', ')} hold a $, which Next and Node would read differently from .env.`,
+    );
+  }
+  return Object.entries(environment)
+    .map(([name, value]) => `${name}=${quote(value)}\n`)
+    .join('');
+};

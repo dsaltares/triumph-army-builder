@@ -1,0 +1,115 @@
+name: Docker
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/dsaltares/triumph-army-builder
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Check the deploy variables
+        env:
+          COMPOSE_DIR: ${{ vars.DEPLOY_COMPOSE_DIR }}
+          SERVICE: ${{ vars.DEPLOY_SERVICE }}
+          REFERENCE_DIR: ${{ vars.DEPLOY_REFERENCE_DIR }}
+        run: |
+          for name in COMPOSE_DIR REFERENCE_DIR; do
+            case "${!name}" in
+              /*) ;;
+              *) echo "::error::DEPLOY_$name must be an absolute path on the host" && exit 1 ;;
+            esac
+          done
+          [ -n "$SERVICE" ] || { echo '::error::DEPLOY_SERVICE is not set' && exit 1; }
+
+      - uses: actions/checkout@v4
+
+      - name: Download the pinned reference pack
+        env:
+          GH_TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+          DATA_REPO: dsaltares/triumph-army-builder-data
+        run: |
+          version=$(tr -d '[:space:]' < reference-version.txt)
+          mkdir -p reference
+          gh release download "data-$version" --repo "$DATA_REPO" \
+            --pattern "reference-$version.json.gz" --output reference/pack.json.gz
+
+      - name: Install cloudflared
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cat > ~/.ssh/config << EOF
+          Host $SSH_HOST
+            ProxyCommand cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Copy the reference pack
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          REFERENCE_DIR: ${{ vars.DEPLOY_REFERENCE_DIR }}
+        run: |
+          ssh $SSH_USER@$SSH_HOST "mkdir -p '$REFERENCE_DIR'"
+          scp reference/pack.json.gz "$SSH_USER@$SSH_HOST:$REFERENCE_DIR/pack.json.gz.upload"
+
+      - name: Back up the database and deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          COMPOSE_DIR: ${{ vars.DEPLOY_COMPOSE_DIR }}
+          SERVICE: ${{ vars.DEPLOY_SERVICE }}
+          REFERENCE_DIR: ${{ vars.DEPLOY_REFERENCE_DIR }}
+        run: ssh $SSH_USER@$SSH_HOST "bash -s -- '$COMPOSE_DIR' '$SERVICE' '$REFERENCE_DIR'" < .github/deploy/deploy.sh

@@ -1,0 +1,58 @@
+{
+  "al0000": {
+    "source": "Goblin Warrens",
+    "target": "Madrigueras goblin"
+  },
+  "al0001": {
+    "source": "Goblin allies",
+    "target": "Aliados goblin"
+  },
+  "al0002": {
+    "source": "Sylvan Courts",
+    "target": "Cortes silvanas"
+  },
+  "al0003": {
+    "source": "Sylvan allies",
+    "target": "Aliados silvanos"
+  },
+  "al0004": {
+    "source": "Mammoth Clans",
+    "target": "Clanes del mamut"
+  },
+  "al0005": {
+    "source": "Mammoth clan allies",
+    "target": "Aliados de los clanes del mamut"
+  },
+  "al0006": {
+    "source": "Stonehold Dwarves",
+    "target": "Enanos de Fortaleza de Piedra"
+  },
+  "al0007": {
+    "source": "Stonehold dwarf allies",
+    "target": "Aliados enanos de Fortaleza de Piedra"
+  },
+  "al0008": {
+    "source": "Crown militia",
+    "target": "Milicia de la corona"
+  },
+  "al0009": {
+    "source": "Grave-wight retinue",
+    "target": "Séquito de espectros"
+  },
+  "al0010": {
+    "source": "Bog-risen or Barrow-kin",
+    "target": "Alzados de la ciénaga o parientes del túmulo"
+  },
+  "al0011": {
+    "source": "Bog-risen or (later) Barrow-kin",
+    "target": "Alzados de la ciénaga o (después) parientes del túmulo"
+  },
+  "al0012": {
+    "source": "Tidewrack Corsairs",
+    "target": "Corsarios de la Resaca"
+  },
+  "al0013": {
+    "source": "Tidewrack corsair allies",
+    "target": "Aliados corsarios de la Resaca"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "source": "https://sample.triumph-army-builder.test/api/v1",
+  "fetchedAt": "2026-09-29T00:00:00.000Z",
+  "dataVersion": "2026-09-29.11a65697",
+  "contentHash": "11a6569731c29b1a9b44b9a80434cad2c8261f6c9e09f439eb01a081a032c4cf",
+  "files": [
+    {
+      "name": "allyArmyLists.json",
+      "records": 8,
+      "bytes": 10781,
+      "sha256": "184c831226378400d3a7f4764b257504df487201792f71dc5831f99825160401"
+    },
+    {
+      "name": "armyLists.json",
+      "records": 8,
+      "bytes": 42903,
+      "sha256": "27bb3013f8f6b8903d67c90111bab6a5b71a42a33418442480a14386efb2f0a3"
+    },
+    {
+      "name": "battleCards.json",
+      "records": 27,
+      "bytes": 19970,
+      "sha256": "c22207e729c9d3ab7b2ec88f732d07a8c7d5c967b1ff7d9c742f2b6d74073053"
+    },
+    {
+      "name": "enemyArmyLists.json",
+      "records": 8,
+      "bytes": 595,
+      "sha256": "361f11d6f0f3f64ff429b702e9c5c40102c80b39ddfa888a10d6dbec3b4b6b84"
+    },
+    {
+      "name": "thematicCategories.json",
+      "records": 4,
+      "bytes": 338,
+      "sha256": "e9a4d416272df27c93ebe00bb71988ba6caadc8862be14174fd800365d9ccc71"
+    },
+    {
+      "name": "thematicCategoryArmyLists.json",
+      "records": 4,
+      "bytes": 386,
+      "sha256": "a70c126b236084826e8f4b40fefbac06f3ae93119d7efd96b754e17486bf8ab2"
+    },
+    {
+      "name": "troopTypes.json",
+      "records": 26,
+      "bytes": 12248,
+      "sha256": "510e9f209b03598879b695947f902f5e80f5e299c0543625e1900421da27d64a"
+    }
+  ]
+}

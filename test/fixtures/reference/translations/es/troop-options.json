@@ -1,0 +1,206 @@
+{
+  "to0000": {
+    "source": "Warren boss and shaman-archers",
+    "target": "Jefe de la madriguera y chamanes arqueros"
+  },
+  "to0001": {
+    "source": "Swarming goblin bowmen",
+    "target": "Enjambres de arqueros goblin"
+  },
+  "to0002": {
+    "source": "Wolf riders",
+    "target": "Jinetes de lobo"
+  },
+  "to0003": {
+    "source": "Cave-dwelling rabble",
+    "target": "Chusma de las cuevas"
+  },
+  "to0004": {
+    "source": "Court champions",
+    "target": "Campeones de la corte"
+  },
+  "to0005": {
+    "source": "Glade wardens, with bow or with tall shield",
+    "target": "Guardianes del claro, con arco o con escudo alto"
+  },
+  "to0006": {
+    "source": "Oathsworn spear-dancers",
+    "target": "Danzantes de lanza juramentados"
+  },
+  "to0007": {
+    "source": "Wild hunt riders",
+    "target": "Jinetes de la cacería salvaje"
+  },
+  "to0008": {
+    "source": "Twilight lancers on silver stags",
+    "target": "Lanceros del crepúsculo sobre ciervos de plata"
+  },
+  "to0009": {
+    "source": "Riders of the falling moon",
+    "target": "Jinetes de la luna caída"
+  },
+  "to0010": {
+    "source": "Treetop skirmishers",
+    "target": "Hostigadores de las copas"
+  },
+  "to0011": {
+    "source": "Ember lords and their sworn riders",
+    "target": "Señores de la brasa y sus jinetes juramentados"
+  },
+  "to0012": {
+    "source": "Ember pike-blocks",
+    "target": "Cuadros de picas de la brasa"
+  },
+  "to0013": {
+    "source": "Ashen horse archers",
+    "target": "Arqueros a caballo cenicientos"
+  },
+  "to0014": {
+    "source": "Cinder outriders",
+    "target": "Batidores de la ceniza"
+  },
+  "to0015": {
+    "source": "Knights of the burning banner",
+    "target": "Caballeros del estandarte ardiente"
+  },
+  "to0016": {
+    "source": "Fire-throwing engines",
+    "target": "Ingenios lanzallamas"
+  },
+  "to0017": {
+    "source": "Smoke-runners",
+    "target": "Corredores del humo"
+  },
+  "to0018": {
+    "source": "Reaver crews",
+    "target": "Tripulaciones de saqueo"
+  },
+  "to0019": {
+    "source": "Deck archers and boarding parties",
+    "target": "Arqueros de cubierta y grupos de abordaje"
+  },
+  "to0020": {
+    "source": "Drowned thralls",
+    "target": "Siervos ahogados"
+  },
+  "to0021": {
+    "source": "Harbour spearmen",
+    "target": "Lanceros del puerto"
+  },
+  "to0022": {
+    "source": "Storm-tossed levies",
+    "target": "Levas zarandeadas por la tormenta"
+  },
+  "to0023": {
+    "source": "Siege barges hauled ashore",
+    "target": "Barcazas de asedio varadas en tierra"
+  },
+  "to0024": {
+    "source": "The Sun-King and his gilded companions",
+    "target": "El Rey Sol y sus compañeros dorados"
+  },
+  "to0025": {
+    "source": "2-horse chariots of the sun",
+    "target": "Carros del sol de dos caballos"
+  },
+  "to0026": {
+    "source": "Sand levies with slings and bows",
+    "target": "Levas de la arena con hondas y arcos"
+  },
+  "to0027": {
+    "source": "Early sun-guard",
+    "target": "Primera guardia del sol"
+  },
+  "to0028": {
+    "source": "Later sun-guard, close-fighters with axe and shield",
+    "target": "Guardia del sol tardía, combatientes cuerpo a cuerpo con hacha y escudo"
+  },
+  "to0029": {
+    "source": "Dune skirmishers",
+    "target": "Hostigadores de las dunas"
+  },
+  "to0030": {
+    "source": "War mammoths",
+    "target": "Mamuts de guerra"
+  },
+  "to0031": {
+    "source": "Clan chieftains and their hearth-guard",
+    "target": "Caudillos del clan y su guardia del hogar"
+  },
+  "to0032": {
+    "source": "Tusker outriders",
+    "target": "Batidores de los colmillos"
+  },
+  "to0033": {
+    "source": "Painted screen-runners",
+    "target": "Corredores de pantalla pintados"
+  },
+  "to0034": {
+    "source": "Frost-berserkers",
+    "target": "Berserkers de la escarcha"
+  },
+  "to0035": {
+    "source": "Sledge-riders",
+    "target": "Jinetes de trineo"
+  },
+  "to0036": {
+    "source": "Knights of the Iron Crown",
+    "target": "Caballeros de la Corona de Hierro"
+  },
+  "to0037": {
+    "source": "Crown pikemen and spear-militia",
+    "target": "Piqueros de la corona y milicia de lanza"
+  },
+  "to0038": {
+    "source": "Yeoman bowmen",
+    "target": "Arqueros francos"
+  },
+  "to0039": {
+    "source": "Crown war-carts",
+    "target": "Carros de guerra de la corona"
+  },
+  "to0040": {
+    "source": "Hill clansmen",
+    "target": "Clanes de las colinas"
+  },
+  "to0041": {
+    "source": "The deathless lord",
+    "target": "El señor inmortal"
+  },
+  "to0042": {
+    "source": "Risen hordes",
+    "target": "Hordas alzadas"
+  },
+  "to0043": {
+    "source": "Bone archers",
+    "target": "Arqueros de hueso"
+  },
+  "to0044": {
+    "source": "Thane and hearth-guard",
+    "target": "Thane y guardia del hogar"
+  },
+  "to0045": {
+    "source": "Shieldwall of the deep halls",
+    "target": "Muro de escudos de las salas profundas"
+  },
+  "to0046": {
+    "source": "Bolt-throwers or armoured wains",
+    "target": "Lanzavirotes o carretas blindadas"
+  },
+  "to0047": {
+    "source": "Town militia with spear and pike",
+    "target": "Milicia urbana con lanza y pica"
+  },
+  "to0048": {
+    "source": "Crossbow levy",
+    "target": "Leva de ballesteros"
+  },
+  "to0049": {
+    "source": "Grave-wights",
+    "target": "Espectros de tumba"
+  },
+  "to0050": {
+    "source": "Bog-risen",
+    "target": "Alzados de la ciénaga"
+  }
+}

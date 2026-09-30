@@ -1,0 +1,18 @@
+{
+  "category-deep-woods": {
+    "source": "Children of the Deep Woods",
+    "target": "Hijos del bosque profundo"
+  },
+  "category-iron-and-fire": {
+    "source": "Kingdoms of Iron and Fire",
+    "target": "Reinos de hierro y fuego"
+  },
+  "category-sand-and-sea": {
+    "source": "Empires of Sand and Sea",
+    "target": "Imperios de arena y mar"
+  },
+  "category-frost-and-grave": {
+    "source": "The Frozen and the Dead",
+    "target": "Los helados y los muertos"
+  }
+}

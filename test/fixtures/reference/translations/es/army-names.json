@@ -1,0 +1,34 @@
+{
+  "army-goblin-warrens": {
+    "source": "Goblin Warrens",
+    "target": "Madrigueras goblin"
+  },
+  "army-sylvan-courts": {
+    "source": "Sylvan Courts",
+    "target": "Cortes silvanas"
+  },
+  "army-ember-principalities": {
+    "source": "Ember Principalities",
+    "target": "Principados de la Brasa"
+  },
+  "army-tidewrack-corsairs": {
+    "source": "Tidewrack Corsairs",
+    "target": "Corsarios de la Resaca"
+  },
+  "army-sunspire-dominion": {
+    "source": "Sunspire Dominion",
+    "target": "Dominio de la Aguja del Sol"
+  },
+  "army-mammoth-clans": {
+    "source": "Mammoth Clans",
+    "target": "Clanes del mamut"
+  },
+  "army-iron-crown": {
+    "source": "Iron Crown Knights",
+    "target": "Caballeros de la Corona de Hierro"
+  },
+  "army-hollow-necropolis": {
+    "source": "Hollow Necropolis",
+    "target": "Necrópolis hueca"
+  }
+}

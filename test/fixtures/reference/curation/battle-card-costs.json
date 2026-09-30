@@ -1,0 +1,347 @@
+{
+  "FC": {
+    "name": "Fortified Camp",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 1
+    },
+    "sources": [
+      "1 point"
+    ]
+  },
+  "PD": {
+    "name": "Prepared Defenses",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "perCard",
+      "pointsPerCard": 0.5
+    },
+    "sources": [
+      "½ point for each card taken"
+    ]
+  },
+  "AM": {
+    "name": "Ambush",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 1
+    },
+    "sources": [
+      "1 point"
+    ]
+  },
+  "SW": {
+    "name": "Standard Wagon",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "Nothing"
+    ]
+  },
+  "NC": {
+    "name": "No Camp",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 3
+    },
+    "sources": [
+      "3 points"
+    ]
+  },
+  "PT": {
+    "name": "Pack Train and Herds",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 1
+    },
+    "sources": [
+      "1 point"
+    ]
+  },
+  "SC": {
+    "name": "Scythed Chariots and Stampedes",
+    "category": "army",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 2
+    },
+    "sources": [
+      "2 points"
+    ]
+  },
+  "SB": {
+    "name": "Supporting Bowmen",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "The card itself costs nothing, but a bowman stand is traded for the support it lends."
+    ]
+  },
+  "SP": {
+    "name": "Supportable",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "The card itself costs nothing, but a bowman stand is traded for the support it lends."
+    ]
+  },
+  "LC": {
+    "name": "Light Camelry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "Nothing"
+    ]
+  },
+  "DD": {
+    "name": "Deployment Dismounting",
+    "category": "troop",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 1
+    },
+    "sources": [
+      "1 point",
+      "One card lets every eligible troop entry in the army dismount at deployment."
+    ]
+  },
+  "HL": {
+    "name": "Hold the Line",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "firstFreeThenFlat",
+      "countedIn": "cards",
+      "pointsAfterFirst": 1,
+      "cumulative": true
+    },
+    "sources": [
+      "The first Hold the Line card is free; each one after it costs 1 point",
+      "A Hold the Line card covers every stand in its troop entry, never a single stand."
+    ]
+  },
+  "HD": {
+    "name": "Hoplite Deep Formation",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "Nothing"
+    ]
+  },
+  "MI": {
+    "name": "Mobile Infantry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "firstFreeThenFlat",
+      "countedIn": "stands",
+      "pointsAfterFirst": 1,
+      "cumulative": false
+    },
+    "sources": [
+      "Nothing if the card is bought for one stand.",
+      "1 point if the card is bought for two stands or more.",
+      "The card may be bought for any number of the stands in a troop entry."
+    ]
+  },
+  "ES": {
+    "name": "Elephant Screen",
+    "category": "troop",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 2
+    },
+    "sources": [
+      "2 points",
+      "The army list says whether an army may raise an Elephant Screen.",
+      "An army that buys this card may not field a single elephant stand."
+    ]
+  },
+  "ET": {
+    "name": "Screenable",
+    "category": "troop",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "The army list says whether an army may raise an Elephant Screen.",
+      "The army list marks the troops that may screen and the troops they screen."
+    ]
+  },
+  "PL": {
+    "name": "Plaustrella",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "perStand",
+      "pointsPerStand": 1
+    },
+    "sources": [
+      "1 point per stand"
+    ]
+  },
+  "AC": {
+    "name": "Armored Camelry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "modifiesStandCost",
+      "effect": {
+        "kind": "reduceBy",
+        "points": 1
+      }
+    },
+    "sources": [
+      "Each stand carrying a Charging Camelry or Armored Camelry card costs 1 point less.",
+      "Charging Camelry and Armored Camelry go on every stand of a troop entry or on none of them."
+    ]
+  },
+  "CC": {
+    "name": "Charging Camelry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "modifiesStandCost",
+      "effect": {
+        "kind": "reduceBy",
+        "points": 1
+      }
+    },
+    "sources": [
+      "Each stand carrying a Charging Camelry or Armored Camelry card costs 1 point less.",
+      "Charging Camelry and Armored Camelry go on every stand of a troop entry or on none of them."
+    ]
+  },
+  "SS": {
+    "name": "Shower Shooting",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "perStand",
+      "pointsPerStand": 1
+    },
+    "sources": [
+      "1 point per stand",
+      "Shower Shooting goes on every stand of a troop entry or on none of them."
+    ]
+  },
+  "CT": {
+    "name": "Charge Through",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "perCardCapped",
+      "pointsPerCard": 1,
+      "maxPoints": 2
+    },
+    "sources": [
+      "1 point for each card, never more than 2 points",
+      "A Charge Through card covers every stand in its troop entry, never a single stand."
+    ]
+  },
+  "MD": {
+    "name": "Mid-Battle Dismounting",
+    "category": "troop",
+    "purchasedPer": "army",
+    "rule": {
+      "kind": "flat",
+      "points": 2
+    },
+    "sources": [
+      "2 points",
+      "One card lets every eligible troop entry in the army dismount in the middle of a battle."
+    ]
+  },
+  "SV": {
+    "name": "Separated Valets",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "Nothing",
+      "Valets always come in pairs of stands."
+    ]
+  },
+  "SF": {
+    "name": "Sword-Fighting Cavalry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "modifiesStandCost",
+      "effect": {
+        "kind": "setTo",
+        "points": 3.5
+      }
+    },
+    "sources": [
+      "The card costs nothing, but each stand carrying it costs 3 ½ points.",
+      "Sword-Fighting Cavalry goes on every stand of a troop entry or on none of them."
+    ]
+  },
+  "CH": {
+    "name": "Chained Together",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "free"
+    },
+    "sources": [
+      "Nothing",
+      "Chained Together goes on every stand of a troop entry or on none of them."
+    ]
+  },
+  "CF": {
+    "name": "Camel Protected Infantry",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "flat",
+      "points": 1
+    },
+    "sources": [
+      "1 point"
+    ]
+  },
+  "DC": {
+    "name": "Deceptive Deployment",
+    "category": "troop",
+    "purchasedPer": "troopOption",
+    "rule": {
+      "kind": "conditional",
+      "pointsPerDeclaration": 1
+    },
+    "sources": [
+      "The card costs 1 point for each stand it may swap or remove:"
+    ]
+  }
+}

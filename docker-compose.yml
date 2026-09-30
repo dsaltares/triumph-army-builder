@@ -1,0 +1,19 @@
+name: triumph-army-builder
+
+services:
+  triumph-army-builder:
+    build: .
+    ports:
+      - '127.0.0.1:3013:3013'
+    volumes:
+      - triumph-army-builder-data:/data
+      - ./.data/reference:/app/reference:ro
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - DATABASE_URL=/data/db.sqlite
+    restart: unless-stopped
+
+volumes:
+  triumph-army-builder-data:

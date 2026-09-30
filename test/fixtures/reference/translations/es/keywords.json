@@ -1,0 +1,58 @@
+{
+  "kw0000": {
+    "source": "Goblin",
+    "target": "Goblin"
+  },
+  "kw0001": {
+    "source": "Greenskin",
+    "target": "Piel verde"
+  },
+  "kw0002": {
+    "source": "Elf",
+    "target": "Elfo"
+  },
+  "kw0003": {
+    "source": "Fey",
+    "target": "Feérico"
+  },
+  "kw0004": {
+    "source": "Fire",
+    "target": "Fuego"
+  },
+  "kw0005": {
+    "source": "Sea",
+    "target": "Mar"
+  },
+  "kw0006": {
+    "source": "Raider",
+    "target": "Saqueador"
+  },
+  "kw0007": {
+    "source": "Sun",
+    "target": "Sol"
+  },
+  "kw0008": {
+    "source": "Desert",
+    "target": "Desierto"
+  },
+  "kw0009": {
+    "source": "Frost",
+    "target": "Escarcha"
+  },
+  "kw0010": {
+    "source": "Nomad",
+    "target": "Nómada"
+  },
+  "kw0011": {
+    "source": "Knight",
+    "target": "Caballero"
+  },
+  "kw0012": {
+    "source": "Crown",
+    "target": "Corona"
+  },
+  "kw0013": {
+    "source": "Undead",
+    "target": "No muerto"
+  }
+}

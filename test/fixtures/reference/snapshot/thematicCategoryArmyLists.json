@@ -1,0 +1,19 @@
+{
+  "category-deep-woods": [
+    "army-goblin-warrens",
+    "army-sylvan-courts"
+  ],
+  "category-frost-and-grave": [
+    "army-mammoth-clans",
+    "army-hollow-necropolis",
+    "army-iron-crown"
+  ],
+  "category-iron-and-fire": [
+    "army-ember-principalities",
+    "army-iron-crown"
+  ],
+  "category-sand-and-sea": [
+    "army-sunspire-dominion",
+    "army-tidewrack-corsairs"
+  ]
+}

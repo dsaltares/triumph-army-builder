@@ -1,0 +1,29 @@
+{
+  "army-ember-principalities": [
+    "army-iron-crown",
+    "army-mammoth-clans"
+  ],
+  "army-goblin-warrens": [
+    "army-sylvan-courts",
+    "army-tidewrack-corsairs"
+  ],
+  "army-hollow-necropolis": [],
+  "army-iron-crown": [
+    "army-sylvan-courts",
+    "army-ember-principalities"
+  ],
+  "army-mammoth-clans": [
+    "army-ember-principalities"
+  ],
+  "army-sunspire-dominion": [
+    "army-tidewrack-corsairs"
+  ],
+  "army-sylvan-courts": [
+    "army-goblin-warrens",
+    "army-iron-crown"
+  ],
+  "army-tidewrack-corsairs": [
+    "army-goblin-warrens",
+    "army-sunspire-dominion"
+  ]
+}

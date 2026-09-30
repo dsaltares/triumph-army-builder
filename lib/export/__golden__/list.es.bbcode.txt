@@ -1,0 +1,49 @@
+[b]Kish at dawn[/b]
+Fixture Builder Army · Lista 1b · 3000–2800 a.C.
+[b]44½ puntos · 12 stands · 2850 a.C.[/b]
+
+[list]
+[*]Sub-faction: Kish
+[*]General: Chariots (Chariots with 2 crew)
+[*]Campamento: Campamento fortificado
+[*]Índice de invasión: 2
+[*]Índice de maniobra: 1
+[*]Topografía propia: Arable
+[/list]
+
+[b]Contingente principal[/b] — 10 stands, 37 puntos
+[list]
+[*]Chariots with 2 crew [línea de batalla]
+[list]
+[*]3 × Chariots (general) — 12 puntos · 6 MU
+[/list]
+[*]Hill and marsh dwellers
+[list]
+[*]1 × Light Foot — 3 puntos · 5 MU
+[*]1 × Rabble — 2 puntos · 4 MU
+[/list]
+[*]Seasonal raiders
+[list]
+[*]2 × Raiders — 8 puntos · 4 MU
+[/list]
+[*]Noble knights (only Kish) [media línea de batalla]
+[list]
+[*]3 × Knights — 12 puntos · 5 MU
+[/list]
+[/list]
+
+[b]Fixture Militia Contingent (contingente opcional)[/b] — 2 stands, 4 puntos
+[list]
+[*]2 × Horde — 4 puntos · 3 MU
+[/list]
+
+[b]Cartas de batalla[/b]
+[list]
+[*]Deployment Dismounting — 1 punto, 1 stand (Noble knights)
+[*]Fortified Camp — 1 punto
+[*]Sword-Fighting Cavalry — -1½ puntos, 3 stands (Noble knights)
+[*]Shower Shooting — 3 puntos, 3 stands (Chariots with 2 crew)
+[/list]
+
+Hecho con Triumph! Army Builder — https://triumph.example/armies/army-builder
+Datos de listas de ejército de Meshwesh, versión 2026-09-17.abcdef01

@@ -1,0 +1,310 @@
+{
+  "kind": "shared",
+  "sheet": {
+    "listName": "Kish at dawn",
+    "armyId": "army-builder",
+    "armyName": "Fixture Builder Army",
+    "extendedName": "Fixture Builder Army 3000 to 2800 BC",
+    "key": "1b",
+    "dataVersion": "2026-09-17.abcdef01",
+    "year": -2850,
+    "dateRange": {
+      "startDate": -3000,
+      "endDate": -2800
+    },
+    "subFaction": {
+      "label": "Sub-faction",
+      "name": "Kish"
+    },
+    "invasionRatings": [
+      {
+        "value": 2,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "value": 1,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "values": [
+          "Arable"
+        ],
+        "note": ""
+      }
+    ],
+    "camp": [
+      "FC"
+    ],
+    "general": {
+      "troopType": "CHT",
+      "name": "Chariots",
+      "contingent": "Fixture Builder Army",
+      "option": "Chariots with 2 crew"
+    },
+    "contingents": [
+      {
+        "id": "main",
+        "kind": "main",
+        "name": "Fixture Builder Army",
+        "options": [
+          {
+            "id": "main/0",
+            "description": "Chariots with 2 crew",
+            "note": "",
+            "battleLine": "all",
+            "lines": [
+              {
+                "troopType": "CHT",
+                "name": "Chariots",
+                "stands": 3,
+                "pointsPerStand": 4,
+                "points": 12,
+                "general": true,
+                "movement": 6,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 2,
+                    "vsMounted": 3
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 3
+                  }
+                }
+              }
+            ],
+            "stands": 3,
+            "points": 12
+          },
+          {
+            "id": "main/1",
+            "description": "Hill and marsh dwellers",
+            "note": "",
+            "battleLine": "none",
+            "lines": [
+              {
+                "troopType": "LFT",
+                "name": "Light Foot",
+                "stands": 1,
+                "pointsPerStand": 3,
+                "points": 3,
+                "general": false,
+                "movement": 5,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 3,
+                    "vsMounted": 2
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 3
+                  }
+                }
+              },
+              {
+                "troopType": "RBL",
+                "name": "Rabble",
+                "stands": 1,
+                "pointsPerStand": 2,
+                "points": 2,
+                "general": false,
+                "movement": 4,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 2,
+                    "vsMounted": 1
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 2
+                  }
+                }
+              }
+            ],
+            "stands": 2,
+            "points": 5
+          },
+          {
+            "id": "main/2",
+            "description": "Seasonal raiders",
+            "note": "",
+            "battleLine": "none",
+            "lines": [
+              {
+                "troopType": "RDR",
+                "name": "Raiders",
+                "stands": 2,
+                "pointsPerStand": 4,
+                "points": 8,
+                "general": false,
+                "movement": 4,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 4,
+                    "vsMounted": 2
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 3
+                  }
+                }
+              }
+            ],
+            "stands": 2,
+            "points": 8
+          },
+          {
+            "id": "main/3",
+            "description": "Noble knights",
+            "note": "only Kish",
+            "battleLine": "half",
+            "lines": [
+              {
+                "troopType": "KNT",
+                "name": "Knights",
+                "stands": 3,
+                "pointsPerStand": 4,
+                "points": 12,
+                "general": false,
+                "movement": 5,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 3,
+                    "vsMounted": 4
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 2
+                  }
+                }
+              }
+            ],
+            "stands": 3,
+            "points": 12
+          }
+        ],
+        "stands": 10,
+        "points": 37
+      },
+      {
+        "id": "contingent-militia",
+        "kind": "optional",
+        "name": "Fixture Militia Contingent",
+        "options": [
+          {
+            "id": "contingent-militia/0",
+            "description": "",
+            "note": "",
+            "battleLine": "all",
+            "lines": [
+              {
+                "troopType": "HRD",
+                "name": "Horde",
+                "stands": 2,
+                "pointsPerStand": 2,
+                "points": 4,
+                "general": false,
+                "movement": 3,
+                "factors": {
+                  "closeCombat": {
+                    "vsFoot": 3,
+                    "vsMounted": 2
+                  },
+                  "rangedCombat": {
+                    "shooting": 0,
+                    "shotAt": 2
+                  }
+                }
+              }
+            ],
+            "stands": 2,
+            "points": 4
+          }
+        ],
+        "stands": 2,
+        "points": 4
+      }
+    ],
+    "battleCards": [
+      {
+        "code": "DD",
+        "name": "Deployment Dismounting",
+        "purchases": 1,
+        "stands": 1,
+        "points": 1,
+        "attachedTo": [
+          "Noble knights"
+        ]
+      },
+      {
+        "code": "FC",
+        "name": "Fortified Camp",
+        "purchases": 1,
+        "stands": 0,
+        "points": 1,
+        "attachedTo": []
+      },
+      {
+        "code": "SF",
+        "name": "Sword-Fighting Cavalry",
+        "purchases": 1,
+        "stands": 3,
+        "points": -1.5,
+        "attachedTo": [
+          "Noble knights"
+        ]
+      },
+      {
+        "code": "SS",
+        "name": "Shower Shooting",
+        "purchases": 1,
+        "stands": 3,
+        "points": 3,
+        "attachedTo": [
+          "Chariots with 2 crew"
+        ]
+      }
+    ],
+    "totals": {
+      "stands": 12,
+      "standPoints": 41,
+      "allyStandPoints": 0,
+      "battleCardPoints": 3.5,
+      "total": 44.5
+    }
+  },
+  "report": {
+    "findings": [
+      {
+        "code": "underPointsCap",
+        "severity": "warning",
+        "target": {
+          "kind": "army"
+        },
+        "params": {
+          "total": 44.5,
+          "unspent": 3.5,
+          "cap": 48
+        }
+      }
+    ],
+    "errors": 0,
+    "warnings": 1,
+    "notes": 0,
+    "legal": true
+  },
+  "meter": {
+    "total": 44.5,
+    "cap": 48,
+    "remaining": 3.5,
+    "status": "under",
+    "standPoints": 41,
+    "allyStandPoints": 0,
+    "battleCardPoints": 3.5,
+    "filled": 0.9270833333333334
+  }
+}

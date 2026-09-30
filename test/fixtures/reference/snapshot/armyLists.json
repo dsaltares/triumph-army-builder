@@ -1,0 +1,1988 @@
+[
+  {
+    "id": "army-goblin-warrens",
+    "listId": 1,
+    "sublistId": "a",
+    "sortId": 1,
+    "name": "Goblin Warrens",
+    "status": "Ready",
+    "keywords": [
+      "Goblin",
+      "Greenskin"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Goblin Warrens  1200 to 900 BC",
+      "listStartDate": -1200,
+      "listEndDate": -900
+    },
+    "dateRanges": [
+      {
+        "_id": "0d000f",
+        "startDate": -1200,
+        "endDate": -900
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r0010",
+        "value": 1,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r0011",
+        "value": 3,
+        "note": "Without Rabble"
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t0012",
+        "values": [
+          "Forest",
+          "Marsh"
+        ],
+        "note": ""
+      },
+      {
+        "_id": "0t0013",
+        "values": [
+          "Hilly"
+        ],
+        "note": "Only in the mountain warrens"
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p0001",
+        "min": 1,
+        "max": 1,
+        "core": "all",
+        "description": "Warren boss and shaman-archers",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0002",
+            "troopTypeCode": "ARC",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0003",
+            "battleCardCode": "SB",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0004",
+        "min": 8,
+        "max": 22,
+        "core": "all",
+        "description": "Swarming goblin bowmen",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0005",
+            "troopTypeCode": "BLV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0006",
+            "battleCardCode": "SP",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0007",
+        "min": 0,
+        "max": 3,
+        "core": "",
+        "description": "Wolf riders",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0008",
+            "troopTypeCode": "JCV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0009",
+            "battleCardCode": "CC",
+            "min": null,
+            "max": null,
+            "note": null
+          },
+          {
+            "_id": "0b000a",
+            "battleCardCode": "AC",
+            "min": null,
+            "max": null,
+            "note": null
+          },
+          {
+            "_id": "0b000b",
+            "battleCardCode": "LC",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p000c",
+        "min": 0,
+        "max": 2,
+        "core": "",
+        "description": "Cave-dwelling rabble",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e000d",
+            "troopTypeCode": "RBL",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e000e",
+            "troopTypeCode": "HRD",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g0014",
+        "troopEntries": [
+          {
+            "_id": "0e0015",
+            "troopTypeCode": "ARC",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y0016",
+        "allyEntries": [
+          {
+            "_id": "0y0017",
+            "allyArmyList": "ally-tidewrack-corsairs",
+            "name": "Tidewrack corsair allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b0018",
+        "battleCardCode": "AM",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b0019",
+        "battleCardCode": "FC",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b001a",
+        "battleCardCode": "PD",
+        "min": 0,
+        "max": 4,
+        "note": null
+      },
+      {
+        "_id": "0b001b",
+        "battleCardCode": "DC",
+        "min": 0,
+        "max": 3,
+        "note": "Only against Sylvan Courts"
+      }
+    ]
+  },
+  {
+    "id": "army-sylvan-courts",
+    "listId": 2,
+    "sublistId": "a",
+    "sortId": 2,
+    "name": "Sylvan Courts",
+    "status": "Ready",
+    "keywords": [
+      "Elf",
+      "Fey"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Sylvan Courts  600 BC to 400 AD",
+      "listStartDate": -600,
+      "listEndDate": 400
+    },
+    "dateRanges": [
+      {
+        "_id": "0d002f",
+        "startDate": -600,
+        "endDate": 400
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r0030",
+        "value": 2,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r0031",
+        "value": 4,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t0032",
+        "values": [
+          "Forest"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p001c",
+        "min": 2,
+        "max": 4,
+        "core": "all",
+        "description": "Court champions",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e001d",
+            "troopTypeCode": "EFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b001e",
+            "battleCardCode": "HD",
+            "min": null,
+            "max": null,
+            "note": null
+          },
+          {
+            "_id": "0b001f",
+            "battleCardCode": "HL",
+            "min": 0,
+            "max": 1,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0020",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Glade wardens, with bow or with tall shield",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0021",
+            "troopTypeCode": "ARC",
+            "dismountTypeCode": null,
+            "note": "all"
+          },
+          {
+            "_id": "0e0022",
+            "troopTypeCode": "PAV",
+            "dismountTypeCode": null,
+            "note": "all"
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0023",
+            "battleCardCode": "SS",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0024",
+        "min": 5,
+        "max": 8,
+        "core": "all",
+        "description": "Oathsworn spear-dancers",
+        "note": "Summer or Winter Court",
+        "troopEntries": [
+          {
+            "_id": "0e0025",
+            "troopTypeCode": "SPR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0026",
+            "battleCardCode": "HL",
+            "min": 0,
+            "max": 1,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0027",
+        "min": 5,
+        "max": 8,
+        "core": "",
+        "description": "Wild hunt riders",
+        "note": "all except Summer or Winter Court",
+        "troopEntries": [
+          {
+            "_id": "0e0028",
+            "troopTypeCode": "JCV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0029",
+        "min": 0,
+        "max": 2,
+        "core": "all",
+        "description": "Twilight lancers on silver stags",
+        "note": "not Twilight Court",
+        "troopEntries": [
+          {
+            "_id": "0e002a",
+            "troopTypeCode": "KNT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p002b",
+        "min": 0,
+        "max": 2,
+        "core": "",
+        "description": "Riders of the falling moon",
+        "note": "only at the Moonfall",
+        "troopEntries": [
+          {
+            "_id": "0e002c",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p002d",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Treetop skirmishers",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e002e",
+            "troopTypeCode": "SKM",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g0033",
+        "troopEntries": [
+          {
+            "_id": "0e0034",
+            "troopTypeCode": "EFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0g0035",
+        "troopEntries": [
+          {
+            "_id": "0e0036",
+            "troopTypeCode": "KNT",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e0037",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y0038",
+        "allyEntries": [
+          {
+            "_id": "0y0039",
+            "allyArmyList": "ally-stonehold-dwarves",
+            "name": "Stonehold dwarf allies"
+          }
+        ],
+        "dateRange": {
+          "_id": "0d003a",
+          "startDate": -600,
+          "endDate": 100
+        },
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b003b",
+        "battleCardCode": "FC",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b003c",
+        "battleCardCode": "AM",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-ember-principalities",
+    "listId": 3,
+    "sublistId": "a",
+    "sortId": 3,
+    "name": "Ember Principalities",
+    "status": "Ready",
+    "keywords": [
+      "Fire"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Ember Principalities  1290 to 1500 AD",
+      "listStartDate": 1290,
+      "listEndDate": 1500
+    },
+    "dateRanges": [
+      {
+        "_id": "0d0050",
+        "startDate": 1290,
+        "endDate": 1500
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r0051",
+        "value": 2,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r0052",
+        "value": 2,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t0053",
+        "values": [
+          "Hilly",
+          "Arable"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p003d",
+        "min": 1,
+        "max": 4,
+        "core": "all",
+        "description": "Ember lords and their sworn riders",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e003e",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b003f",
+            "battleCardCode": "SF",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0040",
+        "min": 4,
+        "max": 10,
+        "core": "all",
+        "description": "Ember pike-blocks",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0041",
+            "troopTypeCode": "PIK",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0042",
+            "battleCardCode": "HL",
+            "min": 0,
+            "max": 2,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0043",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Ashen horse archers",
+        "note": "only Ashen",
+        "troopEntries": [
+          {
+            "_id": "0e0044",
+            "troopTypeCode": "HBW",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0045",
+            "battleCardCode": "CH",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0046",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Cinder outriders",
+        "note": "only Cinder",
+        "troopEntries": [
+          {
+            "_id": "0e0047",
+            "troopTypeCode": "JCV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0048",
+        "min": 0,
+        "max": 3,
+        "core": "all",
+        "description": "Knights of the burning banner",
+        "note": "only Ashen after 1400; or Cinder after 1455",
+        "troopEntries": [
+          {
+            "_id": "0e0049",
+            "troopTypeCode": "KNT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b004a",
+            "battleCardCode": "CT",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p004b",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Fire-throwing engines",
+        "note": "only Cinder, or Ashen until 1400 only",
+        "troopEntries": [
+          {
+            "_id": "0e004c",
+            "troopTypeCode": "ART",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p004d",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Smoke-runners",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e004e",
+            "troopTypeCode": "LFT",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e004f",
+            "troopTypeCode": "SKM",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g0054",
+        "troopEntries": [
+          {
+            "_id": "0e0055",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y0056",
+        "allyEntries": [
+          {
+            "_id": "0y0057",
+            "allyArmyList": "ally-mammoth-clans",
+            "name": "Mammoth clan allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b0058",
+        "battleCardCode": "FC",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b0059",
+        "battleCardCode": "SC",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-tidewrack-corsairs",
+    "listId": 4,
+    "sublistId": "a",
+    "sortId": 4,
+    "name": "Tidewrack Corsairs",
+    "status": "Ready",
+    "keywords": [
+      "Sea",
+      "Raider"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Tidewrack Corsairs  700 to 1450 AD",
+      "listStartDate": 700,
+      "listEndDate": 1450
+    },
+    "dateRanges": [
+      {
+        "_id": "0d006d",
+        "startDate": 700,
+        "endDate": 1450
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r006e",
+        "value": 4,
+        "note": "Only from the sea"
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r006f",
+        "value": 3,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t0070",
+        "values": [
+          "Marsh",
+          "Delta"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p005a",
+        "min": 4,
+        "max": 10,
+        "core": "all",
+        "description": "Reaver crews",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e005b",
+            "troopTypeCode": "RDR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b005c",
+            "battleCardCode": "MI",
+            "min": 0,
+            "max": 4,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p005d",
+        "min": 2,
+        "max": 4,
+        "core": "",
+        "description": "Deck archers and boarding parties",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e005e",
+            "troopTypeCode": "ARC",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e005f",
+            "troopTypeCode": "LFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0060",
+            "battleCardCode": "SS",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0061",
+        "min": 6,
+        "max": 8,
+        "core": "",
+        "description": "Drowned thralls",
+        "note": "only in the Deeps",
+        "troopEntries": [
+          {
+            "_id": "0e0062",
+            "troopTypeCode": "HRD",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0063",
+            "battleCardCode": "CH",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0064",
+        "min": 3,
+        "max": 6,
+        "core": "all",
+        "description": "Harbour spearmen",
+        "note": "before 800, or except in the Deeps",
+        "troopEntries": [
+          {
+            "_id": "0e0065",
+            "troopTypeCode": "SPR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0066",
+        "min": 5,
+        "max": 8,
+        "core": "",
+        "description": "Storm-tossed levies",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0067",
+            "troopTypeCode": "BLV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d0068",
+            "startDate": 800,
+            "endDate": 1450
+          }
+        ],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0069",
+        "min": 0,
+        "max": 2,
+        "core": "",
+        "description": "Siege barges hauled ashore",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e006a",
+            "troopTypeCode": "WWG",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d006b",
+            "startDate": 1200,
+            "endDate": 1450
+          }
+        ],
+        "battleCardEntries": [
+          {
+            "_id": "0b006c",
+            "battleCardCode": "PL",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g0071",
+        "troopEntries": [
+          {
+            "_id": "0e0072",
+            "troopTypeCode": "RDR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0g0073",
+        "troopEntries": [
+          {
+            "_id": "0e0074",
+            "troopTypeCode": "SPR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y0075",
+        "allyEntries": [
+          {
+            "_id": "0y0076",
+            "allyArmyList": "ally-goblin-warrens",
+            "name": "Goblin allies"
+          }
+        ],
+        "dateRange": {
+          "_id": "0d0077",
+          "startDate": 700,
+          "endDate": 900
+        },
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b0078",
+        "battleCardCode": "NC",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b0079",
+        "battleCardCode": "AM",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-sunspire-dominion",
+    "listId": 5,
+    "sublistId": "a",
+    "sortId": 5,
+    "name": "Sunspire Dominion",
+    "status": "Ready",
+    "keywords": [
+      "Sun",
+      "Desert"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Sunspire Dominion  2200 to 2000 BC",
+      "listStartDate": -2200,
+      "listEndDate": -2000
+    },
+    "dateRanges": [
+      {
+        "_id": "0d008d",
+        "startDate": -2200,
+        "endDate": -2000
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r008e",
+        "value": 3,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r008f",
+        "value": 1,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t0090",
+        "values": [
+          "Dry"
+        ],
+        "note": ""
+      },
+      {
+        "_id": "0t0091",
+        "values": [
+          "Delta"
+        ],
+        "note": "Along the river of glass"
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p007a",
+        "min": 1,
+        "max": 2,
+        "core": "all",
+        "description": "The Sun-King and his gilded companions",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e007b",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d007c",
+            "startDate": -2150,
+            "endDate": -2000
+          }
+        ],
+        "battleCardEntries": [
+          {
+            "_id": "0b007d",
+            "battleCardCode": "SF",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p007e",
+        "min": 2,
+        "max": 4,
+        "core": "all",
+        "description": "2-horse chariots of the sun",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e007f",
+            "troopTypeCode": "CHT",
+            "dismountTypeCode": "SPR",
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d0080",
+            "startDate": -2200,
+            "endDate": -2051
+          }
+        ],
+        "battleCardEntries": [
+          {
+            "_id": "0b0081",
+            "battleCardCode": "DD",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0082",
+        "min": 8,
+        "max": 16,
+        "core": "",
+        "description": "Sand levies with slings and bows",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0083",
+            "troopTypeCode": "BLV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d0084",
+            "startDate": -2200,
+            "endDate": -2051
+          }
+        ],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0085",
+        "min": 3,
+        "max": 8,
+        "core": "all",
+        "description": "Early sun-guard",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0086",
+            "troopTypeCode": "SPR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d0087",
+            "startDate": -2200,
+            "endDate": -2101
+          }
+        ],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p0088",
+        "min": 4,
+        "max": 12,
+        "core": "all",
+        "description": "Later sun-guard, close-fighters with axe and shield",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0089",
+            "troopTypeCode": "HFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [
+          {
+            "_id": "0d008a",
+            "startDate": -2100,
+            "endDate": -2000
+          }
+        ],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p008b",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Dune skirmishers",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e008c",
+            "troopTypeCode": "SKM",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g0092",
+        "troopEntries": [
+          {
+            "_id": "0e0093",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [],
+    "battleCardEntries": [
+      {
+        "_id": "0b0094",
+        "battleCardCode": "SW",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-mammoth-clans",
+    "listId": 6,
+    "sublistId": "a",
+    "sortId": 6,
+    "name": "Mammoth Clans",
+    "status": "Ready",
+    "keywords": [
+      "Frost",
+      "Nomad"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Mammoth Clans  1300 to 1500 AD",
+      "listStartDate": 1300,
+      "listEndDate": 1500
+    },
+    "dateRanges": [
+      {
+        "_id": "0d00a5",
+        "startDate": 1300,
+        "endDate": 1500
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r00a6",
+        "value": 3,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r00a7",
+        "value": 3,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t00a8",
+        "values": [
+          "Steppe"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p0095",
+        "min": 1,
+        "max": 3,
+        "core": "all",
+        "description": "War mammoths",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0096",
+            "troopTypeCode": "ELE",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b0097",
+            "battleCardCode": "ET",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p0098",
+        "min": 2,
+        "max": 4,
+        "core": "all",
+        "description": "Clan chieftains and their hearth-guard",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e0099",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": "EFT",
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b009a",
+            "battleCardCode": "MD",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p009b",
+        "min": 4,
+        "max": 10,
+        "core": "half",
+        "description": "Tusker outriders",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e009c",
+            "troopTypeCode": "HBW",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p009d",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Painted screen-runners",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e009e",
+            "troopTypeCode": "SKM",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b009f",
+            "battleCardCode": "ES",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00a0",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Frost-berserkers",
+        "note": "only if  Grask before 1405 or his son Urm after",
+        "troopEntries": [
+          {
+            "_id": "0e00a1",
+            "troopTypeCode": "WBD",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p00a2",
+        "min": 0,
+        "max": 2,
+        "core": "",
+        "description": "Sledge-riders",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00a3",
+            "troopTypeCode": "BAD",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e00a4",
+            "troopTypeCode": "BTX",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g00a9",
+        "troopEntries": [
+          {
+            "_id": "0e00aa",
+            "troopTypeCode": "ECV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0g00ab",
+        "troopEntries": [
+          {
+            "_id": "0e00ac",
+            "troopTypeCode": "ELE",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y00ad",
+        "allyEntries": [
+          {
+            "_id": "0y00ae",
+            "allyArmyList": "ally-goblin-warrens",
+            "name": "Goblin allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b00af",
+        "battleCardCode": "PT",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b00b0",
+        "battleCardCode": "SW",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-iron-crown",
+    "listId": 7,
+    "sublistId": "a",
+    "sortId": 7,
+    "name": "Iron Crown Knights",
+    "status": "Ready",
+    "keywords": [
+      "Knight",
+      "Crown"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Iron Crown Knights  1100 to 1300 AD",
+      "listStartDate": 1100,
+      "listEndDate": 1300
+    },
+    "dateRanges": [
+      {
+        "_id": "0d00c4",
+        "startDate": 1100,
+        "endDate": 1300
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r00c5",
+        "value": 2,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r00c6",
+        "value": 2,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t00c7",
+        "values": [
+          "Arable"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p00b1",
+        "min": 2,
+        "max": 6,
+        "core": "all",
+        "description": "Knights of the Iron Crown",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00b2",
+            "troopTypeCode": "KNT",
+            "dismountTypeCode": "SPR",
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b00b3",
+            "battleCardCode": "SV",
+            "min": null,
+            "max": null,
+            "note": null
+          },
+          {
+            "_id": "0b00b4",
+            "battleCardCode": "CT",
+            "min": null,
+            "max": null,
+            "note": null
+          },
+          {
+            "_id": "0b00b5",
+            "battleCardCode": "DD",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00b6",
+        "min": 2,
+        "max": 6,
+        "core": "all",
+        "description": "Crown pikemen and spear-militia",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00b7",
+            "troopTypeCode": "PIK",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e00b8",
+            "troopTypeCode": "SPR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b00b9",
+            "battleCardCode": "HL",
+            "min": 0,
+            "max": 1,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00ba",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Yeoman bowmen",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00bb",
+            "troopTypeCode": "ARC",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e00bc",
+            "troopTypeCode": "BLV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b00bd",
+            "battleCardCode": "SB",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00be",
+        "min": 0,
+        "max": 2,
+        "core": "",
+        "description": "Crown war-carts",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00bf",
+            "troopTypeCode": "WWG",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b00c0",
+            "battleCardCode": "PL",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00c1",
+        "min": 0,
+        "max": 4,
+        "core": "",
+        "description": "Hill clansmen",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00c2",
+            "troopTypeCode": "LSP",
+            "dismountTypeCode": null,
+            "note": null
+          },
+          {
+            "_id": "0e00c3",
+            "troopTypeCode": "WRR",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g00c8",
+        "troopEntries": [
+          {
+            "_id": "0e00c9",
+            "troopTypeCode": "KNT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y00ca",
+        "allyEntries": [
+          {
+            "_id": "0y00cb",
+            "allyArmyList": "ally-crown-militia",
+            "name": "Crown militia"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      },
+      {
+        "_id": "0y00cc",
+        "allyEntries": [
+          {
+            "_id": "0y00cd",
+            "allyArmyList": "ally-sylvan-courts",
+            "name": "Sylvan allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      },
+      {
+        "_id": "0y00ce",
+        "allyEntries": [
+          {
+            "_id": "0y00cf",
+            "allyArmyList": "ally-sylvan-courts",
+            "name": "Sylvan allies"
+          },
+          {
+            "_id": "0y00d0",
+            "allyArmyList": "ally-crown-militia",
+            "name": "Crown militia"
+          }
+        ],
+        "dateRange": {
+          "_id": "0d00d1",
+          "startDate": 1150,
+          "endDate": 1250
+        },
+        "note": null
+      },
+      {
+        "_id": "0y00d2",
+        "allyEntries": [
+          {
+            "_id": "0y00d3",
+            "allyArmyList": "ally-stonehold-dwarves",
+            "name": "Stonehold dwarf allies"
+          },
+          {
+            "_id": "0y00d4",
+            "allyArmyList": "ally-goblin-warrens",
+            "name": "Goblin allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      },
+      {
+        "_id": "0y00d5",
+        "allyEntries": [
+          {
+            "_id": "0y00d6",
+            "allyArmyList": "ally-goblin-warrens",
+            "name": "Goblin allies"
+          },
+          {
+            "_id": "0y00d7",
+            "allyArmyList": "ally-goblin-warrens",
+            "name": "Goblin allies"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b00d8",
+        "battleCardCode": "FC",
+        "min": null,
+        "max": null,
+        "note": null
+      },
+      {
+        "_id": "0b00d9",
+        "battleCardCode": "PD",
+        "min": 0,
+        "max": 6,
+        "note": null
+      }
+    ]
+  },
+  {
+    "id": "army-hollow-necropolis",
+    "listId": 8,
+    "sublistId": "a",
+    "sortId": 8,
+    "name": "Hollow Necropolis",
+    "status": "Ready",
+    "keywords": [
+      "Undead"
+    ],
+    "showTroopOptionDescriptions": true,
+    "derivedData": {
+      "extendedName": "Hollow Necropolis  300 BC to 300 AD",
+      "listStartDate": -300,
+      "listEndDate": 300
+    },
+    "dateRanges": [
+      {
+        "_id": "0d00e1",
+        "startDate": -300,
+        "endDate": 300
+      }
+    ],
+    "invasionRatings": [
+      {
+        "_id": "0r00e2",
+        "value": 0,
+        "note": null
+      }
+    ],
+    "maneuverRatings": [
+      {
+        "_id": "0r00e3",
+        "value": 1,
+        "note": null
+      }
+    ],
+    "homeTopographies": [
+      {
+        "_id": "0t00e4",
+        "values": [
+          "Dry",
+          "Hilly"
+        ],
+        "note": ""
+      }
+    ],
+    "troopOptions": [
+      {
+        "_id": "0p00da",
+        "min": 1,
+        "max": 1,
+        "core": "all",
+        "description": "The deathless lord",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00db",
+            "troopTypeCode": "EFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      },
+      {
+        "_id": "0p00dc",
+        "min": 6,
+        "max": 10,
+        "core": "all",
+        "description": "Risen hordes",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00dd",
+            "troopTypeCode": "HRD",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": [
+          {
+            "_id": "0b00de",
+            "battleCardCode": "CH",
+            "min": null,
+            "max": null,
+            "note": null
+          }
+        ]
+      },
+      {
+        "_id": "0p00df",
+        "min": 2,
+        "max": 6,
+        "core": "",
+        "description": "Bone archers",
+        "note": "",
+        "troopEntries": [
+          {
+            "_id": "0e00e0",
+            "troopTypeCode": "BLV",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ],
+        "dateRanges": [],
+        "battleCardEntries": []
+      }
+    ],
+    "troopEntriesForGeneral": [
+      {
+        "_id": "0g00e5",
+        "troopEntries": [
+          {
+            "_id": "0e00e6",
+            "troopTypeCode": "EFT",
+            "dismountTypeCode": null,
+            "note": null
+          }
+        ]
+      }
+    ],
+    "allyOptions": [
+      {
+        "_id": "0y00e7",
+        "allyEntries": [
+          {
+            "_id": "0y00e8",
+            "allyArmyList": "ally-wight-retinue",
+            "name": "Grave-wight retinue"
+          }
+        ],
+        "dateRange": null,
+        "note": null
+      },
+      {
+        "_id": "0y00e9",
+        "allyEntries": [
+          {
+            "_id": "0y00ea",
+            "allyArmyList": "ally-barrow-kin",
+            "name": "Bog-risen or (later) Barrow-kin"
+          }
+        ],
+        "dateRange": {
+          "_id": "0d00eb",
+          "startDate": -300,
+          "endDate": -70
+        },
+        "note": null
+      }
+    ],
+    "battleCardEntries": [
+      {
+        "_id": "0b00ec",
+        "battleCardCode": "NC",
+        "min": null,
+        "max": null,
+        "note": null
+      }
+    ]
+  }
+]

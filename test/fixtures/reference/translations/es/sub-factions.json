@@ -1,0 +1,66 @@
+{
+  "Court": {
+    "source": "Court",
+    "target": "Corte"
+  },
+  "Summer Court": {
+    "source": "Summer Court",
+    "target": "Corte de verano"
+  },
+  "Winter Court": {
+    "source": "Winter Court",
+    "target": "Corte de invierno"
+  },
+  "Twilight Court": {
+    "source": "Twilight Court",
+    "target": "Corte del crepúsculo"
+  },
+  "At the Moonfall": {
+    "source": "At the Moonfall",
+    "target": "En la Caída de la Luna"
+  },
+  "Any other court": {
+    "source": "Any other court",
+    "target": "Cualquier otra corte"
+  },
+  "Sub-faction": {
+    "source": "Sub-faction",
+    "target": "Subfacción"
+  },
+  "Ashen": {
+    "source": "Ashen",
+    "target": "Cenicientos"
+  },
+  "Cinder": {
+    "source": "Cinder",
+    "target": "Ceniza"
+  },
+  "Anchorage": {
+    "source": "Anchorage",
+    "target": "Fondeadero"
+  },
+  "In the Deeps": {
+    "source": "In the Deeps",
+    "target": "En las Profundidades"
+  },
+  "Any other anchorage": {
+    "source": "Any other anchorage",
+    "target": "Cualquier otro fondeadero"
+  },
+  "Chieftain": {
+    "source": "Chieftain",
+    "target": "Caudillo"
+  },
+  "Grask": {
+    "source": "Grask",
+    "target": "Grask"
+  },
+  "Urm": {
+    "source": "Urm",
+    "target": "Urm"
+  },
+  "Any other chieftain": {
+    "source": "Any other chieftain",
+    "target": "Cualquier otro caudillo"
+  }
+}
