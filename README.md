@@ -96,7 +96,8 @@ A `v*` tag publishes a versioned image without deploying it. The deploy job runs
 project on the host, the service's name in it, and the absolute path of the directory the service
 mounts read-only at `/app/reference`. Each deploy downloads the reference pack
 `reference-version.txt` pins from the data repo's releases, copies it there, backs up the running database to
-`/data/backups/` with `scripts/backup-database.ts`, which the image carries, keeping the last ten, and restarts the service. See
+`/data/backups/` with `scripts/backup-database.ts`, which the image carries, keeping the last ten, and restarts the service. It fails if the service is not then running
+the commit it deployed. See
 [ADR 0006](docs/adr/0006-self-hosted-single-container.md).
 
 ## Docs

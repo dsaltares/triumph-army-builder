@@ -112,4 +112,4 @@ jobs:
           COMPOSE_DIR: ${{ vars.DEPLOY_COMPOSE_DIR }}
           SERVICE: ${{ vars.DEPLOY_SERVICE }}
           REFERENCE_DIR: ${{ vars.DEPLOY_REFERENCE_DIR }}
-        run: ssh $SSH_USER@$SSH_HOST "bash -s -- '$COMPOSE_DIR' '$SERVICE' '$REFERENCE_DIR'" < .github/deploy/deploy.sh
+        run: ssh $SSH_USER@$SSH_HOST "bash -s -- '$COMPOSE_DIR' '$SERVICE' '$REFERENCE_DIR' '$GITHUB_SHA'" < .github/deploy/deploy.sh
