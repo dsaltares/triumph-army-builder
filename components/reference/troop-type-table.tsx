@@ -6,6 +6,11 @@ import {
   StackedTableGroup,
   StackedTableRow,
 } from '@/components/stacked-table';
+import {
+  BaseSizesLabel,
+  StandFiguresLabel,
+  unknownValue,
+} from '@/components/stand-basing';
 import type { BundledTroopType } from '@/lib/data/bundle';
 import type { TroopTypeCategory, TroopTypeOrder } from '@/lib/data/schema';
 import { type TroopTypeGroup, troopTypeGroups } from '@/lib/domain/troop-types';
@@ -55,6 +60,41 @@ function Factors({
         </span>
       ))}
     </span>
+  );
+}
+
+function StandProfile({ troopType }: { troopType: BundledTroopType }) {
+  const t = useTranslations('builder');
+  const w = useTranslations('sheet');
+  const facts = [
+    {
+      key: 'move',
+      label: w('move'),
+      value:
+        troopType.movement === undefined
+          ? unknownValue
+          : w('movementUnits', { distance: troopType.movement }),
+    },
+    {
+      key: 'baseSizes',
+      label: t('baseSizes'),
+      value: <BaseSizesLabel basing={troopType.basing ?? null} />,
+    },
+    {
+      key: 'standFigures',
+      label: t('standFigures'),
+      value: <StandFiguresLabel figures={troopType.basing?.figures ?? null} />,
+    },
+  ];
+  return (
+    <dl className="flex flex-wrap gap-x-4 gap-y-0.5">
+      {facts.map(({ key, label, value }) => (
+        <div key={key} className="inline-flex items-baseline gap-1">
+          <dt className="text-xs text-muted-foreground">{label}</dt>
+          <dd className="tabular-nums">{value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -116,6 +156,9 @@ function TroopTypeGroupSection({
                         },
                       ]}
                     />
+                  </StackedTableField>
+                  <StackedTableField label={t('movementAndBasing')} wide>
+                    <StandProfile troopType={troopType} />
                   </StackedTableField>
                   <StackedTableField label={t('description')} wide>
                     <p className="max-w-reading pt-1 text-xs text-pretty text-muted-foreground">

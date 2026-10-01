@@ -3,19 +3,18 @@
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import {
+  BaseSizesLabel,
+  StandFiguresLabel,
+  unknownValue,
+} from '@/components/stand-basing';
+import {
   Popover,
   PopoverContent,
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import type { TroopTypeCategory, TroopTypeOrder } from '@/lib/data/schema';
-import {
-  baseWidths,
-  type CombatFactors,
-  type StandFigures,
-  type TroopTypeBasing,
-  type TroopTypeProfile,
-} from '@/lib/domain/troop-types';
+import type { CombatFactors, TroopTypeProfile } from '@/lib/domain/troop-types';
 import { formatPoints } from '@/lib/format';
 
 const formationLabels = {
@@ -32,26 +31,6 @@ const factorColumns = [
   key: string;
   factor: (factors: CombatFactors) => number;
 }[];
-
-const unknownValue = '—';
-
-const baseSizes = (basing: TroopTypeBasing | null) =>
-  basing
-    ? baseWidths.map((width) => `${width}×${basing.depths[width]}`).join(' · ')
-    : unknownValue;
-
-function StandFiguresLabel({ figures }: { figures: StandFigures | null }) {
-  const t = useTranslations('builder');
-  if (figures === null) {
-    return unknownValue;
-  }
-  if (figures.kind === 'modelWithCrew') {
-    return t('modelWithCrew');
-  }
-  return figures.min === figures.max
-    ? t('figuresPerStand', { count: figures.min })
-    : t('figureRangePerStand', { min: figures.min, max: figures.max });
-}
 
 export function TroopFactors({
   name,
@@ -103,7 +82,9 @@ export function TroopFactors({
         </dl>
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5">
           <dt className="text-muted-foreground">{t('baseSizes')}</dt>
-          <dd className="tabular-nums">{baseSizes(profile.basing)}</dd>
+          <dd className="tabular-nums">
+            <BaseSizesLabel basing={profile.basing} />
+          </dd>
           <dt className="text-muted-foreground">{t('standFigures')}</dt>
           <dd className="tabular-nums">
             <StandFiguresLabel figures={profile.basing?.figures ?? null} />
