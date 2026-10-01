@@ -137,6 +137,7 @@
     "order": "Orden",
     "closeCombat": "Cuerpo a cuerpo",
     "rangedCombat": "Combate a distancia",
+    "movementAndBasing": "Movimiento y peanas",
     "foot": "A pie",
     "mounted": "Montada",
     "footDescription": "Tipos de tropa que combaten a pie, y lo que cuesta una peana de cada uno.",

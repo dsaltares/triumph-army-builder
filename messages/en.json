@@ -172,6 +172,7 @@
     "order": "Order",
     "closeCombat": "Close combat",
     "rangedCombat": "Ranged combat",
+    "movementAndBasing": "Movement and basing",
     "foot": "Foot",
     "mounted": "Mounted",
     "footDescription": "Troop types that fight on foot, and what a stand of each costs.",

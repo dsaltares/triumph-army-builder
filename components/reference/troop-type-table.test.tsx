@@ -70,6 +70,7 @@ describe('TroopTypeTable', () => {
       'Order',
       'Close combat',
       'Ranged combat',
+      'Movement and basing',
       'Description',
     ]) {
       expect(
@@ -108,5 +109,20 @@ describe('TroopTypeTable', () => {
         screen.getByText(description.replace(/\s+/g, ' ').trim()),
       ).toBeInTheDocument();
     }
+  });
+
+  it('shows how far a stand moves, the base it stands on and the figures on it', () => {
+    show(knights);
+
+    const row = onlyRow();
+    expect(row.getByText('5 MU')).toBeInTheDocument();
+    expect(row.getByText('40×30 · 60×40 · 80×60')).toBeInTheDocument();
+    expect(row.getByText('3 per stand')).toBeInTheDocument();
+  });
+
+  it('marks movement and basing unknown when the rulebook values are missing', () => {
+    show(knights.map(({ movement, basing, ...knight }) => knight));
+
+    expect(onlyRow().getAllByText('—')).toHaveLength(3);
   });
 });
