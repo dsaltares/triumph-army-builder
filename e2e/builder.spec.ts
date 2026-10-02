@@ -31,7 +31,10 @@ const cardGroup = (page: Page, title: string) =>
     .filter({ hasText: title })
     .first();
 
-const general = (page: Page) => section(page, 'General');
+const general = async (page: Page) => {
+  await page.getByRole('button', { name: / — show general$/ }).click();
+  return page.getByRole('dialog');
+};
 
 const validation = (page: Page) => section(page, 'Validation');
 
@@ -109,18 +112,19 @@ test('a sample army list fills every section of the builder', async ({
   await expect(chieftains).toContainText('Allied stands');
   await add(chieftains, 'One more Elite Cavalry stand');
 
-  await general(page)
-    .getByRole('button', {
-      name: 'Elite Cavalry from Ember lords and their sworn riders',
-    })
-    .click();
+  await add(
+    troopOption(page, 'Ember lords and their sworn riders'),
+    'Elite Cavalry as general',
+  );
 
-  await expect(general(page)).toContainText(
+  const chosen = await general(page);
+  await expect(chosen).toContainText(
     '1 of 3 stands can lead the army · the general is Elite Cavalry from Ember lords and their sworn riders',
   );
   await expect(
-    general(page).getByRole('button', { name: /in Mammoth Clans/ }),
+    chosen.getByRole('button', { name: /in Mammoth Clans/ }),
   ).toBeHidden();
+  await page.keyboard.press('Escape');
   await expect(
     page.getByText('Stands 12 · Battle cards ½ · 4 allied'),
   ).toBeVisible();
@@ -186,9 +190,10 @@ test('an optional contingent joins the army, where an ally stays apart', async (
   await expect(
     page.getByText('Stands 12 · Battle cards 0 · 4 allied'),
   ).toBeVisible();
-  await expect(general(page)).toContainText('1 of 3 stands can lead the army');
+  const candidates = await general(page);
+  await expect(candidates).toContainText('1 of 3 stands can lead the army');
   await expect(
-    general(page).getByRole('button', { name: /in Sylvan Courts/ }),
+    candidates.getByRole('button', { name: /in Sylvan Courts/ }),
   ).toBeHidden();
 });
 
@@ -213,6 +218,14 @@ test('a finding and the meter verdict scroll to what they point at', async ({
 
   await expect(page).toHaveURL(/#validation$/);
   await expect(validation(page)).toBeInViewport();
+
+  await validation(page)
+    .getByRole('link', { name: 'One stand in the army must be the general' })
+    .click();
+
+  await expect(
+    page.getByRole('dialog').getByText(/This list is led by/),
+  ).toBeVisible();
 });
 
 test('the builder of an army the data bundle does not hold is a 404', async ({

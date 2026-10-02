@@ -7,6 +7,11 @@ import {
   findingAnchor,
   findingAnchorClass,
 } from '@/components/builder/finding-anchor';
+import {
+  GeneralStandBadge,
+  GeneralStandNotice,
+  GeneralStandToggle,
+} from '@/components/builder/general';
 import { Stepper } from '@/components/builder/stepper';
 import {
   withholdingLabels,
@@ -72,6 +77,7 @@ const standsSummary = (
 ) => formatStandsOfRange(stands, option.min, option.max, locale);
 
 function StandStepper({
+  option,
   stepper,
   name,
   factors,
@@ -79,6 +85,7 @@ function StandStepper({
   showName,
   onChange,
 }: {
+  option: TroopOption;
   stepper: TroopStepper;
   name: string;
   factors: CombatFactors;
@@ -89,7 +96,7 @@ function StandStepper({
   const t = useTranslations('builder');
   const { stands, pointsPerStand, points, canAdd, canRemove } = stepper;
   return (
-    <li className="flex items-center gap-2">
+    <li className="flex items-center gap-3">
       <Stepper
         count={stands}
         countLabel={t('standsLabel', { name })}
@@ -111,15 +118,21 @@ function StandStepper({
             />
           </p>
         )}
-        <p className="text-xs text-muted-foreground tabular-nums">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground tabular-nums">
           {stands > 0
             ? t('standCostWithTotal', {
                 perStand: formatPoints(pointsPerStand),
                 points: formatPoints(points),
               })
             : t('standCost', { perStand: formatPoints(pointsPerStand) })}
+          <GeneralStandBadge option={option} troopType={stepper.troopType} />
         </p>
       </div>
+      <GeneralStandToggle
+        option={option}
+        troopType={stepper.troopType}
+        name={name}
+      />
     </li>
   );
 }
@@ -209,6 +222,7 @@ export function TroopOptionCard({
             {steppers.map((stepper) => (
               <StandStepper
                 key={stepper.troopType}
+                option={option}
                 stepper={stepper}
                 name={troopTypeNames[stepper.troopType]}
                 factors={troopTypeFactors[stepper.troopType]}
@@ -227,6 +241,7 @@ export function TroopOptionCard({
             </p>
           )}
           {mixedTypes && <Notice>{t('mixedTypes')}</Notice>}
+          <GeneralStandNotice option={option} />
           {withheldBy && <Notice>{t(withholdingNotices[withheldBy])}</Notice>}
         </CardContent>
       </Card>

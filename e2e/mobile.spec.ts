@@ -149,11 +149,20 @@ test('a builder filling up fits the viewport at every step', async ({
   await troopOption(page, 'Knights of the Iron Crown')
     .getByRole('button', { name: 'One more Knights stand' })
     .click();
-  await page
-    .getByRole('button', { name: 'Knights from Knights of the Iron Crown' })
+  await troopOption(page, 'Knights of the Iron Crown')
+    .getByRole('button', { name: 'Knights as general' })
     .click();
 
   await fitsTheViewport(page);
+
+  await page.getByRole('button', { name: / — show general$/ }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'the general is Knights from Knights of the Iron Crown',
+  );
+
+  await fitsTheViewport(page);
+
+  await page.keyboard.press('Escape');
 
   await page.getByRole('button', { name: 'List actions' }).click();
   await page.getByRole('menuitem', { name: /Copy as text/ }).click();

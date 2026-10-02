@@ -76,7 +76,9 @@ const section = (name: string) =>
   ancestor(screen.getByRole('heading', { name, level: 2 }), 'section');
 
 const troops = () => within(section('Required Troops'));
-const general = () => within(section('General'));
+const generalChip = () =>
+  screen.getByRole('button', { name: / — show general$/ });
+const general = () => within(screen.getByRole('dialog'));
 const validation = () => within(section('Validation'));
 
 const troopCard = (description: string) =>
@@ -283,12 +285,10 @@ describe('a choice in one section reaches the others', () => {
     expect(screen.getByText('Stands 0 · Battle cards 0')).toBeInTheDocument();
   });
 
-  it('offers the general the stands the army has taken', async () => {
+  it('offers the general on the rows of the stands the army has taken', async () => {
     const { user } = openBuilder();
 
-    expect(
-      general().getByText(/The army has no stands yet/),
-    ).toBeInTheDocument();
+    expect(generalChip()).toHaveAccessibleName('No general yet — show general');
 
     await user.click(
       troopCard('Hill and marsh dwellers').getByRole('button', {
@@ -297,14 +297,17 @@ describe('a choice in one section reaches the others', () => {
     );
 
     expect(
-      general().getByText(/None of the stands taken can lead the army/),
-    ).toBeInTheDocument();
+      troopCard('Hill and marsh dwellers').queryByRole('button', {
+        name: /as general/,
+      }),
+    ).not.toBeInTheDocument();
 
     await user.click(
       troopCard('Chariots with 2 crew').getByRole('button', {
         name: 'One more Chariots stand',
       }),
     );
+    await user.click(generalChip());
 
     expect(
       general().getByText(/1 of 2 stands can lead the army/),
@@ -333,10 +336,16 @@ describe('a choice in one section reaches the others', () => {
     );
 
     expect(
-      general().getByRole('button', {
-        name: 'Chariots from Chariots with 2 crew',
+      troopCard('Chariots with 2 crew').getByRole('button', {
+        name: 'Chariots as general',
       }),
     ).toBeInTheDocument();
+    expect(
+      allyCard('Allied horse').queryByRole('button', { name: /as general/ }),
+    ).not.toBeInTheDocument();
+
+    await user.click(generalChip());
+
     expect(
       general().queryByRole('button', { name: /Horse Bow/ }),
     ).not.toBeInTheDocument();
@@ -345,7 +354,7 @@ describe('a choice in one section reaches the others', () => {
     ).toBeInTheDocument();
   });
 
-  it('stands the general down when the option it came from is emptied', async () => {
+  it('names the general from its row, and stands it down when the option is emptied', async () => {
     const { user } = openBuilder();
     await user.click(
       troopCard('Chariots with 2 crew').getByRole('button', {
@@ -353,12 +362,14 @@ describe('a choice in one section reaches the others', () => {
       }),
     );
     await user.click(
-      general().getByRole('button', {
-        name: 'Chariots from Chariots with 2 crew',
+      troopCard('Chariots with 2 crew').getByRole('button', {
+        name: 'Chariots as general',
       }),
     );
 
-    expect(general().getByText(/the general is Chariots/)).toBeInTheDocument();
+    expect(generalChip()).toHaveAccessibleName(
+      'General: Chariots — show general',
+    );
 
     await user.click(
       troopCard('Chariots with 2 crew').getByRole('button', {
@@ -366,9 +377,28 @@ describe('a choice in one section reaches the others', () => {
       }),
     );
 
+    expect(generalChip()).toHaveAccessibleName('No general yet — show general');
+  });
+
+  it('names the general from the chip, and marks its row', async () => {
+    const { user } = openBuilder();
+    await user.click(
+      troopCard('Chariots with 2 crew').getByRole('button', {
+        name: 'One more Chariots stand',
+      }),
+    );
+    await user.click(generalChip());
+    await user.click(
+      general().getByRole('button', {
+        name: 'Chariots from Chariots with 2 crew',
+      }),
+    );
+
     expect(
-      general().getByText(/The army has no stands yet/),
-    ).toBeInTheDocument();
+      troopCard('Chariots with 2 crew').getByRole('button', {
+        name: 'Chariots as general',
+      }),
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('opens a troop option’s cards once the option holds stands', async () => {
@@ -446,8 +476,8 @@ describe('the validation panel reads the army as it stands', () => {
       }),
     );
     await user.click(
-      general().getByRole('button', {
-        name: 'Chariots from Chariots with 2 crew',
+      troopCard('Chariots with 2 crew').getByRole('button', {
+        name: 'Chariots as general',
       }),
     );
 

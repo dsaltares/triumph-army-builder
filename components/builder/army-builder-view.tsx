@@ -6,7 +6,11 @@ import { BattleCardsSection } from '@/components/builder/battle-cards';
 import { usePublishBuilderSnapshot } from '@/components/builder/builder-state';
 import { builderAnchors } from '@/components/builder/finding-anchor';
 import { GatingControls } from '@/components/builder/gating-controls';
-import { GeneralSection } from '@/components/builder/general';
+import {
+  type GeneralChange,
+  GeneralChip,
+  GeneralToggleProvider,
+} from '@/components/builder/general';
 import { OptionalContingentsSection } from '@/components/builder/optional-contingents';
 import { PointsMeterBar } from '@/components/builder/points-meter';
 import { RequiredTroopsSection } from '@/components/builder/required-troops';
@@ -151,12 +155,27 @@ export function ArmyBuilderView({
 
   const changeStands: StandsChange = (option, troopType, stands) =>
     setDraft((current) => withStands(current, option, troopType, stands));
+  const changeGeneral: GeneralChange = (chosen) =>
+    setDraft((current) => withGeneral(current, chosen));
 
   return (
-    <>
+    <GeneralToggleProvider
+      choice={general}
+      troopTypeNames={names}
+      onGeneralChange={changeGeneral}
+    >
       <PointsMeterBar
         meter={meter}
-        trailing={<LegalityBadge report={report} anchors={anchors} />}
+        trailing={
+          <>
+            <GeneralChip
+              choice={general}
+              troopTypeNames={names}
+              onGeneralChange={changeGeneral}
+            />
+            <LegalityBadge report={report} anchors={anchors} />
+          </>
+        }
       />
       <GatingControls
         armyList={armyList}
@@ -197,13 +216,6 @@ export function ArmyBuilderView({
         }
         onStandsChange={changeStands}
       />
-      <GeneralSection
-        choice={general}
-        troopTypeNames={names}
-        onGeneralChange={(chosen) =>
-          setDraft((current) => withGeneral(current, chosen))
-        }
-      />
       <BattleCardsSection
         choices={cards}
         troopTypeNames={names}
@@ -217,6 +229,6 @@ export function ArmyBuilderView({
         }
       />
       <ValidationPanel report={report} anchors={anchors} />
-    </>
+    </GeneralToggleProvider>
   );
 }
