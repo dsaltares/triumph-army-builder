@@ -104,7 +104,11 @@ export function PointsMeterBar({
         <p className="text-xs text-muted-foreground tabular-nums">
           {describeSubtotals(meter, t)}
         </p>
-        {trailing && <div className="ml-auto">{trailing}</div>}
+        {trailing && (
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            {trailing}
+          </div>
+        )}
       </div>
     </div>
   );
