@@ -1,6 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
 import { devUser } from '../lib/db/dev-user.ts';
 import { freshEmail, signInAs, signUpAndIn } from './helpers.ts';
+import { expect, type Page, test } from './test';
 
 const adminLink = (page: Page) =>
   page

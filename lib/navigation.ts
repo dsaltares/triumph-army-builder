@@ -7,6 +7,8 @@ export const routes = {
   reference: '/reference',
   troopTypes: '/reference/troop-types',
   battleCards: '/reference/battle-cards',
+  fantasyTroopTypes: '/fantasy/troop-types',
+  fantasyBattleCards: '/fantasy/battle-cards',
   myArmies: '/my-armies',
   collection: '/collection',
   account: '/account',
@@ -122,10 +124,19 @@ export const adminNavItem: NavItem = { href: routes.admin, key: 'admin' };
 export const navItemsFor = (isAdmin: boolean): readonly NavItem[] =>
   isAdmin ? [...primaryNavItems, adminNavItem] : primaryNavItems;
 
+const sectionRoutes: Readonly<Record<string, readonly string[]>> = {
+  [routes.reference]: [routes.fantasyTroopTypes, routes.fantasyBattleCards],
+};
+
+const isWithin = (pathname: string, href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
+
 export const isActiveRoute = (pathname: string, href: string) =>
   href === routes.home
     ? pathname === routes.home
-    : pathname === href || pathname.startsWith(`${href}/`);
+    : [href, ...(sectionRoutes[href] ?? [])].some((route) =>
+        isWithin(pathname, route),
+      );
 
 export const legalDocuments: readonly LegalDocument[] = [
   { href: routes.privacy, key: 'privacy' },
@@ -139,6 +150,8 @@ export const externalLinks = {
   triumph: 'https://www.wgcwar.com',
   repository: 'https://github.com/dsaltares/triumph-army-builder',
   rules: 'https://www.wargamevault.com/en/product/196955/triumph-v1-2',
+  fantasyRules:
+    'https://www.wargamevault.com/product/401307/Fantasy-TRIUMPH-Early-Access',
   setupQrs:
     'https://wgc-qrs.s3.us-east-2.amazonaws.com/Setting+Up+a+Game+QRS+v1-2.pdf',
   gameplayQrs:

@@ -1,11 +1,6 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
 import { installRecordKey } from '../lib/install.ts';
 import { armyId, categoryId } from './helpers';
+import { type APIRequestContext, expect, type Page, test } from './test';
 
 const fitsTheViewport = async (page: Page) =>
   expect(
@@ -40,6 +35,8 @@ test('every route fits the viewport', async ({ page, request }) => {
     '/reference',
     '/reference/troop-types',
     '/reference/battle-cards',
+    '/fantasy/troop-types',
+    '/fantasy/battle-cards',
     '/my-armies',
     '/collection',
     '/sign-in',

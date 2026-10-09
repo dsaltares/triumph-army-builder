@@ -1,8 +1,16 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { fantasyUnit } from '@/test/fixtures/fantasy.ts';
-import { sampleFantasyReference } from '@/test/sample.ts';
+import {
+  sampleBundledTroopTypes,
+  sampleFantasyReference,
+} from '@/test/sample.ts';
 import type { TroopTypeNames } from '../troop-types.ts';
-import { fantasyTroopTypeNames, unitName, variantNames } from './naming.ts';
+import {
+  fantasyTroopTypeNames,
+  renamedTroopTypes,
+  unitName,
+  variantNames,
+} from './naming.ts';
 import type { FantasyReference } from './reference.ts';
 
 let reference: FantasyReference;
@@ -46,5 +54,22 @@ describe('variantNames', () => {
     ).toEqual(['Limited Spellblast', 'Magical']);
     expect(variantNames(spellblast, { reach: 'everywhere' })).toEqual([]);
     expect(variantNames(undefined, { reach: 'limited' })).toEqual([]);
+  });
+});
+
+describe('renamedTroopTypes', () => {
+  it('lists the troop types Fantasy Triumph names differently', () => {
+    expect(
+      renamedTroopTypes(
+        sampleBundledTroopTypes,
+        reference.troopTypes.map(({ permanentCode, displayName }) => ({
+          permanentCode,
+          displayName,
+        })),
+      ),
+    ).toEqual([
+      { permanentCode: 'ARC', displayName: 'Shooters' },
+      { permanentCode: 'ELE', displayName: 'Behemoths' },
+    ]);
   });
 });

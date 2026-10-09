@@ -31,6 +31,17 @@ describe('isActiveRoute', () => {
     expect(isActiveRoute(routes.battleCards, routes.reference)).toBe(true);
   });
 
+  it('keeps the Fantasy Triumph reference pages inside the reference section, and not the Fantasy builder', () => {
+    expect(isActiveRoute(routes.fantasyTroopTypes, routes.reference)).toBe(
+      true,
+    );
+    expect(isActiveRoute(routes.fantasyBattleCards, routes.reference)).toBe(
+      true,
+    );
+    expect(isActiveRoute('/fantasy/build', routes.reference)).toBe(false);
+    expect(isActiveRoute(routes.fantasyBattleCards, routes.armies)).toBe(false);
+  });
+
   it('does not mark a sibling route as active', () => {
     expect(isActiveRoute('/reference', routes.armies)).toBe(false);
   });

@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Page, test } from './test';
 
 const searchBox = (page: Page) =>
   page.getByRole('searchbox', { name: 'Search army lists' });

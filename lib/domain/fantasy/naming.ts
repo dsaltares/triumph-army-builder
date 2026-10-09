@@ -1,6 +1,10 @@
 import type { BundledFantasyCard } from '../../data/bundle.ts';
 import type { FantasyCardCode } from '../../data/schema.ts';
-import { type TroopTypeNames, troopTypeNames } from '../troop-types.ts';
+import {
+  type TroopTypeName,
+  type TroopTypeNames,
+  troopTypeNames,
+} from '../troop-types.ts';
 import type { FantasyReference } from './reference.ts';
 import type { FantasyUnit } from './selection-schema.ts';
 
@@ -28,3 +32,19 @@ export const variantNames = (
     const name = option === undefined ? undefined : options[option];
     return name === undefined ? [] : [name];
   });
+
+export const renamedTroopTypes = (
+  triumph: readonly TroopTypeName[],
+  fantasy: readonly TroopTypeName[],
+): readonly TroopTypeName[] => {
+  const triumphNames = new Map(
+    triumph.map(({ permanentCode, displayName }) => [
+      permanentCode,
+      displayName,
+    ]),
+  );
+  return fantasy.filter(
+    ({ permanentCode, displayName }) =>
+      triumphNames.get(permanentCode) !== displayName,
+  );
+};

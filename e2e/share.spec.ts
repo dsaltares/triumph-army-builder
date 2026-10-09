@@ -1,5 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
 import { armyId, section } from './helpers.ts';
+import { expect, type Page, test } from './test';
 
 const troopOption = (page: Page, description: string) =>
   page.getByRole('listitem').filter({ hasText: description }).first();

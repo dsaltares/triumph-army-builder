@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 test('the root opens My Armies, and the wordmark comes back to it', async ({
   page,
