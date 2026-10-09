@@ -75,6 +75,20 @@ describe('canaryScanner', () => {
     ).toEqual(['Goblin Warrens']);
   });
 
+  it('ignores a name hyphenated into a longer word', () => {
+    expect(
+      scan('a.js.map', 'Goblin-1 · pre-Goblin · Sylvan Courts-born'),
+    ).toEqual([]);
+  });
+
+  it('scans a large file in linear time', () => {
+    const text = `${'x '.repeat(2_000_000)}Goblin`;
+    const started = performance.now();
+
+    expect(scan('a.js', text).map(({ canary }) => canary)).toEqual(['Goblin']);
+    expect(performance.now() - started).toBeLessThan(2_000);
+  });
+
   it('finds a battle card line however it is wrapped or indented', () => {
     const text = [
       '# Camps',
