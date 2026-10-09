@@ -42,6 +42,7 @@ M0 foundations
                           │                                     └── M7 PWA
                           └── M5 accounts & persistence ────────┘
 M8 (permission-gated) and M9 (future) hang off the completed app.
+M10 (Fantasy Triumph) builds on M6 and on the collection, and starts by making M4–M6 game-aware.
 ```
 
 M2 is the critical path. It is pure, headless and fully testable without any UI — build it first
@@ -61,6 +62,7 @@ and the rest is presentation.
 | [M7 — PWA & mobile](https://github.com/dsaltares/triumph-army-builder/milestone/8) | Serwist, offline reading, a one-handed builder pass, offline editing queue. |
 | [M8 — Permission-gated (WGC)](https://github.com/dsaltares/triumph-army-builder/milestone/9) | Rulebook-derived data, pending Washington Grand Company's permission. Movement and basing ship ahead of it (ADR 0029, 0033). |
 | [M9 — Future](https://github.com/dsaltares/triumph-army-builder/milestone/10) | Grand Triumph, arbitrary points caps, event profiles, list comparison, collection tracking. |
+| [M10 — Fantasy Triumph](https://github.com/dsaltares/triumph-army-builder/milestone/1) | A saved list belongs to a game (ADR 0039), then Fantasy Triumph as a second game: named units of any troop type, heroes, its own card catalogue, a per-list points total, hero entries in the collection (ADR 0040). |
 
 Each item is a GitHub issue carrying its own scope and *done when*: `gh issue view <n>`, or browse a
 milestone above. Open/closed state lives there, not here.

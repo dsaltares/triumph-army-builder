@@ -46,6 +46,8 @@ reconstruct from the code. Everything else belongs in `docs/DOMAIN.md` (how the 
 | [0036](0036-the-public-repo-starts-from-one-squashed-commit.md) | Start the public repo from one squashed commit | Accepted | 2026-09-29 |
 | [0037](0037-usage-is-a-first-party-event-log.md) | Record usage as a first-party event log, viewed in aggregate by admins | Accepted | 2026-09-29 |
 | [0038](0038-an-account-without-a-password-can-add-one-by-email.md) | Let an account without a password add one through the reset link | Accepted | 2026-09-30 |
+| [0039](0039-a-saved-list-belongs-to-a-game.md) | A saved list belongs to a game, and each game owns its selection shape | Proposed | 2026-10-09 |
+| [0040](0040-a-fantasy-triumph-list-is-named-units-of-identical-stands.md) | A Fantasy Triumph list is named units of identical stands, heroes and army cards | Proposed | 2026-10-09 |
 
 ## How to add one
 
