@@ -208,7 +208,24 @@ describe('a list the builder saves', () => {
     );
   });
 
-  it('keeps the data version a saved list was built against', async () => {
+  it('keeps the data version a saved list was built against when its army was revised', async () => {
+    await saveListNamed('Cannae');
+    await api.importVersion('2026-09-28.0123abcd', {
+      [bundlePaths.army(detail.id)]: { ...detail, name: 'Revised Army' },
+    });
+    const { user } = await openBuilder('?list=saved-1');
+
+    await user.click(
+      screen.getByRole('button', { name: 'One more Chariots stand' }),
+    );
+
+    await settlesTo('Saved');
+    expect((await storedList())?.selection.dataVersion).toBe(
+      fixtureDataVersion,
+    );
+  });
+
+  it('moves a saved list to the current data version on edit when its army did not change', async () => {
     await saveListNamed('Cannae');
     await api.importVersion('2026-09-28.0123abcd');
     const { user } = await openBuilder('?list=saved-1');
@@ -219,7 +236,7 @@ describe('a list the builder saves', () => {
 
     await settlesTo('Saved');
     expect((await storedList())?.selection.dataVersion).toBe(
-      fixtureDataVersion,
+      '2026-09-28.0123abcd',
     );
   });
 

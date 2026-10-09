@@ -54,6 +54,7 @@ import {
   databaseBundleSource,
   importReferencePack,
   makeReferenceCurrent,
+  sameReferenceDocument,
 } from './reference.ts';
 import type { Database } from './schema.ts';
 import { countShares, findShare, insertShare } from './shares.ts';
@@ -617,6 +618,22 @@ describe('reference data', () => {
 
     expect(planFor(/from "reference_documents"/)).toContain(
       'SEARCH reference_documents USING INDEX sqlite_autoindex_reference_documents_1 (data_version=? AND locale=? AND path=?)',
+    );
+  });
+
+  it('compares one file across two versions through the primary key', async () => {
+    await sameReferenceDocument(db, {
+      path: bundlePaths.army('army-1'),
+      from: dataVersion,
+      to: '2026-10-09.0badf00d',
+    });
+
+    const plan = planFor(/from "reference_documents" as "before"/);
+    expect(plan).toContain(
+      'SEARCH before USING INDEX sqlite_autoindex_reference_documents_1 (data_version=? AND locale=? AND path=?)',
+    );
+    expect(plan).toContain(
+      'SEARCH after USING INDEX sqlite_autoindex_reference_documents_1 (data_version=? AND locale=? AND path=?)',
     );
   });
 

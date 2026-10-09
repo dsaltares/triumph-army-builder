@@ -1,5 +1,6 @@
 import type { Insertable } from 'kysely';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { bundlePaths } from '@/lib/data/bundle.ts';
 import type { TroopTypeCode } from '@/lib/data/schema.ts';
 import { createDatabase } from '@/lib/db/client.ts';
 import { insertCollectionEntry } from '@/lib/db/collection.ts';
@@ -23,8 +24,13 @@ import {
   recordedEvents,
   recordedKinds,
 } from '@/test/events.ts';
-import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
+import {
+  armyDetail,
+  fixtureDataVersion,
+  fixtureSelection,
+} from '@/test/fixtures/army.ts';
 import { absentPhotoStore } from '@/test/photo-store.ts';
+import { seedDataVersion } from '@/test/reference.ts';
 
 let db: ReturnType<typeof createDatabase>;
 let minted: number;
@@ -730,5 +736,48 @@ describe('a list and its game', () => {
 
     expect(edited.game).toBe('triumph');
     expect(copy.game).toBe('triumph');
+  });
+});
+
+describe('a list saved against older data its army has not changed in', () => {
+  const current = '2026-10-09.0badf00d';
+  const files = {
+    [bundlePaths.army(armyDetail().id)]: armyDetail(),
+    [bundlePaths.troopTypes]: [],
+    [bundlePaths.battleCards]: [],
+  };
+
+  beforeEach(async () => {
+    await seedDataVersion(db, fixtureDataVersion, files);
+    await seedDataVersion(db, current, files);
+  });
+
+  const stampOnRow = async (id: string) =>
+    (
+      await db
+        .selectFrom('armies')
+        .select('data_version')
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow()
+    ).data_version;
+
+  it('reads at the current version without rewriting the row', async () => {
+    const { id } = await create('Cannae');
+
+    const [listed] = await signedIn().army.list();
+    const read = await signedIn().army.byId({ id });
+
+    expect(listed?.dataVersion).toBe(current);
+    expect(read.selection.dataVersion).toBe(current);
+    expect(await stampOnRow(id)).toBe(fixtureDataVersion);
+  });
+
+  it('moves to the current version once it is saved as read', async () => {
+    const { id } = await create('Cannae');
+    const { selection } = await signedIn().army.byId({ id });
+
+    await signedIn().army.update({ id, selection });
+
+    expect(await stampOnRow(id)).toBe(current);
   });
 });

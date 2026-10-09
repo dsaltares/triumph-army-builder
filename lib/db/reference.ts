@@ -175,3 +175,33 @@ export const databaseBundleSource = (
     readFantasyFormat: async () => (await current()).readFantasyFormat(),
   };
 };
+
+export type DocumentComparison = {
+  path: string;
+  from: string;
+  to: string;
+};
+
+export const sameReferenceDocument = async (
+  db: Kysely<Database>,
+  { path, from, to }: DocumentComparison,
+) => {
+  const { stored, same } = await db
+    .selectFrom('reference_documents as before')
+    .leftJoin('reference_documents as after', (join) =>
+      join
+        .on('after.data_version', '=', to)
+        .onRef('after.locale', '=', 'before.locale')
+        .onRef('after.path', '=', 'before.path')
+        .onRef('after.body', '=', 'before.body'),
+    )
+    .select(({ fn }) => [
+      fn.countAll<number>().as('stored'),
+      fn.count<number>('after.path').as('same'),
+    ])
+    .where('before.data_version', '=', from)
+    .where('before.locale', 'in', locales)
+    .where('before.path', '=', path)
+    .executeTakeFirstOrThrow();
+  return Number(stored) === locales.length && Number(same) === Number(stored);
+};
