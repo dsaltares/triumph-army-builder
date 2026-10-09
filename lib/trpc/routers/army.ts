@@ -24,6 +24,7 @@ import {
 } from '../../domain/army/saved-army.ts';
 import { selectionSchema } from '../../domain/army/selection-schema.ts';
 import { stalePins } from '../../domain/collection/pins.ts';
+import { defaultGame, gameSchema } from '../../domain/game.ts';
 import type { Caller, Context } from '../context.ts';
 import { writeEvent } from '../events.ts';
 import { publicProcedure, router, signedInProcedure } from '../trpc.ts';
@@ -31,6 +32,8 @@ import { publicProcedure, router, signedInProcedure } from '../trpc.ts';
 const listChangeThrottleMs = 10 * 60 * 1000;
 
 const armyIdSchema = z.object({ id: z.string().min(1) });
+
+const gameInputSchema = gameSchema.default(defaultGame);
 
 const capReached = () =>
   new TRPCError({
@@ -82,7 +85,13 @@ export const armyRouter = router({
   }),
 
   create: signedInProcedure
-    .input(z.object({ name: armyNameSchema, selection: selectionSchema }))
+    .input(
+      z.object({
+        name: armyNameSchema,
+        game: gameInputSchema,
+        selection: selectionSchema,
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       await guardCap(ctx);
       const at = ctx.now();
@@ -91,6 +100,7 @@ export const armyRouter = router({
           id: ctx.nextId(),
           userId: ctx.caller.userId,
           name: input.name,
+          game: input.game,
           selection: input.selection,
           at,
         });
@@ -106,11 +116,12 @@ export const armyRouter = router({
     .input(
       armyIdSchema.extend({
         name: armyNameSchema.optional(),
+        game: gameInputSchema,
         selection: selectionSchema.optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...changes } = input;
+      const { id, game, ...changes } = input;
       const owner = { id, userId: ctx.caller.userId };
       const at = ctx.now();
       const army = await ctx.db.transaction().execute(async (trx) => {
@@ -118,7 +129,18 @@ export const armyRouter = router({
         if (!before) {
           return null;
         }
-        const updated = await updateArmy(trx, owner, changes, at);
+        const updated = await updateArmy(
+          trx,
+          owner,
+          {
+            name: changes.name,
+            list: changes.selection && {
+              game,
+              selection: changes.selection,
+            },
+          },
+          at,
+        );
         if (!updated) {
           return null;
         }
@@ -171,6 +193,7 @@ export const armyRouter = router({
           id: ctx.nextId(),
           userId: ctx.caller.userId,
           name: copyName(army.name),
+          game: army.game,
           selection: army.selection,
           at,
         });

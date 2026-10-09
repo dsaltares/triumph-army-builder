@@ -193,6 +193,13 @@ of them build to 48 points without it (§9).
 - Every army has **one camp** (16.1).
 - Optional Contingent troops are treated exactly like Required Troops once selected.
 - Selecting an Optional Contingent or Ally Option **does not** change Required Troops min/max.
+- **A saved list, a share and a share code name their game** (ADR 0039). Triumph! is the only one
+  today. The `game` column on `armies` and `shares` says which branch of `SavedSelection` the
+  stored JSON is, so the JSON itself carries no game and nothing written before games existed is
+  rewritten; `army_list_id` is mandatory for a Triumph! list and empty for a game without army
+  lists. A version 2 share code puts `game` ahead of the selection and deflates it (ADR 0041), and
+  a version 1 code still decodes, as Triumph!. `lib/domain/games/registry.ts` hands out each game's module, which owns its
+  selection schema, canonical form, points, validation, sheet data and list title.
 
 ### 4.1 What the validator reports
 
@@ -249,8 +256,8 @@ Six readings are ours rather than the rulebook's:
   is one group and spends one slot: the two stay distinct, but they arrive in one choice.
 - **An optional contingent stand may be the general.** Its troops are part of the main army, so the
   only checks that apply are the troop type and the allied-contingent ban.
-- **The cap is a rule, not a constant.** `triumphRules` is `{ pointsCap: 48 }` and the fourth
-  argument takes any other, which is the seam Grand Triumph (#55) and event profiles (#57) extend.
+- **The cap is a rule, not a constant.** `triumphRules` in `lib/domain/games/triumph-rules.ts` is
+  `{ pointsCap: 48 }`, the Triumph! module's `rules`, and the fourth argument takes any other, which is the seam Grand Triumph (#55) and event profiles (#57) extend.
 
 ## 5. Gating: date and sub-faction
 

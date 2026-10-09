@@ -1,18 +1,32 @@
-import { byKey } from '../ordering.ts';
-import type { TroopOptionId } from './army-list.ts';
+import { deflateSync, inflateSync } from 'fflate';
+import { gameModule } from '../games/registry.ts';
 import type { ArmySelection } from './selection.ts';
-import { selectionSchema } from './selection-schema.ts';
+import {
+  type SavedSelection,
+  savedSelectionSchema,
+} from './selection-schema.ts';
 
-export const shareCodecVersion = 1;
+export const shareCodecVersion = 2;
+
+const triumphOnlyCodecVersion = 1;
 
 export const shareCodeBudgetChars = 800;
 
 export const shareCodeMaxChars = 4000;
 
-export type ShareDecoding =
-  | { ok: true; selection: ArmySelection }
+export const shareCodeMaxInflatedBytes = 4000;
+
+type DecodingFailure =
   | { ok: false; reason: 'malformed' }
   | { ok: false; reason: 'unsupportedVersion'; version: number };
+
+export type ShareCodeDecoding =
+  | { ok: true; list: SavedSelection }
+  | DecodingFailure;
+
+export type ShareDecoding =
+  | { ok: true; selection: ArmySelection }
+  | DecodingFailure;
 
 const versionSeparator = '.';
 const versionedCodePattern = /^(\d+)\.(.*)$/s;
@@ -20,70 +34,81 @@ const versionedCodePattern = /^(\d+)\.(.*)$/s;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder('utf-8', { fatal: true });
 
-const toBase64Url = (text: string) =>
-  btoa(String.fromCharCode(...textEncoder.encode(text)))
+const toBase64Url = (bytes: Uint8Array) =>
+  btoa(String.fromCharCode(...bytes))
     .replaceAll('+', '-')
     .replaceAll('/', '_')
     .replaceAll('=', '');
 
 const fromBase64Url = (code: string) =>
-  textDecoder.decode(
-    Uint8Array.from(
-      atob(code.replaceAll('-', '+').replaceAll('_', '/')),
-      (character) => character.charCodeAt(0),
-    ),
+  Uint8Array.from(
+    atob(code.replaceAll('-', '+').replaceAll('_', '/')),
+    (character) => character.charCodeAt(0),
   );
 
-const counts = <Code extends string>(
-  entries: Readonly<Partial<Record<Code, number>>>,
-) =>
-  Object.fromEntries(
-    Object.entries(entries)
-      .filter(([, count]) => typeof count === 'number' && count > 0)
-      .sort(byKey),
-  ) as Readonly<Partial<Record<Code, number>>>;
+const deflated = (text: string) =>
+  deflateSync(textEncoder.encode(text), { level: 9 });
 
-const countsByOption = <Code extends string>(
-  entries: Readonly<
-    Record<TroopOptionId, Readonly<Partial<Record<Code, number>>>>
-  >,
-) =>
-  Object.fromEntries(
-    Object.entries(entries)
-      .map(([option, entry]) => [option, counts(entry)] as const)
-      .filter(([, entry]) => Object.keys(entry).length > 0)
-      .sort(byKey),
-  ) as Readonly<Record<TroopOptionId, Readonly<Partial<Record<Code, number>>>>>;
+const inflated = (bytes: Uint8Array) => {
+  const text = inflateSync(bytes, {
+    out: new Uint8Array(shareCodeMaxInflatedBytes + 1),
+  });
+  if (text.length > shareCodeMaxInflatedBytes) {
+    throw new Error('the share code inflates past any list');
+  }
+  return text;
+};
 
-const canonical = (selection: ArmySelection) => ({
-  army: selection.army,
-  dataVersion: selection.dataVersion,
-  year: selection.year,
-  variant: selection.variant,
-  contingentGroups: selection.contingentGroups,
-  stands: countsByOption(selection.stands),
-  general: selection.general && {
-    option: selection.general.option,
-    troopType: selection.general.troopType,
-  },
-  armyBattleCards: counts(selection.armyBattleCards),
-  troopBattleCards: countsByOption(selection.troopBattleCards),
-});
+const payloadBytes = (version: number, body: string) =>
+  version === triumphOnlyCodecVersion
+    ? fromBase64Url(body)
+    : inflated(fromBase64Url(body));
 
-const jsonOf = (body: string): unknown => {
+const jsonOf = (version: number, body: string): unknown => {
   try {
-    return JSON.parse(fromBase64Url(body));
+    return JSON.parse(textDecoder.decode(payloadBytes(version, body)));
   } catch {
     return undefined;
   }
 };
 
-export const encodeSelection = (selection: ArmySelection) =>
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const payloadOf = ({ game, selection }: SavedSelection) => {
+  const module = gameModule(game);
+  return {
+    game,
+    ...module.selectionSchema.parse(module.canonicalise(selection)),
+  };
+};
+
+const taggedPayload = (payload: unknown) => {
+  if (!isRecord(payload)) {
+    return payload;
+  }
+  const { game, ...selection } = payload;
+  return { game, selection };
+};
+
+const savedSelectionOf = (version: number, payload: unknown) =>
+  savedSelectionSchema.safeParse(
+    version === triumphOnlyCodecVersion
+      ? { game: 'triumph', selection: payload }
+      : taggedPayload(payload),
+  );
+
+const decodableVersions: readonly number[] = [
+  triumphOnlyCodecVersion,
+  shareCodecVersion,
+];
+
+export const encodeShareCode = (list: SavedSelection) =>
   `${shareCodecVersion}${versionSeparator}${toBase64Url(
-    JSON.stringify(selectionSchema.parse(canonical(selection))),
+    deflated(JSON.stringify(payloadOf(list))),
   )}`;
 
-export const decodeSelection = (code: string): ShareDecoding => {
+export const decodeShareCode = (code: string): ShareCodeDecoding => {
   if (code.length > shareCodeMaxChars) {
     return { ok: false, reason: 'malformed' };
   }
@@ -92,11 +117,19 @@ export const decodeSelection = (code: string): ShareDecoding => {
     return { ok: false, reason: 'malformed' };
   }
   const version = Number(prefix);
-  if (version !== shareCodecVersion) {
+  if (!decodableVersions.includes(version)) {
     return { ok: false, reason: 'unsupportedVersion', version };
   }
-  const selection = selectionSchema.safeParse(jsonOf(body));
-  return selection.success
-    ? { ok: true, selection: selection.data }
+  const list = savedSelectionOf(version, jsonOf(version, body));
+  return list.success
+    ? { ok: true, list: list.data }
     : { ok: false, reason: 'malformed' };
+};
+
+export const encodeSelection = (selection: ArmySelection) =>
+  encodeShareCode({ game: 'triumph', selection });
+
+export const decodeSelection = (code: string): ShareDecoding => {
+  const decoded = decodeShareCode(code);
+  return decoded.ok ? { ok: true, selection: decoded.list.selection } : decoded;
 };

@@ -142,6 +142,7 @@ describe('migrations', () => {
       'army_list_id',
       'created_at',
       'data_version',
+      'game',
       'id',
       'name',
       'selection',
@@ -157,6 +158,7 @@ describe('migrations', () => {
       'army_list_id',
       'created_at',
       'data_version',
+      'game',
       'id',
       'last_seen_at',
       'name',
@@ -279,6 +281,7 @@ describe('migrations', () => {
       '009-single-troop-type',
       '010-reference-data',
       '011-activity-events',
+      '012-list-game',
     ]);
     expect(await migrateToLatest(db)).toEqual([]);
   });
@@ -286,6 +289,8 @@ describe('migrations', () => {
   it('rolls back one migration at a time', async () => {
     await migrateToLatest(db);
 
+    expect(await migrateDown(db)).toEqual(['012-list-game']);
+    expect(await columnNames('armies')).not.toContain('game');
     expect(await migrateDown(db)).toEqual(['011-activity-events']);
     expect(await tableNames()).not.toContain('activity_events');
     expect(await migrateDown(db)).toEqual(['010-reference-data']);
@@ -317,6 +322,7 @@ describe('migrations', () => {
     await migrateDown(db);
     await migrateDown(db);
     await migrateDown(db);
+    await migrateDown(db);
 
     expect(await migrateToLatest(db)).toEqual([
       '001-initial-schema',
@@ -330,6 +336,7 @@ describe('migrations', () => {
       '009-single-troop-type',
       '010-reference-data',
       '011-activity-events',
+      '012-list-game',
     ]);
     expect(await tableNames()).toHaveLength(13);
   });
@@ -376,6 +383,7 @@ describe('migrations', () => {
         '009-single-troop-type',
         '010-reference-data',
         '011-activity-events',
+        '012-list-game',
       ]);
 
       expect(await troopTypeColumns()).toEqual([{ troop_type: 'HFT' }]);
@@ -402,6 +410,194 @@ describe('migrations', () => {
 
       expect(await troopTypeColumns()).toEqual([{ troop_types: '["HFT"]' }]);
     });
+  });
+
+  describe('giving every list a game', () => {
+    const storedSelection =
+      '{"army":"66c","dataVersion":"2026-09-17.a1b2c3d4"}';
+
+    const seedFromBeforeListGame = async () => {
+      await migrateToLatest(db);
+      await migrateDownThrough('012-list-game');
+      await sql`insert into users (id, name, email) values ('user-1', 'Hannibal', 'hannibal@carthage.example')`.execute(
+        db,
+      );
+      await sql`insert into armies (id, user_id, name, army_list_id, selection, data_version) values ('army-1', 'user-1', 'Cannae', '66c', ${storedSelection}, '2026-09-17.a1b2c3d4')`.execute(
+        db,
+      );
+      await sql`insert into shares (id, user_id, name, army_list_id, selection, data_version, last_seen_at) values ('share-1', 'user-1', 'Cannae', '66c', ${storedSelection}, '2026-09-17.a1b2c3d4', '2026-09-20T10:00:00.000Z')`.execute(
+        db,
+      );
+      await sql`insert into collection_entries (id, user_id, name, count, troop_type, tags, status, notes) values ('entry-1', 'user-1', 'Hoplites', 8, 'SPR', '[]', 'painted', '')`.execute(
+        db,
+      );
+      await sql`insert into army_collection_pins (army_id, troop_option, troop_type, entry_id, count) values ('army-1', 'main/0', 'SPR', 'entry-1', 4)`.execute(
+        db,
+      );
+    };
+
+    const insertList = (table: 'armies' | 'shares', game: string) =>
+      table === 'armies'
+        ? sql`insert into armies (id, user_id, name, game, army_list_id, selection, data_version) values ('army-2', 'user-1', 'Zama', ${game}, null, '{}', '2026-09-17.a1b2c3d4')`.execute(
+            db,
+          )
+        : sql`insert into shares (id, user_id, name, game, army_list_id, selection, data_version, last_seen_at) values ('share-2', 'user-1', 'Zama', ${game}, null, '{}', '2026-09-17.a1b2c3d4', '2026-09-20T10:00:00.000Z')`.execute(
+            db,
+          );
+
+    it('makes every list saved or shared before it a Triumph! list, its selection untouched', async () => {
+      await seedFromBeforeListGame();
+
+      await migrateToLatest(db);
+
+      for (const table of ['armies', 'shares'] as const) {
+        expect(
+          await db
+            .selectFrom(table)
+            .select(['game', 'army_list_id', 'selection'])
+            .execute(),
+        ).toEqual([
+          { game: 'triumph', army_list_id: '66c', selection: storedSelection },
+        ]);
+      }
+    });
+
+    const seedVariedLists = async () => {
+      await sql`insert into users (id, name, email) values ('user-2', 'Scipio', 'scipio@rome.example')`.execute(
+        db,
+      );
+      await sql`insert into armies (id, user_id, name, army_list_id, selection, data_version, created_at, updated_at) values ('army-3', 'user-2', 'Zama · 202 BC', '66d', '{"army":"66d","year":-202}', '2026-10-01.0badf00d', '2026-09-18T08:00:00.000Z', '2026-10-02T09:30:00.000Z')`.execute(
+        db,
+      );
+      await sql`insert into shares (id, user_id, name, army_list_id, selection, data_version, created_at, last_seen_at) values ('share-3', null, 'Ilipa ✦ «copia»', '66d', '{"army":"66d"}', '2026-10-01.0badf00d', '2026-09-18T08:00:00.000Z', null)`.execute(
+        db,
+      );
+    };
+
+    const everyRow = async () => {
+      const rows = async (table: string) =>
+        (
+          await sql<
+            Record<string, unknown>
+          >`select * from ${sql.table(table)} order by 1, 2, 3`.execute(db)
+        ).rows;
+      return {
+        armies: await rows('armies'),
+        shares: await rows('shares'),
+        pins: await rows('army_collection_pins'),
+        users: await rows('users'),
+      };
+    };
+
+    const withoutGame = (rows: readonly Record<string, unknown>[]) =>
+      rows.map(({ game: _game, ...row }) => row);
+
+    it('keeps every column of every row, on the way up and back down', async () => {
+      await seedFromBeforeListGame();
+      await seedVariedLists();
+      const before = await everyRow();
+
+      await migrateToLatest(db);
+      const migrated = await everyRow();
+
+      expect({
+        ...migrated,
+        armies: withoutGame(migrated.armies),
+        shares: withoutGame(migrated.shares),
+      }).toEqual(before);
+      expect(
+        [...migrated.armies, ...migrated.shares].map(({ game }) => game),
+      ).toEqual(['triumph', 'triumph', 'triumph', 'triumph']);
+
+      await migrateDownThrough('012-list-game');
+
+      expect(await everyRow()).toEqual(before);
+    });
+
+    it('leaves the foreign keys on, and pointing at the rebuilt tables', async () => {
+      await seedFromBeforeListGame();
+      await migrateToLatest(db);
+
+      expect(
+        (await sql<{ foreign_keys: number }>`pragma foreign_keys`.execute(db))
+          .rows,
+      ).toEqual([{ foreign_keys: 1 }]);
+      await expect(
+        sql`delete from users where id = 'user-1'`.execute(db),
+      ).rejects.toThrow('FOREIGN KEY');
+      await expect(
+        sql`insert into armies (id, user_id, name, army_list_id, selection, data_version) values ('army-9', 'user-nobody', 'Zama', '66c', '{}', '2026-09-17.a1b2c3d4')`.execute(
+          db,
+        ),
+      ).rejects.toThrow('FOREIGN KEY');
+      await sql`delete from armies where id = 'army-1'`.execute(db);
+      expect(
+        await db.selectFrom('army_collection_pins').selectAll().execute(),
+      ).toEqual([]);
+      await sql`delete from armies`.execute(db);
+      await sql`delete from users where id = 'user-1'`.execute(db);
+      expect(await db.selectFrom('shares').select('user_id').execute()).toEqual(
+        [{ user_id: null }],
+      );
+    });
+
+    it('keeps the pins of every list it rebuilds', async () => {
+      await seedFromBeforeListGame();
+
+      await migrateToLatest(db);
+
+      expect(
+        await db.selectFrom('army_collection_pins').select('army_id').execute(),
+      ).toEqual([{ army_id: 'army-1' }]);
+    });
+
+    it.each(['armies', 'shares'] as const)(
+      'lets a list of another game in %s go without an army list, and never a Triumph! one',
+      async (table) => {
+        await seedFromBeforeListGame();
+        await migrateToLatest(db);
+
+        await expect(insertList(table, 'triumph')).rejects.toThrow(
+          'a Triumph! list needs an army list',
+        );
+        await expect(
+          db.updateTable(table).set({ army_list_id: null }).execute(),
+        ).rejects.toThrow('a Triumph! list needs an army list');
+        await expect(insertList(table, 'fantasy')).resolves.toBeDefined();
+      },
+    );
+
+    it('restores the army list as mandatory on the way down', async () => {
+      await seedFromBeforeListGame();
+      await migrateToLatest(db);
+
+      await migrateDownThrough('012-list-game');
+
+      expect(await columnNames('armies')).not.toContain('game');
+      expect(await columnNames('shares')).not.toContain('game');
+      await expect(
+        sql`insert into armies (id, user_id, name, army_list_id, selection, data_version) values ('army-2', 'user-1', 'Zama', null, '{}', '2026-09-17.a1b2c3d4')`.execute(
+          db,
+        ),
+      ).rejects.toThrow('NOT NULL');
+      expect(
+        await db.selectFrom('army_collection_pins').select('army_id').execute(),
+      ).toEqual([{ army_id: 'army-1' }]);
+    });
+
+    it.each(['armies', 'shares'] as const)(
+      'refuses to roll back once %s holds a list of another game',
+      async (table) => {
+        await seedFromBeforeListGame();
+        await migrateToLatest(db);
+        await insertList(table, 'fantasy');
+
+        await expect(migrateDown(db)).rejects.toThrow(
+          'restore the backup taken before the deploy',
+        );
+        expect(await columnNames(table)).toContain('game');
+      },
+    );
   });
 
   it('adds the indexes the query plans justify', async () => {

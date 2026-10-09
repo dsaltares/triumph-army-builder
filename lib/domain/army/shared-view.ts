@@ -1,5 +1,5 @@
 import type { PricedBattleCard } from '../battle-cards/costs.ts';
-import { battleCardNames, type ListedCard } from '../battle-cards/listing.ts';
+import type { ListedCard } from '../battle-cards/listing.ts';
 import {
   type CollectionEntry,
   type CollectionPin,
@@ -9,25 +9,19 @@ import {
   type ListCoverage,
   listCoverage,
 } from '../collection/list-coverage.ts';
-import {
-  type TroopTypeCost,
-  type TroopTypeFactor,
-  type TroopTypeName,
-  troopTypeFactors,
-  troopTypeMovements,
-  troopTypeNames,
+import { triumph } from '../games/triumph.ts';
+import type {
+  TroopTypeCost,
+  TroopTypeFactor,
+  TroopTypeName,
 } from '../troop-types.ts';
 import type { ArmyList } from './army-list.ts';
-import { type PointsMeter, pointsMeter } from './builder.ts';
-import { armyPoints, pointCosts } from './points.ts';
+import type { PointsMeter } from './builder.ts';
 import type { SavedArmy } from './saved-army.ts';
 import type { ArmySelection } from './selection.ts';
 import type { SharedList } from './shared-list.ts';
-import { type ArmySheet, armySheet } from './sheet.ts';
-import {
-  type ValidationReport,
-  validationReport,
-} from './validation-report.ts';
+import type { ArmySheet } from './sheet.ts';
+import type { ValidationReport } from './validation-report.ts';
 
 export type ViewedList = {
   name: string;
@@ -74,26 +68,13 @@ export type ListViewData = {
 };
 
 export const listReading = (
-  { name, selection }: ViewedList,
-  { armyList, troopTypes, battleCards }: ListViewData,
-): ListReading => {
-  const costs = pointCosts(troopTypes, battleCards);
-  const names = troopTypeNames(troopTypes);
-  return {
-    sheet: armySheet({
-      listName: name,
-      armyList,
-      selection,
-      costs,
-      names,
-      factors: troopTypeFactors(troopTypes),
-      movement: troopTypeMovements(troopTypes),
-      cardNames: battleCardNames(battleCards),
-    }),
-    report: validationReport(armyList, selection, costs, names),
-    meter: pointsMeter(armyPoints(armyList, selection, costs)),
-  };
-};
+  list: ViewedList,
+  data: ListViewData,
+): ListReading => ({
+  sheet: triumph.sheetData(list, data),
+  report: triumph.validate(list.selection, data),
+  meter: triumph.points(list.selection, data),
+});
 
 export const sharedView = ({
   shared,

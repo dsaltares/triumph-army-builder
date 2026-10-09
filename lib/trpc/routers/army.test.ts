@@ -673,3 +673,62 @@ describe('the events a list records', () => {
     expect(names(await signedIn().army.list())).toEqual(['Cannae']);
   });
 });
+
+describe('a list and its game', () => {
+  it('is a Triumph! list when the caller names no game, as a tab opened before games did', async () => {
+    const army = await create('Cannae');
+
+    expect(army.game).toBe('triumph');
+    expect(await signedIn().army.list()).toMatchObject([
+      { name: 'Cannae', game: 'triumph' },
+    ]);
+  });
+
+  it('keeps the game the caller names', async () => {
+    const army = await signedIn().army.create({
+      name: 'Cannae',
+      game: 'triumph',
+      selection: fixtureSelection(),
+    });
+
+    expect(await signedIn().army.byId({ id: army.id })).toMatchObject({
+      game: 'triumph',
+      armyListId: fixtureSelection().army,
+    });
+  });
+
+  it('refuses a game this build does not have', async () => {
+    await expect(
+      signedIn().army.create({
+        name: 'Cannae',
+        game: 'chess' as 'triumph',
+        selection: fixtureSelection(),
+      }),
+    ).rejects.toThrow();
+  });
+
+  it('stores the selection with no game in it, as every list before games was', async () => {
+    const army = await create('Cannae');
+
+    const row = await db
+      .selectFrom('armies')
+      .select(['game', 'selection'])
+      .where('id', '=', army.id)
+      .executeTakeFirstOrThrow();
+    expect(row.game).toBe('triumph');
+    expect(JSON.parse(row.selection)).toEqual(fixtureSelection());
+  });
+
+  it('keeps the game through an edit and a duplicate', async () => {
+    const original = await create('Cannae');
+
+    const edited = await signedIn().army.update({
+      id: original.id,
+      selection: fixtureSelection({ stands: 2 }),
+    });
+    const copy = await signedIn().army.duplicate({ id: original.id });
+
+    expect(edited.game).toBe('triumph');
+    expect(copy.game).toBe('triumph');
+  });
+});

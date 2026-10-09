@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { startAnonymousSession, useSession } from '@/lib/auth/client';
 import {
   copyName,
-  type SavedArmy,
+  type SavedGameList,
   withArmyRemoved,
   withArmyUpserted,
 } from '@/lib/domain/army/saved-army';
@@ -17,9 +17,9 @@ import { recordListSaved } from '@/lib/install';
 import { routes } from '@/lib/navigation';
 import { useTRPC, useTRPCClient } from '@/lib/trpc/client';
 
-type ArmyListChange = (armies: SavedArmy[]) => SavedArmy[];
+type ArmyListChange = (armies: SavedGameList[]) => SavedGameList[];
 
-type Rollback = { previous: SavedArmy[] | undefined };
+type Rollback = { previous: SavedGameList[] | undefined };
 
 const pending = ({
   id,
@@ -31,9 +31,10 @@ const pending = ({
   name: string;
   selection: ArmySelection;
   at: string;
-}): SavedArmy => ({
+}): SavedGameList => ({
   id,
   name,
+  game: 'triumph',
   armyListId: selection.army,
   dataVersion: selection.dataVersion,
   selection,
@@ -60,7 +61,7 @@ const useArmyListCache = () => {
 
   const settle = () => queryClient.invalidateQueries({ queryKey: armyKey });
 
-  const remember = (army: SavedArmy) => {
+  const remember = (army: SavedGameList) => {
     queryClient.setQueryData(trpc.army.byId.queryKey({ id: army.id }), army);
   };
 

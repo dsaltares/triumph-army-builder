@@ -23,10 +23,10 @@ import {
 } from '../army/selection.ts';
 import {
   isLegal,
-  triumphRules,
   type ValidationRules,
   validateArmy,
 } from '../army/validation.ts';
+import { triumphRules } from '../games/triumph-rules.ts';
 import { sum } from '../numbers.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
 import type { TroopTypeNames } from '../troop-types.ts';

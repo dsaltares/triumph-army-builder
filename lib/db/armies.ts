@@ -1,29 +1,31 @@
 import type { Kysely } from 'kysely';
-import type { SavedArmy } from '../domain/army/saved-army.ts';
-import { selectionSchema } from '../domain/army/selection-schema.ts';
+import type { SavedGameList } from '../domain/army/saved-army.ts';
+import type {
+  SavedSelection,
+  SelectionInput,
+} from '../domain/army/selection-schema.ts';
+import { listColumns, selectionColumns, storedList } from './list-columns.ts';
 import type { Army, Database } from './schema.ts';
 
 export type ArmyOwner = { id: string; userId: string };
 
-export type NewArmyRecord = {
+export type NewArmyRecord = SelectionInput & {
   id: string;
   userId: string;
   name: string;
-  selection: SavedArmy['selection'];
   at: string;
 };
 
 export type ArmyChanges = {
   name?: string | undefined;
-  selection?: SavedArmy['selection'] | undefined;
+  list?: SavedSelection | undefined;
 };
 
-export const toSavedArmy = (row: Army): SavedArmy => ({
+export const toSavedArmy = (row: Army): SavedGameList => ({
   id: row.id,
   name: row.name,
-  armyListId: row.army_list_id,
+  ...storedList(row),
   dataVersion: row.data_version,
-  selection: selectionSchema.parse(JSON.parse(row.selection)),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -70,7 +72,7 @@ export const findArmy = async (
 
 export const insertArmy = async (
   db: Kysely<Database>,
-  { id, userId, name, selection, at }: NewArmyRecord,
+  { id, userId, name, at, ...list }: NewArmyRecord,
 ) =>
   toSavedArmy(
     await db
@@ -79,9 +81,7 @@ export const insertArmy = async (
         id,
         user_id: userId,
         name,
-        army_list_id: selection.army,
-        selection: JSON.stringify(selection),
-        data_version: selection.dataVersion,
+        ...listColumns(list),
         created_at: at,
         updated_at: at,
       })
@@ -95,21 +95,19 @@ export const updateArmy = async (
   changes: ArmyChanges,
   at: string,
 ) => {
-  const row = await db
+  const owned = db
     .updateTable('armies')
     .set({
       ...(changes.name === undefined ? {} : { name: changes.name }),
-      ...(changes.selection === undefined
-        ? {}
-        : {
-            selection: JSON.stringify(changes.selection),
-            army_list_id: changes.selection.army,
-            data_version: changes.selection.dataVersion,
-          }),
+      ...(changes.list === undefined ? {} : selectionColumns(changes.list)),
       updated_at: at,
     })
     .where('id', '=', id)
-    .where('user_id', '=', userId)
+    .where('user_id', '=', userId);
+  const row = await (changes.list
+    ? owned.where('game', '=', changes.list.game)
+    : owned
+  )
     .returningAll()
     .executeTakeFirst();
   return row ? toSavedArmy(row) : null;

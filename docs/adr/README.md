@@ -17,7 +17,7 @@ reconstruct from the code. Everything else belongs in `docs/DOMAIN.md` (how the 
 | [0007](0007-sqlite-on-a-volume.md) | SQLite on a local volume, with Kysely | Accepted | 2026-09-17 |
 | [0008](0008-sub-faction-overlay-keyed-on-the-note-string.md) | Curate sub-factions as an overlay keyed on the upstream note string | Accepted | 2026-09-17 |
 | [0009](0009-generated-static-bundle-with-an-eager-index.md) | Serve the client a generated static bundle, eager index and lazy detail | Superseded by 0034 | 2026-09-17 |
-| [0010](0010-share-codes-are-base64url-json.md) | Encode a shared army as versioned base64url JSON | Accepted | 2026-09-17 |
+| [0010](0010-share-codes-are-base64url-json.md) | Encode a shared army as versioned base64url JSON | Superseded in part by 0041 | 2026-09-17 |
 | [0011](0011-prerender-army-detail-from-the-bundle.md) | Prerender the army detail pages from the bundle at build time | Superseded by 0034 | 2026-09-17 |
 | [0012](0012-builder-gating-in-the-url-selection-in-state.md) | Keep the builder's gating in the URL and its selection in component state | Accepted | 2026-09-18 |
 | [0013](0013-anonymous-armies-in-sqlite.md) | Store anonymous armies in SQLite behind an anonymous session | Accepted | 2026-09-18 |
@@ -48,6 +48,7 @@ reconstruct from the code. Everything else belongs in `docs/DOMAIN.md` (how the 
 | [0038](0038-an-account-without-a-password-can-add-one-by-email.md) | Let an account without a password add one through the reset link | Accepted | 2026-09-30 |
 | [0039](0039-a-saved-list-belongs-to-a-game.md) | A saved list belongs to a game, and each game owns its selection shape | Proposed | 2026-10-09 |
 | [0040](0040-a-fantasy-triumph-list-is-named-units-of-identical-stands.md) | A Fantasy Triumph list is named units of identical stands, heroes and army cards | Proposed | 2026-10-09 |
+| [0041](0041-a-share-code-deflates-its-payload.md) | Deflate a share code's payload from version 2, with a synchronous codec | Accepted | 2026-10-09 |
 
 ## How to add one
 

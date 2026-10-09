@@ -26,7 +26,7 @@ import type {
   BattleCardChoices,
   TroopOptionBattleCards,
 } from '@/lib/domain/army/battle-card-selection';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import type { TroopTypeNames } from '@/lib/domain/troop-types';
 import { formatAllowance, formatPointsWithUnit } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/locales';

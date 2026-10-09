@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import type { BuilderSnapshot } from '@/components/builder/builder-state';
 import { startBuilding } from '@/lib/domain/army/builder';
 import { type ArmyFill, randomFill } from '@/lib/domain/army/feasibility';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 
 export type RandomizeListInput = Pick<
   BuilderSnapshot,

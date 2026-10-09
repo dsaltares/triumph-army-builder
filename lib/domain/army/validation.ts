@@ -5,6 +5,7 @@ import {
   type BattleCardCosts,
 } from '../battle-cards/costs.ts';
 import type { BattleCardNames } from '../battle-cards/listing.ts';
+import { triumphRules } from '../games/triumph-rules.ts';
 import { byKey } from '../ordering.ts';
 import type { TroopTypeNames } from '../troop-types.ts';
 import {
@@ -141,8 +142,6 @@ export type Finding = {
 export type ValidationRules = {
   pointsCap: number;
 };
-
-export const triumphRules: ValidationRules = { pointsCap: 48 };
 
 export const battleCardPurchaseLimits: Readonly<
   Partial<Record<BattleCardCode, number>>
