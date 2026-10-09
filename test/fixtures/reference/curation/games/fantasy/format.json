@@ -1,0 +1,41 @@
+{
+  "points": 51,
+  "pointsPerRequiredStand": 6,
+  "minimumStandCost": 1,
+  "heroes": {
+    "max": 3,
+    "maxPoints": 8,
+    "cost": 1,
+    "mayTakeNegativeCostCards": false
+  },
+  "invasion": {
+    "base": 2,
+    "costs": {
+      "0": 1,
+      "1": 0.5,
+      "2": 0,
+      "3": -0.5,
+      "4": -1
+    }
+  },
+  "maneuver": {
+    "base": 2,
+    "costs": {
+      "0": -3,
+      "1": -1,
+      "2": 0,
+      "3": 1,
+      "4": 3
+    }
+  },
+  "denseTopographies": [
+    "Dense Forest",
+    "Dense Marsh",
+    "Dense Wasteland",
+    "Dense Underground"
+  ],
+  "victory": {
+    "numerator": 1,
+    "denominator": 3
+  }
+}

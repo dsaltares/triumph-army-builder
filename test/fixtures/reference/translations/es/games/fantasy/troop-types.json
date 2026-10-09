@@ -1,0 +1,10 @@
+{
+  "ARC.name": {
+    "source": "Shooters",
+    "target": "Tiradores"
+  },
+  "ELE.name": {
+    "source": "Behemoths",
+    "target": "Behemots"
+  }
+}

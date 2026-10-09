@@ -1,7 +1,12 @@
 import { rm } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
-import type { BundledBattleCard, BundledTroopType } from '@/lib/data/bundle.ts';
+import type {
+  BundledBattleCard,
+  BundledFantasyCard,
+  BundledTroopType,
+  FantasyCardText,
+} from '@/lib/data/bundle.ts';
 import {
   type ArmyDetail,
   type ArmyIndex,
@@ -11,14 +16,22 @@ import {
   eagerPayloadBudgetBytes,
 } from '@/lib/data/bundle.ts';
 import type { Curation } from '@/lib/data/curation-schema.ts';
+import { fantasyCardCodes } from '@/lib/data/schema.ts';
 import { loadSnapshot } from '@/lib/data/snapshot.ts';
+import { loadCatalogues } from '@/lib/data/translation-source.ts';
+import { createTranslator } from '@/lib/data/translations.ts';
 import type { TagWord } from '@/lib/domain/collection/tag-words.ts';
 import {
   rawAllyArmyList,
   snapshotFixtureFiles,
   writeSnapshotFixture,
 } from '@/test/fixtures/meshwesh.ts';
-import { sampleBundle, sampleCuration } from '@/test/sample.ts';
+import {
+  sampleBundle,
+  sampleCuration,
+  sampleSnapshot,
+  sampleTranslationsDirectory,
+} from '@/test/sample.ts';
 
 const sylvanCourtsId = 'army-sylvan-courts';
 const deepWoodsId = 'category-deep-woods';
@@ -203,6 +216,111 @@ describe('buildBundle, on the sample snapshot', () => {
     expect(words.find(({ word }) => word === 'spear')).toMatchObject({
       troopTypes: expect.arrayContaining(['PIK', 'SPR']),
     });
+  });
+});
+
+describe('buildBundle, for Fantasy Triumph', () => {
+  const displayNames = (files: readonly BundleFile[], path: string) =>
+    Object.fromEntries(
+      (contentsOf(files, path) as BundledTroopType[]).map(
+        ({ permanentCode, displayName }) => [permanentCode, displayName],
+      ),
+    );
+
+  it('serves the shared troop types under their Fantasy Triumph names', async () => {
+    const files = await sampleBundle();
+    const triumph = displayNames(files, bundlePaths.troopTypes);
+    const fantasy = displayNames(files, bundlePaths.fantasy.troopTypes);
+
+    expect(triumph).toMatchObject({ ARC: 'Archers', ELE: 'Elephants' });
+    expect(fantasy).toEqual({
+      ...triumph,
+      ARC: 'Shooters',
+      ELE: 'Behemoths',
+    });
+  });
+
+  it('keeps everything but the name of a renamed troop type', async () => {
+    const files = await sampleBundle();
+    const archers = (key: string) =>
+      (contentsOf(files, key) as BundledTroopType[]).find(
+        ({ permanentCode }) => permanentCode === 'ARC',
+      );
+
+    expect(archers(bundlePaths.fantasy.troopTypes)).toEqual({
+      ...archers(bundlePaths.troopTypes),
+      displayName: 'Shooters',
+    });
+  });
+
+  it('lists every card in code order, without its audit trail', async () => {
+    const cards = contentsOf(
+      await sampleBundle(),
+      bundlePaths.fantasy.battleCards,
+    ) as BundledFantasyCard[];
+    const { sources: _sources, ...flying } =
+      sampleCuration.games.fantasy?.cards.flying ?? {};
+
+    expect(cards.map(({ code }) => code)).toEqual([...fantasyCardCodes]);
+    expect(cards.find(({ code }) => code === 'flying')).toEqual({
+      code: 'flying',
+      ...flying,
+    });
+  });
+
+  it('splits card prose away from the card list, as Triumph! cards do', async () => {
+    const files = await sampleBundle();
+    const text = contentsOf(
+      files,
+      bundlePaths.fantasy.battleCardText,
+    ) as FantasyCardText;
+
+    expect(Object.keys(text)).toEqual([...fantasyCardCodes]);
+    expect(text.flying).toBe(sampleCuration.games.fantasy?.text.flying);
+    expect(
+      files.find(({ path }) => path === bundlePaths.fantasy.battleCardText)
+        ?.eager,
+    ).toBe(false);
+  });
+
+  it('translates card names, variants, text and troop type names', async () => {
+    const catalogues = await loadCatalogues(sampleTranslationsDirectory);
+    const files = buildBundle(
+      await sampleSnapshot(),
+      sampleCuration,
+      createTranslator('es', catalogues.es),
+    );
+    const cards = contentsOf(
+      files,
+      bundlePaths.fantasy.battleCards,
+    ) as BundledFantasyCard[];
+    const flying = cards.find(({ code }) => code === 'flying');
+
+    expect(flying?.name).toBe('Volador');
+    expect(flying?.variants).toEqual({
+      flight: { hover: 'Vuelo estático', zoom: 'Vuelo raudo' },
+    });
+    expect(
+      (contentsOf(files, bundlePaths.fantasy.battleCardText) as FantasyCardText)
+        .noCamp,
+    ).toContain('El ejército no tiene campamento.');
+    expect(displayNames(files, bundlePaths.fantasy.troopTypes)).toMatchObject({
+      ARC: 'Tiradores',
+      ELE: 'Behemots',
+    });
+  });
+
+  it('writes no Fantasy Triumph file when the curation has no section for it', async () => {
+    const files = buildBundle(await sampleSnapshot(), {
+      ...sampleCuration,
+      games: {},
+    });
+
+    expect(
+      files
+        .filter(({ path }) => path.startsWith('games/'))
+        .map(({ path }) => path),
+    ).toEqual([]);
   });
 });
 

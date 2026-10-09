@@ -5,10 +5,13 @@ import {
   armyIndexSchema,
   battleCardTextSchema,
   bundledBattleCardsSchema,
+  bundledFantasyCardsSchema,
   bundledTroopTypesSchema,
+  fantasyCardTextSchema,
   tagWordsSchema,
 } from './bundle-schema.ts';
-import { thematicCategorySchema } from './schema.ts';
+import { fantasyFormatSchema } from './curation-schema.ts';
+import { type Game, thematicCategorySchema } from './schema.ts';
 import { summarisedIssues } from './zod-issues.ts';
 
 const armyIdPattern = /^[A-Za-z0-9_-]+$/;
@@ -53,6 +56,10 @@ export const documentBundleSource = ({ read, missing }: BundleDocuments) => {
     required(bundlePaths.index, armyIndexSchema),
   );
 
+  const readFantasyBattleCards = once(() =>
+    parsed(bundlePaths.fantasy.battleCards, bundledFantasyCardsSchema),
+  );
+
   const readArmyDetail = (id: string) =>
     armyIdPattern.test(id)
       ? parsed(bundlePaths.army(id), armyDetailSchema)
@@ -81,6 +88,22 @@ export const documentBundleSource = ({ read, missing }: BundleDocuments) => {
       );
       return details.filter((detail) => detail !== null);
     }),
+    readGames: once(
+      async (): Promise<Game[]> =>
+        (await readFantasyBattleCards()) === null
+          ? ['triumph']
+          : ['triumph', 'fantasy'],
+    ),
+    readFantasyTroopTypes: once(() =>
+      parsed(bundlePaths.fantasy.troopTypes, bundledTroopTypesSchema),
+    ),
+    readFantasyBattleCards,
+    readFantasyBattleCardText: once(() =>
+      parsed(bundlePaths.fantasy.battleCardText, fantasyCardTextSchema),
+    ),
+    readFantasyFormat: once(() =>
+      parsed(bundlePaths.fantasy.format, fantasyFormatSchema),
+    ),
   };
 };
 

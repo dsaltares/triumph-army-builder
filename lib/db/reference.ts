@@ -165,5 +165,13 @@ export const databaseBundleSource = (
     readTagWords: async () => (await current()).readTagWords(),
     readArmyDetail: async (id) => (await current()).readArmyDetail(id),
     readArmyDetails: async () => (await current()).readArmyDetails(),
+    readGames: async () => (await current()).readGames(),
+    readFantasyTroopTypes: async () =>
+      (await current()).readFantasyTroopTypes(),
+    readFantasyBattleCards: async () =>
+      (await current()).readFantasyBattleCards(),
+    readFantasyBattleCardText: async () =>
+      (await current()).readFantasyBattleCardText(),
+    readFantasyFormat: async () => (await current()).readFantasyFormat(),
   };
 };

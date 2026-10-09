@@ -1,0 +1,366 @@
+{
+  "ambush.name": {
+    "source": "Ambush",
+    "target": "Emboscada"
+  },
+  "ambush.variants.reach.home": {
+    "source": "Home topography only",
+    "target": "Solo en su topografía"
+  },
+  "ambush.variants.reach.anywhere": {
+    "source": "Any topography",
+    "target": "En cualquier topografía"
+  },
+  "ambush.text": {
+    "source": "Goblin sappers wait under the moss until the drums stop.\n\n#### In play\nRoll a die at deployment; that many stands may hide in rough ground away from the usual lines.",
+    "target": "Los zapadores trasgos esperan bajo el musgo hasta que callan los tambores.\n\n#### En juego\nTira un dado al desplegar; esa cantidad de peanas puede esconderse en terreno abrupto lejos de las líneas habituales."
+  },
+  "armored.name": {
+    "source": "Armored",
+    "target": "Acorazado"
+  },
+  "armored.text": {
+    "source": "Plates hammered from fallen star-iron turn the arrows aside.\n\n#### In play\nEnemy shooting at this stand counts one less.",
+    "target": "Placas forjadas con hierro de estrella desvían las flechas.\n\n#### En juego\nEl enemigo que dispara contra esta peana cuenta uno menos."
+  },
+  "away.name": {
+    "source": "Away",
+    "target": "Ausente"
+  },
+  "away.text": {
+    "source": "The riders vanish into the cloud bank and come down somewhere else entirely.\n\n#### In play\nThe stand may leave the table and return on a later turn.",
+    "target": "Los jinetes desaparecen en las nubes y bajan en otro lugar.\n\n#### En juego\nLa peana puede salir de la mesa y volver en un turno posterior."
+  },
+  "brittle.name": {
+    "source": "Brittle",
+    "target": "Quebradizo"
+  },
+  "brittle.text": {
+    "source": "Hired sprites who remember an urgent appointment the moment the battle turns.\n\n#### In play\nThe stand is shattered whenever it is beaten in close combat.",
+    "target": "Duendes a sueldo que recuerdan una cita urgente en cuanto la batalla se tuerce.\n\n#### En juego\nLa peana queda destrozada siempre que pierde un combate cuerpo a cuerpo."
+  },
+  "champion.name": {
+    "source": "Champion",
+    "target": "Campeón"
+  },
+  "champion.text": {
+    "source": "A duellist who hunts other heroes across the field.\n\n#### In play\nThe hero fights duels as if it cost three points more.",
+    "target": "Un duelista que caza a otros héroes por el campo.\n\n#### En juego\nEl héroe libra duelos como si costara tres puntos más."
+  },
+  "chargeThrough.name": {
+    "source": "Charge Through",
+    "target": "Cargar a través"
+  },
+  "chargeThrough.text": {
+    "source": "The lancers trust the pikemen to open their files on the horn call.\n\n#### In play\nOne tactical move may pass through friendly close order foot.",
+    "target": "Los lanceros confían en que los piqueros abran filas al toque de cuerno.\n\n#### En juego\nUn movimiento táctico puede atravesar infantería amiga en orden cerrado."
+  },
+  "craven.name": {
+    "source": "Craven",
+    "target": "Cobarde"
+  },
+  "craven.text": {
+    "source": "Mushroom folk who would honestly rather be anywhere else today.\n\n#### In play\nThe stand never moves into contact and never pursues.",
+    "target": "Gente seta que, sinceramente, preferiría estar en cualquier otra parte.\n\n#### En juego\nLa peana nunca entra en contacto ni persigue."
+  },
+  "deadly.name": {
+    "source": "Deadly",
+    "target": "Letal"
+  },
+  "deadly.text": {
+    "source": "Their blades sing a single note that ends conversations.\n\n#### In play\nThe stand adds one in close combat.",
+    "target": "Sus hojas cantan una sola nota que pone fin a las conversaciones.\n\n#### En juego\nLa peana suma uno en combate cuerpo a cuerpo."
+  },
+  "delayedEntry.name": {
+    "source": "Delayed Entry",
+    "target": "Entrada retrasada"
+  },
+  "delayedEntry.text": {
+    "source": "The summoning circle is still smoking when the battle starts.\n\n#### In play\nMarked stands arrive later, when the army spends five command points.",
+    "target": "El círculo de invocación aún humea cuando empieza la batalla.\n\n#### En juego\nLas peanas marcadas llegan más tarde, cuando el ejército gasta cinco puntos de mando."
+  },
+  "fast.name": {
+    "source": "Fast",
+    "target": "Rápido"
+  },
+  "fast.text": {
+    "source": "Hooves shod with quicksilver carry them before the dust settles.\n\n#### In play\nThe stand moves a little further than others of its kind.",
+    "target": "Herraduras de azogue los llevan antes de que se asiente el polvo.\n\n#### En juego\nLa peana mueve algo más que otras de su clase."
+  },
+  "fierce.name": {
+    "source": "Fierce",
+    "target": "Feroz"
+  },
+  "fierce.text": {
+    "source": "Bog trolls who cannot be talked out of a good brawl.\n\n#### In play\nThe stand must follow up and may never break off.",
+    "target": "Trols de ciénaga a los que no se puede disuadir de una buena pelea.\n\n#### En juego\nLa peana debe avanzar tras vencer y nunca puede retirarse."
+  },
+  "flying.name": {
+    "source": "Flying",
+    "target": "Volador"
+  },
+  "flying.variants.flight.hover": {
+    "source": "Hover Flying",
+    "target": "Vuelo estático"
+  },
+  "flying.variants.flight.zoom": {
+    "source": "Zoom Flying",
+    "target": "Vuelo raudo"
+  },
+  "flying.text": {
+    "source": "Leathery wings beat over the heads of the battle line.\n\n#### In play\nThe stand flies, hovering in place or zooming across the table.",
+    "target": "Alas correosas baten sobre la línea de batalla.\n\n#### En juego\nLa peana vuela, inmóvil en el aire o cruzando la mesa a toda velocidad."
+  },
+  "fortifiedCamp.name": {
+    "source": "Fortified Camp",
+    "target": "Campamento fortificado"
+  },
+  "fortifiedCamp.variants.defenses.fortified": {
+    "source": "Fortified Camp",
+    "target": "Campamento fortificado"
+  },
+  "fortifiedCamp.variants.defenses.heavily": {
+    "source": "Heavily Fortified Camp",
+    "target": "Campamento muy fortificado"
+  },
+  "fortifiedCamp.text": {
+    "source": "A ring of thorn hedges grown overnight by an irritable druid.\n\n#### In play\nThe camp fights harder when it is attacked.",
+    "target": "Un anillo de setos de espinos crecido en una noche por un druida irritable.\n\n#### En juego\nEl campamento lucha con más fuerza cuando lo atacan."
+  },
+  "hearten.name": {
+    "source": "Hearten",
+    "target": "Alentar"
+  },
+  "hearten.text": {
+    "source": "A banner that hums softly whenever courage is needed.\n\n#### In play\nA beaten stand adds one before the result is read.",
+    "target": "Un estandarte que zumba suavemente cuando hace falta valor.\n\n#### En juego\nUna peana vencida suma uno antes de leer el resultado."
+  },
+  "holdTheLine.name": {
+    "source": "Hold the Line",
+    "target": "Mantener la línea"
+  },
+  "holdTheLine.text": {
+    "source": "Drilled shieldmaidens who stay put when the foe breaks.\n\n#### In play\nPlay the card to stop a pursuit after close combat.",
+    "target": "Escuderas bien instruidas que no se mueven cuando el enemigo huye.\n\n#### En juego\nJuega la carta para impedir una persecución tras el combate."
+  },
+  "illusion.name": {
+    "source": "Illusion",
+    "target": "Ilusión"
+  },
+  "illusion.text": {
+    "source": "The wizard's apprentice paints soldiers on the morning fog.\n\n#### In play\nA stand on the table is either a phantom or something else in disguise.",
+    "target": "El aprendiz del mago pinta soldados en la niebla de la mañana.\n\n#### En juego\nUna peana de la mesa es un fantasma u otra cosa disfrazada."
+  },
+  "marksman.name": {
+    "source": "Marksman",
+    "target": "Tirador experto"
+  },
+  "marksman.text": {
+    "source": "Owl-eyed bowmen who can split a falling acorn.\n\n#### In play\nThe stand adds one when it shoots.",
+    "target": "Arqueros con ojos de búho capaces de partir una bellota al caer.\n\n#### En juego\nLa peana suma uno al disparar."
+  },
+  "massive.name": {
+    "source": "Massive",
+    "target": "Colosal"
+  },
+  "massive.text": {
+    "source": "Giants who simply do not get pushed around.\n\n#### In play\nThe stand is never pushed back and crushes friends who fall back into it.",
+    "target": "Gigantes a los que simplemente no se empuja.\n\n#### En juego\nLa peana nunca retrocede y aplasta a los amigos que retroceden contra ella."
+  },
+  "mindblast.name": {
+    "source": "Mindblast",
+    "target": "Explosión mental"
+  },
+  "mindblast.text": {
+    "source": "A whisper that crawls into the ear and curdles the nerve.\n\n#### In play\nThe stand attacks minds at long range and ignores the terrain between.",
+    "target": "Un susurro que se mete en el oído y cuaja el ánimo.\n\n#### En juego\nLa peana ataca las mentes a larga distancia e ignora el terreno intermedio."
+  },
+  "mobileInfantry.name": {
+    "source": "Mobile Infantry",
+    "target": "Infantería móvil"
+  },
+  "mobileInfantry.variants.transport.ground": {
+    "source": "Ground transport",
+    "target": "Transporte terrestre"
+  },
+  "mobileInfantry.variants.transport.flying": {
+    "source": "Flying transport",
+    "target": "Transporte volador"
+  },
+  "mobileInfantry.text": {
+    "source": "Spearmen who ride to the battle on giant tortoises and walk the last mile.\n\n#### In play\nMarked stands move quickly until they first fight.",
+    "target": "Lanceros que van a la batalla a lomos de tortugas gigantes y caminan la última milla.\n\n#### En juego\nLas peanas marcadas mueven deprisa hasta su primer combate."
+  },
+  "negateMagic.name": {
+    "source": "Negate Magic",
+    "target": "Anular magia"
+  },
+  "negateMagic.variants.reach.self": {
+    "source": "Self",
+    "target": "Propia"
+  },
+  "negateMagic.variants.reach.zone": {
+    "source": "Zone",
+    "target": "Zona"
+  },
+  "negateMagic.variants.reach.mindless": {
+    "source": "Mindless",
+    "target": "Sin mente"
+  },
+  "negateMagic.text": {
+    "source": "A silver ward that makes spells slide off like rain on oilcloth.\n\n#### In play\nThe stand shrugs off magical attacks.",
+    "target": "Una guarda de plata que hace resbalar los hechizos como lluvia en hule.\n\n#### En juego\nLa peana resiste los ataques mágicos."
+  },
+  "noCamp.name": {
+    "source": "No Camp",
+    "target": "Sin campamento"
+  },
+  "noCamp.text": {
+    "source": "The horde carries everything it owns, which is not much.\n\n#### In play\nThe army has no camp.",
+    "target": "La horda carga con todo lo que tiene, que no es mucho.\n\n#### En juego\nEl ejército no tiene campamento."
+  },
+  "packTrain.name": {
+    "source": "Pack Train and Herds",
+    "target": "Recua y rebaños"
+  },
+  "packTrain.text": {
+    "source": "Herds of woolly goats that wander wherever the shepherd sleeps.\n\n#### In play\nThe camp may stand anywhere along the base edge.",
+    "target": "Rebaños de cabras lanudas que van donde duerma el pastor.\n\n#### En juego\nEl campamento puede ir en cualquier punto del borde propio."
+  },
+  "preparedDefenses.name": {
+    "source": "Prepared Defenses",
+    "target": "Defensas preparadas"
+  },
+  "preparedDefenses.text": {
+    "source": "Ditches full of sharpened bones dug the night before.\n\n#### In play\nEach card places one obstacle in front of the army.",
+    "target": "Zanjas llenas de huesos afilados cavadas la noche anterior.\n\n#### En juego\nCada carta coloca un obstáculo frente al ejército."
+  },
+  "prowess.name": {
+    "source": "Prowess",
+    "target": "Destreza"
+  },
+  "prowess.text": {
+    "source": "Weapons forged in dragonfire glow along the line.\n\n#### In play\nA winning stand adds one before the result is read.",
+    "target": "Armas forjadas en fuego de dragón brillan a lo largo de la línea.\n\n#### En juego\nUna peana vencedora suma uno antes de leer el resultado."
+  },
+  "rangedAttack.name": {
+    "source": "Ranged Attack",
+    "target": "Ataque a distancia"
+  },
+  "rangedAttack.variants.effect.physical": {
+    "source": "Physical",
+    "target": "Física"
+  },
+  "rangedAttack.variants.effect.magical": {
+    "source": "Magical",
+    "target": "Mágica"
+  },
+  "rangedAttack.text": {
+    "source": "Rock-throwing ogres who never learned to use a bow.\n\n#### In play\nThe stand may shoot even though its kind usually cannot.",
+    "target": "Ogros que lanzan rocas y nunca aprendieron a usar un arco.\n\n#### En juego\nLa peana puede disparar aunque los de su clase no suelan hacerlo."
+  },
+  "regenerate.name": {
+    "source": "Regenerate",
+    "target": "Regenerar"
+  },
+  "regenerate.text": {
+    "source": "Bone soldiers who pull themselves back together after the fight.\n\n#### In play\nA lost stand may return by paying command points.",
+    "target": "Soldados de hueso que se recomponen después del combate.\n\n#### En juego\nUna peana perdida puede volver pagando puntos de mando."
+  },
+  "slow.name": {
+    "source": "Slow",
+    "target": "Lento"
+  },
+  "slow.text": {
+    "source": "Clay golems who take their time about everything.\n\n#### In play\nThe stand moves a little less than others of its kind.",
+    "target": "Gólems de arcilla que se toman su tiempo para todo.\n\n#### En juego\nLa peana mueve algo menos que otras de su clase."
+  },
+  "spellblast.name": {
+    "source": "Spellblast",
+    "target": "Explosión arcana"
+  },
+  "spellblast.variants.reach.limited": {
+    "source": "Limited Spellblast",
+    "target": "Explosión arcana limitada"
+  },
+  "spellblast.variants.reach.unlimited": {
+    "source": "Unlimited Spellblast",
+    "target": "Explosión arcana ilimitada"
+  },
+  "spellblast.variants.effect.physical": {
+    "source": "Physical",
+    "target": "Física"
+  },
+  "spellblast.variants.effect.magical": {
+    "source": "Magical",
+    "target": "Mágica"
+  },
+  "spellblast.text": {
+    "source": "Fireballs, frogs from the sky and other loud arguments.\n\n#### In play\nThe stand casts a long range attack, limited or unlimited.",
+    "target": "Bolas de fuego, ranas del cielo y otras discusiones ruidosas.\n\n#### En juego\nLa peana lanza un ataque a larga distancia, limitado o ilimitado."
+  },
+  "spikedCarts.name": {
+    "source": "Spiked Carts",
+    "target": "Carros con púas"
+  },
+  "spikedCarts.text": {
+    "source": "Wheelbarrows bristling with pitchforks, pushed by stubborn farmers.\n\n#### In play\nThe stand fights better against riders but moves only a short way.",
+    "target": "Carretillas erizadas de horcas empujadas por granjeros tozudos.\n\n#### En juego\nLa peana lucha mejor contra jinetes pero mueve muy poco."
+  },
+  "subcommander.name": {
+    "source": "Subcommander",
+    "target": "Subcomandante"
+  },
+  "subcommander.text": {
+    "source": "A sergeant who knows what the general wants before the general does.\n\n#### In play\nMoves that include this hero cost fewer command points.",
+    "target": "Un sargento que sabe lo que quiere el general antes que el propio general.\n\n#### En juego\nLos movimientos que incluyen a este héroe cuestan menos puntos de mando."
+  },
+  "supportingShooters.name": {
+    "source": "Supporting Shooters",
+    "target": "Tiradores de apoyo"
+  },
+  "supportingShooters.text": {
+    "source": "A thin line of slingers tucked behind the shield wall.\n\n#### In play\nThe stand adds one against charging riders and wild warriors.",
+    "target": "Una fina línea de honderos tras el muro de escudos.\n\n#### En juego\nLa peana suma uno contra jinetes a la carga y guerreros salvajes."
+  },
+  "terrainAffinity.name": {
+    "source": "Terrain Affinity",
+    "target": "Afinidad con el terreno"
+  },
+  "terrainAffinity.text": {
+    "source": "Swamp lizards who treat the marsh like a paved road.\n\n#### In play\nThe stand treats two chosen kinds of terrain as open ground.",
+    "target": "Lagartos de pantano que recorren la ciénaga como si fuera un camino empedrado.\n\n#### En juego\nLa peana trata dos tipos de terreno elegidos como terreno abierto."
+  },
+  "terror.name": {
+    "source": "Terror",
+    "target": "Terror"
+  },
+  "terror.text": {
+    "source": "A shambling horror whose very shadow makes horses bolt.\n\n#### In play\nA beaten enemy panics and a doubled one is destroyed.",
+    "target": "Un horror tambaleante cuya sombra desboca a los caballos.\n\n#### En juego\nUn enemigo vencido entra en pánico y uno doblado es destruido."
+  },
+  "unreliable.name": {
+    "source": "Unreliable",
+    "target": "Poco fiable"
+  },
+  "unreliable.text": {
+    "source": "Mercenary imps whose loyalty lasts exactly as long as the pay.\n\n#### In play\nWhen the command die rolls a one, the costliest such stand leaves.",
+    "target": "Diablillos mercenarios cuya lealtad dura exactamente lo que dura la paga.\n\n#### En juego\nCuando el dado de mando saca un uno, la peana más cara de este tipo se marcha."
+  },
+  "unruly.name": {
+    "source": "Unruly",
+    "target": "Indisciplinado"
+  },
+  "unruly.text": {
+    "source": "Undead conscripts who hear orders but rarely listen.\n\n#### In play\nThe stand costs one more command point to move.",
+    "target": "Reclutas no muertos que oyen las órdenes pero rara vez escuchan.\n\n#### En juego\nMover la peana cuesta un punto de mando más."
+  },
+  "weaken.name": {
+    "source": "Weaken",
+    "target": "Debilitado"
+  },
+  "weaken.text": {
+    "source": "Enchanted sleepers still yawning when the trumpets sound.\n\n#### In play\nA beaten stand subtracts one before the result is read.",
+    "target": "Durmientes encantados que aún bostezan cuando suenan las trompetas.\n\n#### En juego\nUna peana vencida resta uno antes de leer el resultado."
+  }
+}

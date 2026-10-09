@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
+import { loadCuration } from '../lib/data/curation.ts';
 import {
   baselineOf,
   type CanaryHit,
@@ -12,7 +13,7 @@ import {
 } from '../lib/data/restricted-content.ts';
 import { loadSnapshot } from '../lib/data/snapshot.ts';
 import { countOf } from '../lib/domain/plural.ts';
-import { run, snapshotDirectory } from './cli.ts';
+import { curationDirectory, run, snapshotDirectory } from './cli.ts';
 
 const skippedDirectories = new Set(['.git', 'node_modules']);
 
@@ -56,6 +57,7 @@ const check = async () => {
     allowPositionals: true,
     options: {
       snapshot: { type: 'string', default: snapshotDirectory },
+      curation: { type: 'string', default: curationDirectory },
       baseline: { type: 'string' },
       'update-baseline': { type: 'boolean', default: false },
       tracked: { type: 'boolean', default: false },
@@ -63,8 +65,12 @@ const check = async () => {
     },
   });
   const roots = positionals.length > 0 ? positionals : ['.'];
+  const { fantasy } = (await loadCuration(values.curation)).games;
   const scan = canaryScanner(
-    restrictedCanaries(await loadSnapshot(values.snapshot)),
+    restrictedCanaries({
+      ...(await loadSnapshot(values.snapshot)),
+      fantasyCardText: fantasy ? Object.values(fantasy.text) : [],
+    }),
   );
   const listed = values.tracked
     ? await tracked(roots)

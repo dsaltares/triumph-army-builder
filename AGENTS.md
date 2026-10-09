@@ -20,7 +20,8 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
   copies them into a checkout of this repo and runs the project there.
   The directory mirrors the tree it tests and imports only through `@/`.
 - `yarn check:restricted [--tracked] [--exclude <prefix>] [--baseline <file>] [--update-baseline]
-  [paths]` — look for every army name and battle card line in the snapshot across the files
+  [paths]` — look for every army name and battle card line in the snapshot, and every line of the
+  Fantasy Triumph card text in the curation, across the files
   under `paths` (git-tracked ones with `--tracked`) and exit non-zero on any the baseline does not
   hold, or on a baselined one that is gone. It needs the real snapshot, so it runs in the data
   repo's `restricted-content` workflow, over this repo's tree, its build and its image, with an
@@ -47,7 +48,9 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
 - `yarn data:pack [--snapshot <dir>] [--curation <dir>] [--translations <dir>] [--out <file>]` —
   validate the snapshot and the curated overlays, and write every locale's bundle files into one
   reference pack (ADR 0035), `.data/reference-<dataVersion>.json.gz` unless `--out` names another
-  file; the directories default to `data/`, which only a checkout of the data repo has
+  file; the directories default to `data/`, which only a checkout of the data repo has. A
+  `games/fantasy/` directory in the curation adds the Fantasy Triumph section (ADR 0039, ADR
+  0040); a pack without one still imports, and `reference.games` then offers Triumph! alone
 - `yarn db:import-reference <path|url> [--rollback-to <version>]` — write a reference pack into
   the database in one transaction and make its version current, doing nothing for a version it
   already holds; `--rollback-to` makes an imported version current again (ADR 0034)
@@ -262,7 +265,10 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
   card costs and the sub-faction overlay are JSON under `data/curation/` in the data repo, read through the schemas
   in `lib/data/curation.ts`; `buildBundle` puts them on the files it packs, and `lib/domain` reads
   them from the data it is given — `pointCosts`, `troopTypeProfiles`, `troopTypeMovements`. The
-  cost-rule kinds, the overlay logic and the troop type codes stay in code.
+  cost-rule kinds, the overlay logic and the troop type codes stay in code. The same holds for
+  Fantasy Triumph: its card codes and the cost-rule and constraint kinds in
+  `lib/domain/fantasy/battle-cards.ts` are code; every price, eligibility list, name and line of
+  rules text is under `data/curation/games/fantasy/`.
 - **Forms are React Hook Form + zod**, through `@hookform/resolvers/zod`, validating on blur. One
   schema per form, and it is the same schema the server is configured from where there is a choice.
 - Mobile-first: the builder is used standing at a table.

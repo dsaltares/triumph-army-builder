@@ -7,10 +7,12 @@ import {
   armyIndexSchema,
   battleCardTextSchema,
   bundledBattleCardsSchema,
+  bundledFantasyCardsSchema,
   bundledTroopTypesSchema,
+  fantasyCardTextSchema,
   tagWordsSchema,
 } from './bundle-schema.ts';
-import type { Curation } from './curation-schema.ts';
+import { type Curation, fantasyFormatSchema } from './curation-schema.ts';
 import { manifestSchema, thematicCategorySchema } from './schema.ts';
 import type { MeshweshSnapshot } from './snapshot.ts';
 import { createTranslator, type TranslationCatalogue } from './translations.ts';
@@ -29,8 +31,18 @@ const sharedFileSchemas: Readonly<Record<string, z.ZodType>> = {
 
 const requiredPaths = Object.keys(sharedFileSchemas);
 
+const fantasyFileSchemas: Readonly<Record<string, z.ZodType>> = {
+  [bundlePaths.fantasy.troopTypes]: bundledTroopTypesSchema,
+  [bundlePaths.fantasy.battleCards]: bundledFantasyCardsSchema,
+  [bundlePaths.fantasy.battleCardText]: fantasyCardTextSchema,
+  [bundlePaths.fantasy.format]: fantasyFormatSchema,
+};
+
+const fantasyPaths = Object.keys(fantasyFileSchemas);
+
 const contentsSchemaFor = (path: string) =>
   sharedFileSchemas[path] ??
+  fantasyFileSchemas[path] ??
   (armyPathPattern.test(path) ? armyDetailSchema : undefined);
 
 const bundleFileSchema: z.ZodType<BundleFile> = z
@@ -71,6 +83,14 @@ const localeFilesSchema = z
     }
     for (const path of requiredPaths.filter((path) => !paths.has(path))) {
       context.addIssue({ code: 'custom', message: `${path} is missing` });
+    }
+    if (fantasyPaths.some((path) => paths.has(path))) {
+      for (const path of fantasyPaths.filter((path) => !paths.has(path))) {
+        context.addIssue({
+          code: 'custom',
+          message: `${path} is missing from the Fantasy Triumph section`,
+        });
+      }
     }
   });
 
