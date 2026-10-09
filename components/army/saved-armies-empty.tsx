@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { NewListDialog } from '@/components/army/new-list-dialog';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
 import { buttonVariants } from '@/components/ui/button';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import { routes } from '@/lib/navigation';
 
 export function SavedArmiesEmpty({

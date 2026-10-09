@@ -2,6 +2,7 @@ import type {
   SubFactionGroup,
   SubFactionVariant,
 } from '../../data/sub-factions.ts';
+import { triumphRules } from '../games/triumph-rules.ts';
 import {
   type ArmyList,
   type DateRange,
@@ -14,7 +15,7 @@ import {
 } from './availability.ts';
 import type { ArmyPoints } from './points.ts';
 import { type ArmySelection, emptySelection } from './selection.ts';
-import { triumphRules, type ValidationRules } from './validation.ts';
+import type { ValidationRules } from './validation.ts';
 
 export type PointsStatus = 'under' | 'exact' | 'over';
 

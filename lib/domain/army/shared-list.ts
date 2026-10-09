@@ -14,3 +14,5 @@ export type SharedList = {
   selection: ArmySelection;
   createdAt: string;
 };
+
+export type SharedGameList = SharedList & { game: 'triumph' };

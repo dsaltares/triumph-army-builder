@@ -1,3 +1,4 @@
+import { deflateSync, inflateSync } from 'fflate';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { type BattleCardCode, battleCardCodes } from '@/lib/data/schema.ts';
 import { armyDetail } from '@/test/fixtures/army.ts';
@@ -21,10 +22,13 @@ import {
 } from './selection';
 import {
   decodeSelection,
+  decodeShareCode,
   encodeSelection,
+  encodeShareCode,
   shareCodeBudgetChars,
   shareCodecVersion,
   shareCodeMaxChars,
+  shareCodeMaxInflatedBytes,
 } from './share-codec';
 
 const dataVersion = '2026-09-17.abcdef01';
@@ -78,8 +82,11 @@ const roundTrip = (selection: ArmySelection) => {
   return decoded.selection;
 };
 
+const bodyOf = (bytes: Uint8Array) =>
+  `${shareCodecVersion}.${Buffer.from(bytes).toString('base64url')}`;
+
 const codeOf = (body: Buffer | string) =>
-  `${shareCodecVersion}.${Buffer.from(body as Buffer).toString('base64url')}`;
+  bodyOf(deflateSync(Buffer.from(body as Buffer)));
 
 const armyLists = async () => await sampleArmyLists();
 
@@ -290,6 +297,126 @@ describe('a realistic army', () => {
 
       expect(roundTrip(selection)).toEqual(selection);
     }
+  });
+
+  it('stays within the budget for every sample army, game and all', () => {
+    for (const armyList of lists) {
+      expect(encodeSelection(realistic(armyList)).length).toBeLessThanOrEqual(
+        shareCodeBudgetChars,
+      );
+    }
+  });
+});
+
+describe('a code naming its game', () => {
+  const payloadOf = (code: string) =>
+    JSON.parse(
+      Buffer.from(
+        inflateSync(
+          Buffer.from(code.slice(code.indexOf('.') + 1), 'base64url'),
+        ),
+      ).toString(),
+    );
+
+  it('names the game ahead of the selection', () => {
+    expect(payloadOf(encodeSelection(full))).toEqual({
+      game: 'triumph',
+      ...full,
+    });
+  });
+
+  it('round trips a Triumph! list with its game', () => {
+    expect(
+      decodeShareCode(encodeShareCode({ game: 'triumph', selection: full })),
+    ).toEqual({ ok: true, list: { game: 'triumph', selection: full } });
+  });
+
+  it('encodes a Triumph! list the same whether or not its game is named', () => {
+    expect(encodeShareCode({ game: 'triumph', selection: full })).toBe(
+      encodeSelection(full),
+    );
+  });
+
+  it.each([
+    ['no game', JSON.stringify(full)],
+    [
+      'a game this build does not have',
+      JSON.stringify({ game: 'chess', ...full }),
+    ],
+    ['a payload that is not an object', JSON.stringify(['triumph', full])],
+  ])('refuses %s', (_case, payload) => {
+    expect(decodeShareCode(codeOf(payload))).toEqual({
+      ok: false,
+      reason: 'malformed',
+    });
+  });
+});
+
+describe('a compressed code', () => {
+  it('is shorter than the selection it carries, spelled out', () => {
+    expect(encodeSelection(full).length).toBeLessThan(
+      Buffer.from(JSON.stringify(full)).toString('base64url').length,
+    );
+  });
+
+  it('refuses a payload that was never deflated', () => {
+    expect(decodeSelection(bodyOf(Buffer.from(JSON.stringify(full))))).toEqual({
+      ok: false,
+      reason: 'malformed',
+    });
+  });
+
+  it('refuses a payload that inflates past anything a list could be', () => {
+    const bomb = codeOf(Buffer.alloc(100_000, ' '));
+
+    expect(bomb.length).toBeLessThan(shareCodeMaxChars);
+    expect(decodeSelection(bomb)).toEqual({ ok: false, reason: 'malformed' });
+  });
+
+  it('accepts a payload right at the size it may inflate to', () => {
+    const json = JSON.stringify({ game: 'triumph', ...full });
+    const padded = json.padEnd(shareCodeMaxInflatedBytes, ' ');
+
+    expect(decodeSelection(codeOf(padded))).toEqual({
+      ok: true,
+      selection: full,
+    });
+  });
+});
+
+describe('a code minted before codes named their game', () => {
+  const mintedBeforeGames =
+    '1.eyJhcm15IjoiYXJteS0xIiwiZGF0YVZlcnNpb24iOiIyMDI2LTA5LTE3LmFiY2RlZjAxIiwieWVhciI6LTI5MDAsInZhcmlhbnQiOm51bGwsImNvbnRpbmdlbnRHcm91cHMiOlsiZ3JvdXAvMCJdLCJzdGFuZHMiOnsibWFpbi8wIjp7IlNQUiI6Nn0sIm1haW4vMSI6eyJBUkMiOjJ9fSwiZ2VuZXJhbCI6eyJvcHRpb24iOiJtYWluLzAiLCJ0cm9vcFR5cGUiOiJTUFIifSwiYXJteUJhdHRsZUNhcmRzIjp7IkZDIjoxfSwidHJvb3BCYXR0bGVDYXJkcyI6eyJtYWluLzAiOnsiSEwiOjR9fX0';
+
+  const mintedSelection = applied([
+    (selection) => withContingentGroup(selection, optionalGroup),
+    (selection) => withStands(selection, spearmen, 'SPR', 6),
+    (selection) => withStands(selection, archers, 'ARC', 2),
+    (selection) =>
+      withGeneral(selection, { option: spearmen.id, troopType: 'SPR' }),
+    (selection) => withArmyBattleCard(selection, 'FC', 1),
+    (selection) => withTroopBattleCard(selection, spearmen, 'HL', 4),
+  ]);
+
+  it('still opens as a Triumph! list', () => {
+    expect(decodeShareCode(mintedBeforeGames)).toEqual({
+      ok: true,
+      list: { game: 'triumph', selection: mintedSelection },
+    });
+  });
+
+  it('still opens as a selection', () => {
+    expect(decodeSelection(mintedBeforeGames)).toEqual({
+      ok: true,
+      selection: mintedSelection,
+    });
+  });
+
+  it('is re-encoded under the current version', () => {
+    expect(
+      encodeSelection(mintedSelection).startsWith(`${shareCodecVersion}.`),
+    ).toBe(true);
+    expect(encodeSelection(mintedSelection)).not.toBe(mintedBeforeGames);
   });
 });
 

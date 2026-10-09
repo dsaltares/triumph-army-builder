@@ -1,4 +1,5 @@
 import type { BattleCardNames } from '../battle-cards/listing.ts';
+import { triumphRules } from '../games/triumph-rules.ts';
 import type { TroopTypeNames } from '../troop-types.ts';
 import type { ArmyList } from './army-list.ts';
 import type { PointCosts } from './points.ts';
@@ -7,7 +8,6 @@ import {
   type Finding,
   type FindingSeverity,
   isLegal,
-  triumphRules,
   type ValidationRules,
   validateArmy,
 } from './validation.ts';

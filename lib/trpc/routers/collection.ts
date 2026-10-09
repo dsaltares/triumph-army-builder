@@ -19,12 +19,12 @@ import { currentDataVersion } from '../../db/reference.ts';
 import { buildArmyList } from '../../domain/army/army-list.ts';
 import { pointCosts } from '../../domain/army/points.ts';
 import { troopOptionIdSchema } from '../../domain/army/selection-schema.ts';
-import { triumphRules } from '../../domain/army/validation.ts';
 import {
   buildableListLimit,
   buildableLists,
 } from '../../domain/collection/buildable.ts';
 import { collectionEntryFormSchema } from '../../domain/collection/entry-schema.ts';
+import { triumphRules } from '../../domain/games/triumph-rules.ts';
 import { locales } from '../../i18n/locales.ts';
 import { writeEvent } from '../events.ts';
 import { accountProcedure, router } from '../trpc.ts';

@@ -61,7 +61,8 @@ export type ArmiesTable = {
   id: string;
   user_id: string;
   name: string;
-  army_list_id: string;
+  game: Generated<string>;
+  army_list_id: string | null;
   selection: string;
   data_version: string;
   created_at: Timestamp;
@@ -72,7 +73,8 @@ export type SharesTable = {
   id: string;
   user_id: string | null;
   name: string;
-  army_list_id: string;
+  game: Generated<string>;
+  army_list_id: string | null;
   selection: string;
   data_version: string;
   created_at: Timestamp;

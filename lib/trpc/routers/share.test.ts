@@ -246,3 +246,20 @@ describe('the events a share records', () => {
     expect(await recordedEvents(db)).toEqual([]);
   });
 });
+
+describe('a shared list and its game', () => {
+  it('is a Triumph! copy whether or not the caller names the game', async () => {
+    const unnamed = await caller(owner).share.create({
+      name: 'Cannae',
+      selection: fixtureSelection(),
+    });
+    const named = await caller(owner).share.create({
+      name: 'Cannae',
+      game: 'triumph',
+      selection: fixtureSelection(),
+    });
+
+    expect(unnamed.game).toBe('triumph');
+    expect(named).toEqual(unnamed);
+  });
+});

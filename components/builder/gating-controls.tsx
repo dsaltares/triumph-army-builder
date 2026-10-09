@@ -43,7 +43,7 @@ import {
   periodIndexAt,
   yearPeriods,
 } from '@/lib/domain/army/gating-boundaries';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import type { TroopTypeNames } from '@/lib/domain/troop-types';
 import { formatYear, formatYearSpan, formatYearSpans } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/routing';

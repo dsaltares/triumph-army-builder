@@ -85,6 +85,29 @@ describe('shareId', () => {
 });
 
 describe('insertShare', () => {
+  it('files the copy under its game, keeping the selection as it always stored it', async () => {
+    const shared = await share();
+
+    const row = await db
+      .selectFrom('shares')
+      .select(['game', 'army_list_id', 'selection'])
+      .where('id', '=', shared.id)
+      .executeTakeFirstOrThrow();
+    expect(shared.game).toBe('triumph');
+    expect(row).toMatchObject({ game: 'triumph', army_list_id: 'army-1' });
+    expect(JSON.parse(row.selection)).toEqual(fixtureSelection());
+  });
+
+  it('names the same copy whether or not the game is named', () => {
+    expect(
+      shareId({
+        name: 'Cannae',
+        game: 'triumph',
+        selection: fixtureSelection(),
+      }),
+    ).toBe(shareId({ name: 'Cannae', selection: fixtureSelection() }));
+  });
+
   it('stores the copy under its content id', async () => {
     const shared = await share();
 

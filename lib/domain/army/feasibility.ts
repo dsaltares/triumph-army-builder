@@ -4,6 +4,7 @@ import {
   type BattleCardCosts,
   boughtForTheWholeTroopEntry,
 } from '../battle-cards/costs.ts';
+import { triumphRules } from '../games/triumph-rules.ts';
 import {
   type ArmyList,
   allyTroopOptionGroups,
@@ -27,7 +28,7 @@ import {
   withStands,
   withTroopBattleCard,
 } from './selection.ts';
-import { triumphRules, type ValidationRules } from './validation.ts';
+import type { ValidationRules } from './validation.ts';
 
 export type GatingBucket = {
   variant: string | null;

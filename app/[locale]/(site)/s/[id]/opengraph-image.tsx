@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { servedReference } from '@/lib/data/served-bundle';
 import { getDatabase } from '@/lib/db/client';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import { formatPoints, formatYear } from '@/lib/format';
 import type { IdRouteProps } from '@/lib/navigation';
 import { loadSharedView } from '@/lib/share/shared-view';

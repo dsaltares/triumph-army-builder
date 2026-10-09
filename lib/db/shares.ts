@@ -1,14 +1,19 @@
 import { createHash } from 'node:crypto';
 import type { Kysely } from 'kysely';
-import type { ArmySelection } from '../domain/army/selection.ts';
-import { selectionSchema } from '../domain/army/selection-schema.ts';
-import { encodeSelection } from '../domain/army/share-codec.ts';
-import { type SharedList, shareIdLength } from '../domain/army/shared-list.ts';
+import {
+  type SelectionInput,
+  withGame,
+} from '../domain/army/selection-schema.ts';
+import { encodeShareCode } from '../domain/army/share-codec.ts';
+import {
+  type SharedGameList,
+  shareIdLength,
+} from '../domain/army/shared-list.ts';
+import { listColumns, storedList } from './list-columns.ts';
 import type { Database, Share } from './schema.ts';
 
-export type ShareContent = {
+export type ShareContent = SelectionInput & {
   name: string;
-  selection: ArmySelection;
 };
 
 export type NewShareRecord = ShareContent & {
@@ -16,18 +21,17 @@ export type NewShareRecord = ShareContent & {
   at: string;
 };
 
-export const shareId = ({ name, selection }: ShareContent) =>
+export const shareId = ({ name, ...list }: ShareContent) =>
   createHash('sha256')
-    .update(`${name}\n${encodeSelection(selection)}`)
+    .update(`${name}\n${encodeShareCode(withGame(list))}`)
     .digest('base64url')
     .slice(0, shareIdLength);
 
-export const toSharedList = (row: Share): SharedList => ({
+export const toSharedList = (row: Share): SharedGameList => ({
   id: row.id,
   name: row.name,
-  armyListId: row.army_list_id,
+  ...storedList(row),
   dataVersion: row.data_version,
-  selection: selectionSchema.parse(JSON.parse(row.selection)),
   createdAt: row.created_at,
 });
 
@@ -55,18 +59,17 @@ export const countShares = async (db: Kysely<Database>, userId: string) =>
 
 export const insertShare = async (
   db: Kysely<Database>,
-  { userId, name, selection, at }: NewShareRecord,
-): Promise<SharedList> => {
-  const id = shareId({ name, selection });
+  { userId, at, ...content }: NewShareRecord,
+): Promise<SharedGameList> => {
+  const id = shareId(content);
+  const { name, ...list } = content;
   await db
     .insertInto('shares')
     .values({
       id,
       user_id: userId,
       name,
-      army_list_id: selection.army,
-      selection: JSON.stringify(selection),
-      data_version: selection.dataVersion,
+      ...listColumns(list),
       created_at: at,
       last_seen_at: at,
     })

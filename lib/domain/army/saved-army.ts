@@ -25,6 +25,8 @@ export type SavedArmy = {
   updatedAt: string;
 };
 
+export type SavedGameList = SavedArmy & { game: 'triumph' };
+
 const copySuffix = ' (copy)';
 
 export const copyName = (name: string) =>
@@ -43,13 +45,13 @@ const descending = (left: string, right: string) =>
 export const byMostRecent = (left: SavedArmy, right: SavedArmy) =>
   descending(left.updatedAt, right.updatedAt) || descending(left.id, right.id);
 
-export const withArmyUpserted = (
-  armies: readonly SavedArmy[],
-  army: SavedArmy,
-): SavedArmy[] =>
+export const withArmyUpserted = <Army extends SavedArmy>(
+  armies: readonly Army[],
+  army: Army,
+): Army[] =>
   [...armies.filter(({ id }) => id !== army.id), army].sort(byMostRecent);
 
-export const withArmyRemoved = (
-  armies: readonly SavedArmy[],
+export const withArmyRemoved = <Army extends SavedArmy>(
+  armies: readonly Army[],
   id: string,
-): SavedArmy[] => armies.filter((army) => army.id !== id);
+): Army[] => armies.filter((army) => army.id !== id);

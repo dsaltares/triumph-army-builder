@@ -48,3 +48,26 @@ export const selectionSchema = z.object({
     z.partialRecord(z.enum(battleCardCodes), countSchema),
   ),
 });
+
+export const triumphSavedSelectionSchema = z.object({
+  game: z.literal('triumph'),
+  selection: selectionSchema,
+});
+
+export const savedSelectionSchema = z.discriminatedUnion('game', [
+  triumphSavedSelectionSchema,
+]);
+
+export type SavedSelection = z.infer<typeof savedSelectionSchema>;
+
+export const parseStoredSelection = (game: string, json: string) =>
+  savedSelectionSchema.parse({ game, selection: JSON.parse(json) });
+
+export type SelectionInput =
+  | SavedSelection
+  | { game?: undefined; selection: z.infer<typeof selectionSchema> };
+
+export const withGame = (input: SelectionInput): SavedSelection =>
+  input.game === undefined
+    ? { game: 'triumph', selection: input.selection }
+    : { game: input.game, selection: input.selection };

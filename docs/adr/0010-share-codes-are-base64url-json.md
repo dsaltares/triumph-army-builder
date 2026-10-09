@@ -1,6 +1,6 @@
 # 0010 — Encode a shared army as versioned base64url JSON
 
-- **Status:** Accepted
+- **Status:** Accepted · no compression superseded by [0041](0041-a-share-code-deflates-its-payload.md)
 - **Date:** 2026-09-17
 - **Related:** #25, #45, #47, ADR [0003](0003-one-data-version-per-army.md)
 

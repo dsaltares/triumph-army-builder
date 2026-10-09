@@ -1,0 +1,86 @@
+import { beforeAll, describe, expect, it } from 'vitest';
+import { readViewData } from '@/lib/share/shared-view';
+import { sampleBundleHolding } from '@/test/bundle-source.ts';
+import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
+import { pointsMeter } from '../army/builder.ts';
+import { canonicalSelection } from '../army/canonical-selection.ts';
+import { armyPoints, pointCosts } from '../army/points.ts';
+import { defaultListName } from '../army/saved-army.ts';
+import { selectionSchema } from '../army/selection-schema.ts';
+import { validationReport } from '../army/validation-report.ts';
+import { games } from '../game.ts';
+import { troopTypeNames } from '../troop-types.ts';
+import { gameModule } from './registry.ts';
+import type { TriumphReference } from './triumph.ts';
+
+let reference: TriumphReference;
+
+beforeAll(async () => {
+  const data = await readViewData(
+    await sampleBundleHolding(armyDetail()),
+    armyDetail().id,
+  );
+  if (!data) {
+    throw new Error('the fixture army did not load');
+  }
+  reference = data;
+});
+
+describe('the game registry', () => {
+  it('holds a module for every game, under its own name', () => {
+    for (const game of games) {
+      expect(gameModule(game).game).toBe(game);
+    }
+  });
+});
+
+describe('the Triumph! module', () => {
+  const triumph = gameModule('triumph');
+
+  it('builds lists to 48 points', () => {
+    expect(triumph.rules).toEqual({ pointsCap: 48 });
+  });
+
+  it('reads and writes the selection the share codec always has', () => {
+    expect(triumph.selectionSchema).toBe(selectionSchema);
+    expect(triumph.canonicalise).toBe(canonicalSelection);
+  });
+
+  it('files a list under the army list it was built from', () => {
+    expect(triumph.armyListId(fixtureSelection())).toBe(armyDetail().id);
+  });
+
+  it('adds up and validates a list the way the builder does', () => {
+    const selection = fixtureSelection();
+    const costs = pointCosts(reference.troopTypes, reference.battleCards);
+
+    expect(triumph.points(selection, reference)).toEqual(
+      pointsMeter(armyPoints(reference.armyList, selection, costs)),
+    );
+    expect(triumph.validate(selection, reference)).toEqual(
+      validationReport(
+        reference.armyList,
+        selection,
+        costs,
+        troopTypeNames(reference.troopTypes),
+      ),
+    );
+  });
+
+  it('puts the list name on its sheet', () => {
+    expect(
+      triumph.sheetData(
+        { name: 'Cannae', selection: fixtureSelection() },
+        reference,
+      ),
+    ).toMatchObject({ listName: 'Cannae', armyId: armyDetail().id });
+  });
+
+  it('names a new list after its army and the day it was started', () => {
+    const at = new Date('2026-09-20T10:00:00.000Z');
+
+    expect(triumph.listTitle(reference, at)).toBe(
+      defaultListName(reference.armyList.name, at),
+    );
+  });
+});

@@ -10,7 +10,7 @@ import { ListTitle } from '@/components/builder/list-title';
 import { PageHeader } from '@/components/layout/page-header';
 import { ReferenceUnavailable } from '@/components/reference/reference-unavailable';
 import { type ServedReference, servedReference } from '@/lib/data/served-bundle';
-import { triumphRules } from '@/lib/domain/army/validation';
+import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import { formatYearSpan } from '@/lib/format';
 import { armyUrl, type IdRouteProps } from '@/lib/navigation';
 
