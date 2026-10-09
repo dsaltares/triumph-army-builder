@@ -1,5 +1,7 @@
+import { createHash } from 'node:crypto';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import { z } from 'zod';
+import { formatDataVersion } from '../domain/data-version.ts';
 import { type Locale, locales } from '../i18n/locales.ts';
 import { type BundleFile, buildBundle, bundlePaths } from './bundle.ts';
 import {
@@ -12,8 +14,16 @@ import {
   fantasyCardTextSchema,
   tagWordsSchema,
 } from './bundle-schema.ts';
-import { type Curation, fantasyFormatSchema } from './curation-schema.ts';
-import { manifestSchema, thematicCategorySchema } from './schema.ts';
+import {
+  type Curation,
+  type CurationRelease,
+  fantasyFormatSchema,
+} from './curation-schema.ts';
+import {
+  type MeshweshManifest,
+  manifestSchema,
+  thematicCategorySchema,
+} from './schema.ts';
 import type { MeshweshSnapshot } from './snapshot.ts';
 import { createTranslator, type TranslationCatalogue } from './translations.ts';
 import { summarisedIssues } from './zod-issues.ts';
@@ -106,6 +116,26 @@ export type ReferencePack = z.infer<typeof referencePackSchema>;
 export const referencePackFileName = (dataVersion: string) =>
   `reference-${dataVersion}.json.gz`;
 
+const later = (left: string, right: string) =>
+  new Date(left) > new Date(right) ? left : right;
+
+export const referenceDataVersion = (
+  {
+    dataVersion,
+    fetchedAt,
+    contentHash,
+  }: Pick<MeshweshManifest, 'dataVersion' | 'fetchedAt' | 'contentHash'>,
+  release: CurationRelease | undefined,
+) =>
+  release === undefined
+    ? dataVersion
+    : formatDataVersion({
+        fetchedAt: later(release.bumpedAt, fetchedAt),
+        contentHash: createHash('sha256')
+          .update(`${contentHash}\n${release.bumpedAt}`)
+          .digest('hex'),
+      });
+
 export const buildReferencePack = ({
   snapshot,
   curation,
@@ -117,7 +147,7 @@ export const buildReferencePack = ({
   catalogues: Readonly<Record<Locale, TranslationCatalogue>>;
   builtAt: Date;
 }): ReferencePack => ({
-  dataVersion: snapshot.manifest.dataVersion,
+  dataVersion: referenceDataVersion(snapshot.manifest, curation.release),
   source: snapshot.manifest.source,
   builtAt: builtAt.toISOString(),
   locales: Object.fromEntries(

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   curationFiles,
+  curationReleaseFile,
   fantasyCurationDirectory,
   fantasyCurationFiles,
   loadCuration,
@@ -110,6 +111,31 @@ describe('loadCuration', () => {
     expect(await loadCuration(await curationDirectory({}))).toEqual(
       sampleCuration,
     );
+  });
+
+  it('reads a release bump when the curation has one, and has none otherwise', async () => {
+    const directory = await curationDirectory({});
+
+    expect((await loadCuration(directory)).release).toBeUndefined();
+
+    await writeFile(
+      join(directory, curationReleaseFile),
+      JSON.stringify({ bumpedAt: '2026-10-09T16:05:00.000Z' }),
+    );
+
+    expect((await loadCuration(directory)).release).toEqual({
+      bumpedAt: '2026-10-09T16:05:00.000Z',
+    });
+  });
+
+  it('refuses a release bump that is not a timestamp', async () => {
+    const directory = await curationDirectory({});
+    await writeFile(
+      join(directory, curationReleaseFile),
+      JSON.stringify({ bumpedAt: 'today' }),
+    );
+
+    await expect(loadCuration(directory)).rejects.toThrow('release.bumpedAt');
   });
 
   it('has no Fantasy Triumph section when the curation has no directory for it', async () => {

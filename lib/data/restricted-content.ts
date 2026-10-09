@@ -53,7 +53,7 @@ const escapedForRegExp = (text: string) =>
 
 const wholeWords = (alternatives: readonly string[]) =>
   new RegExp(
-    `(?<![\\p{L}\\p{N}])(?:${alternatives.map(escapedForRegExp).join('|')})(?![\\p{L}\\p{N}])`,
+    `(?<![\\p{L}\\p{N}-])(?:${alternatives.map(escapedForRegExp).join('|')})(?![\\p{L}\\p{N}-])`,
     'gu',
   );
 
@@ -80,21 +80,20 @@ const lineAt = (text: string) => {
 
 const withCollapsedWhitespace = (text: string) => {
   const offsets: number[] = [];
-  let collapsed = '';
+  const characters: string[] = [];
+  let afterSpace = false;
   for (let index = 0; index < text.length; index++) {
     const character = text.charAt(index);
-    if (/\s/.test(character)) {
-      if (collapsed.endsWith(' ')) {
-        continue;
-      }
-      collapsed += ' ';
-    } else {
-      collapsed += character;
+    const isSpace = /\s/.test(character);
+    if (isSpace && afterSpace) {
+      continue;
     }
+    characters.push(isSpace ? ' ' : character);
+    afterSpace = isSpace;
     offsets.push(index);
   }
   return {
-    collapsed,
+    collapsed: characters.join(''),
     originalOffset: (offset: number) => offsets[offset] ?? 0,
   };
 };

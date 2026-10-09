@@ -7,7 +7,7 @@ import {
 } from './curation-schema.ts';
 import { summarisedIssues } from './zod-issues.ts';
 
-type CuratedFiles = Omit<Curation, 'games'>;
+type CuratedFiles = Omit<Curation, 'games' | 'release'>;
 
 export const curationFiles = {
   movement: 'movement.json',
@@ -15,6 +15,8 @@ export const curationFiles = {
   battleCardCosts: 'battle-card-costs.json',
   subFactions: 'sub-factions.json',
 } as const satisfies Record<keyof CuratedFiles, string>;
+
+export const curationReleaseFile = 'release.json';
 
 export const fantasyCurationDirectory = join('games', 'fantasy');
 
@@ -30,10 +32,19 @@ const readCurationFile = async (directory: string, file: string) =>
 
 export type CurationSources = Record<keyof CuratedFiles, unknown> & {
   games?: { fantasy?: Record<keyof FantasyCuration, unknown> };
+  release?: unknown;
 };
 
-export const parseCuration = ({ games = {}, ...files }: CurationSources) => {
-  const result = curationSchema.safeParse({ ...files, games });
+export const parseCuration = ({
+  games = {},
+  release,
+  ...files
+}: CurationSources) => {
+  const result = curationSchema.safeParse({
+    ...files,
+    games,
+    ...(release === undefined ? {} : { release }),
+  });
   if (!result.success) {
     throw new Error(
       `the curation does not match its schema (${summarisedIssues(result.error)})`,
@@ -48,6 +59,17 @@ const isDirectory = async (path: string) => {
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return false;
+    }
+    throw error;
+  }
+};
+
+const readOptionalCurationFile = async (directory: string, file: string) => {
+  try {
+    return await readCurationFile(directory, file);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return undefined;
     }
     throw error;
   }
@@ -80,5 +102,6 @@ export const loadCuration = async (directory: string): Promise<Curation> => {
     ),
     subFactions: await readCurationFile(directory, curationFiles.subFactions),
     games: fantasy ? { fantasy } : {},
+    release: await readOptionalCurationFile(directory, curationReleaseFile),
   });
 };

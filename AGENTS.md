@@ -51,6 +51,10 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
   file; the directories default to `data/`, which only a checkout of the data repo has. A
   `games/fantasy/` directory in the curation adds the Fantasy Triumph section (ADR 0039, ADR
   0040); a pack without one still imports, and `reference.games` then offers Triumph! alone
+- `yarn data:bump [--snapshot <dir>] [--curation <dir>]` — stamp `release.json` in the curation so
+  the next pack carries a new data version though the snapshot has not changed, which is how a
+  change to the curation or the translations alone ships (ADR 0042) · `yarn data:version` prints
+  the version a pack would carry, which the data repo's release workflow names its release after
 - `yarn db:import-reference <path|url> [--rollback-to <version>]` — write a reference pack into
   the database in one transaction and make its version current, doing nothing for a version it
   already holds; `--rollback-to` makes an imported version current again (ADR 0034)

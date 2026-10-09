@@ -6,9 +6,11 @@ import {
   decodeReferencePack,
   encodeReferencePack,
   type ReferencePack,
+  referenceDataVersion,
   referencePackFileName,
 } from '@/lib/data/reference-pack.ts';
 import { emptyCatalogue } from '@/lib/data/translations.ts';
+import { dataVersionPattern } from '@/lib/domain/data-version.ts';
 import { sampleCuration, sampleSnapshot } from '@/test/sample.ts';
 
 const builtAt = new Date('2026-09-29T10:00:00.000Z');
@@ -167,5 +169,69 @@ describe('reference pack', () => {
         ),
       ),
     ).toThrow('does not match the data bundle schema');
+  });
+});
+
+describe('referenceDataVersion', () => {
+  const manifest = {
+    fetchedAt: '2026-09-17T20:35:10.599Z',
+    dataVersion: '2026-09-17.8457e4d4',
+    contentHash:
+      '8457e4d4c314126a854f46c6470c38f7307800c080d4084179be322909de8d17',
+  };
+
+  it('is the snapshot version when the data has never been bumped', () => {
+    expect(referenceDataVersion(manifest, undefined)).toBe(
+      '2026-09-17.8457e4d4',
+    );
+  });
+
+  it('takes the day of a bump and a hash of the snapshot and the bump', () => {
+    const bumped = referenceDataVersion(manifest, {
+      bumpedAt: '2026-10-09T16:05:00.000Z',
+    });
+
+    expect(bumped).toMatch(dataVersionPattern);
+    expect(bumped).toMatch(/^2026-10-09\./);
+    expect(bumped).not.toBe('2026-10-09.8457e4d4');
+  });
+
+  it('is the same for the same bump, and new for every later one', () => {
+    const at = (bumpedAt: string) =>
+      referenceDataVersion(manifest, { bumpedAt });
+
+    expect(at('2026-10-09T16:05:00.000Z')).toBe(at('2026-10-09T16:05:00.000Z'));
+    expect(at('2026-10-09T17:00:00.000Z')).not.toBe(
+      at('2026-10-09T16:05:00.000Z'),
+    );
+  });
+
+  it('moves with a snapshot refreshed after the bump', () => {
+    const release = { bumpedAt: '2026-10-09T16:05:00.000Z' };
+    const refreshed = {
+      fetchedAt: '2026-10-12T06:17:00.000Z',
+      dataVersion: '2026-10-12.0badf00d',
+      contentHash:
+        '0badf00d0badf00d0badf00d0badf00d0badf00d0badf00d0badf00d0badf00d',
+    };
+
+    expect(referenceDataVersion(refreshed, release)).toMatch(/^2026-10-12\./);
+    expect(referenceDataVersion(refreshed, release)).not.toBe(
+      referenceDataVersion(manifest, release),
+    );
+  });
+
+  it('stamps a bumped pack with the bumped version', async () => {
+    const snapshot = await sampleSnapshot();
+    const release = { bumpedAt: '2026-10-09T16:05:00.000Z' };
+
+    expect(
+      buildReferencePack({
+        snapshot,
+        curation: { ...sampleCuration, release },
+        catalogues: { en: emptyCatalogue(), es: emptyCatalogue() },
+        builtAt,
+      }).dataVersion,
+    ).toBe(referenceDataVersion(snapshot.manifest, release));
   });
 });
