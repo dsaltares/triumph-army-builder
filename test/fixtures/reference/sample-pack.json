@@ -1,7 +1,7 @@
 {
   "dataVersion": "2026-09-29.11a65697",
   "source": "https://sample.triumph-army-builder.test/api/v1",
-  "builtAt": "2026-09-29T15:22:21.135Z",
+  "builtAt": "2026-10-09T11:20:02.285Z",
   "locales": {
     "en": [
       {
@@ -4778,6 +4778,1865 @@
           ],
           "enemies": [],
           "subFactions": null
+        }
+      },
+      {
+        "path": "games/fantasy/troop-types.json",
+        "eager": false,
+        "contents": [
+          {
+            "permanentCode": "BLV",
+            "displayName": "Bow Levy",
+            "displayCode": "BL",
+            "description": "Massed levies who loose arrows by the bucket and hope some land.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "RBL",
+            "displayName": "Rabble",
+            "displayCode": "Rb",
+            "description": "A mob with pitchforks, torches and strong opinions.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 1
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "HRD",
+            "displayName": "Horde",
+            "displayCode": "Hd",
+            "description": "A shambling multitude that wins by simply being too many.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 7,
+                "max": 8
+              }
+            }
+          },
+          {
+            "permanentCode": "ARC",
+            "displayName": "Shooters",
+            "displayCode": "Arc",
+            "description": "Trained bowmen who shoot straight and keep their distance.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "LFT",
+            "displayName": "Light Foot",
+            "displayCode": "LFt",
+            "description": "Nimble foot who fight in loose order from cover.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "LSP",
+            "displayName": "Light Spear",
+            "displayCode": "LSp",
+            "description": "Loose-order spearmen, quick on their feet and on rough ground.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "RDR",
+            "displayName": "Raiders",
+            "displayCode": "Rd",
+            "description": "Plunderers who hit hard, grab what they can and run.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "SKM",
+            "displayName": "Skirmishers",
+            "displayCode": "Sk",
+            "description": "Scouts and slingers who pester and are gone before the charge lands.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 1
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "WBD",
+            "displayName": "Warband",
+            "displayCode": "Wb",
+            "description": "Wild warriors who charge in a howling rush.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "ART",
+            "displayName": "Artillery",
+            "displayCode": "Art",
+            "description": "Engines that hurl bolts, stones or worse.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 4,
+                "shotAt": 3
+              }
+            },
+            "movement": 2,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "EFT",
+            "displayName": "Elite Foot",
+            "displayCode": "EFt",
+            "description": "Veteran foot, the finest blades in the host.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 5,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "HFT",
+            "displayName": "Heavy Foot",
+            "displayCode": "HFt",
+            "description": "Armoured foot who hold their ground with axe and shield.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "PAV",
+            "displayName": "Pavisiers",
+            "displayCode": "Pv",
+            "description": "Crossbows or bows sheltered behind tall shields.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 8,
+                "max": 8
+              }
+            }
+          },
+          {
+            "permanentCode": "PIK",
+            "displayName": "Pikes",
+            "displayCode": "Pk",
+            "description": "A hedge of long pikes, deadly while it keeps its shape.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "SPR",
+            "displayName": "Spear",
+            "displayCode": "Sp",
+            "description": "A wall of shields and spears, the backbone of many a host.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "WWG",
+            "displayName": "War Wagons",
+            "displayCode": "WWg",
+            "description": "Armoured carts bristling with shooters.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 2,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "WRR",
+            "displayName": "Warriors",
+            "displayCode": "Wr",
+            "description": "Fighters without drill, strong in the first clash.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "BAD",
+            "displayName": "Bad Horse",
+            "displayCode": "BH",
+            "description": "Riders on beasts nobody else would mount.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "BTX",
+            "displayName": "Battle Taxi",
+            "displayCode": "BTx",
+            "description": "Mounts that carry foot soldiers to the fight and leave them there.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "CHT",
+            "displayName": "Chariots",
+            "displayCode": "Ch",
+            "description": "Chariots that race in, shoot and wheel away.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "ECV",
+            "displayName": "Elite Cavalry",
+            "displayCode": "ECv",
+            "description": "The best-mounted riders, fighting in close order.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "HBW",
+            "displayName": "Horse Bow",
+            "displayCode": "HBw",
+            "description": "Riders who shoot from the saddle and never quite close.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 8,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "JCV",
+            "displayName": "Javelin Cavalry",
+            "displayCode": "JCv",
+            "description": "Light riders who throw javelins and wheel away.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 8,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "KNT",
+            "displayName": "Knights",
+            "displayCode": "Kn",
+            "description": "Armoured riders who charge knee to knee.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "CAT",
+            "displayName": "Cataphracts",
+            "displayCode": "Cat",
+            "description": "Riders armoured head to hoof, mount included.",
+            "category": "mounted",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "ELE",
+            "displayName": "Behemoths",
+            "displayCode": "El",
+            "description": "Great beasts that trample what they cannot frighten.",
+            "category": "mounted",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 5,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "path": "games/fantasy/battle-cards.json",
+        "eager": false,
+        "contents": [
+          {
+            "code": "ambush",
+            "name": "Ambush",
+            "category": "army",
+            "variants": {
+              "reach": {
+                "home": "Home topography only",
+                "anywhere": "Any topography"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "home": {
+                  "kind": "byTopography",
+                  "points": 1,
+                  "dense": 2
+                },
+                "anywhere": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "armored",
+            "name": "Armored",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 0.5
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "away",
+            "name": "Away",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "byBearer",
+              "stand": {
+                "kind": "flat",
+                "points": 0.5
+              },
+              "hero": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "brittle",
+            "name": "Brittle",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -2,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "ART"
+                    ]
+                  },
+                  "points": 0
+                },
+                {
+                  "when": {
+                    "troopTypes": [
+                      "BLV",
+                      "ARC"
+                    ]
+                  },
+                  "points": -1
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "mindblast",
+                      "spellblast"
+                    ]
+                  },
+                  "points": -1
+                }
+              ]
+            },
+            "constraints": []
+          },
+          {
+            "code": "champion",
+            "name": "Champion",
+            "category": "hero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "chargeThrough",
+            "name": "Charge Through",
+            "category": "event",
+            "cost": {
+              "kind": "perCount",
+              "max": 3,
+              "each": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": [
+              {
+                "kind": "oneClassPerArmy"
+              }
+            ]
+          },
+          {
+            "code": "craven",
+            "name": "Craven",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -1,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "PAV",
+                      "ARC"
+                    ]
+                  },
+                  "points": -0.5
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "rangedAttack"
+                    ]
+                  },
+                  "points": -0.5
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "WWG",
+                      "KNT",
+                      "WBD",
+                      "WRR",
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fierce"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "deadly",
+            "name": "Deadly",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": []
+          },
+          {
+            "code": "delayedEntry",
+            "name": "Delayed Entry",
+            "category": "army",
+            "cost": {
+              "kind": "perMarkedCappedAtValue",
+              "points": -2
+            },
+            "constraints": [
+              {
+                "kind": "maxPerArmy",
+                "stands": 4,
+                "heroes": 1
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "fast",
+            "name": "Fast",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 0.5
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "minMovement": 8
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying",
+                  "slow"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "fierce",
+            "name": "Fierce",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -0.5,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "KNT",
+                      "ELE",
+                      "WRR",
+                      "WBD",
+                      "PIK"
+                    ]
+                  },
+                  "points": 0
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "craven"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "flying",
+            "name": "Flying",
+            "category": "stand",
+            "variants": {
+              "flight": {
+                "hover": "Hover Flying",
+                "zoom": "Zoom Flying"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "flight",
+              "options": {
+                "hover": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "zoom": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Open"
+                  },
+                  {
+                    "troopTypes": [
+                      "WWG",
+                      "ART"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fast",
+                  "slow"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "fortifiedCamp",
+            "name": "Fortified Camp",
+            "category": "army",
+            "variants": {
+              "defenses": {
+                "fortified": "Fortified Camp",
+                "heavily": "Heavily Fortified Camp"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "defenses",
+              "options": {
+                "fortified": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "heavily": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "oncePerArmy"
+              }
+            ]
+          },
+          {
+            "code": "hearten",
+            "name": "Hearten",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "holdTheLine",
+            "name": "Hold the Line",
+            "category": "event",
+            "cost": {
+              "kind": "perCount",
+              "max": 3,
+              "each": {
+                "kind": "flat",
+                "points": 0.5
+              }
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "KNT",
+                      "WBD",
+                      "WRR",
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fierce"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "illusion",
+            "name": "Illusion",
+            "category": "army",
+            "cost": {
+              "kind": "perCount",
+              "max": 6,
+              "each": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": [
+              {
+                "kind": "notOnHeroes"
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "marksman",
+            "name": "Marksman",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ARC",
+                      "PAV",
+                      "ART",
+                      "WWG"
+                    ]
+                  },
+                  {
+                    "cards": [
+                      "rangedAttack"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "requires",
+                "cards": [
+                  "rangedAttack"
+                ],
+                "bearer": "hero"
+              },
+              {
+                "kind": "maxPerArmy",
+                "stands": 4,
+                "heroes": 1
+              }
+            ]
+          },
+          {
+            "code": "massive",
+            "name": "Massive",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": 1,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "WWG",
+                      "ELE",
+                      "ART"
+                    ]
+                  },
+                  "points": 0
+                }
+              ]
+            },
+            "constraints": []
+          },
+          {
+            "code": "mindblast",
+            "name": "Mindblast",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 4
+            },
+            "constraints": []
+          },
+          {
+            "code": "mobileInfantry",
+            "name": "Mobile Infantry",
+            "category": "army",
+            "variants": {
+              "transport": {
+                "ground": "Ground transport",
+                "flying": "Flying transport"
+              }
+            },
+            "cost": {
+              "kind": "perCount",
+              "max": 8,
+              "each": {
+                "kind": "byVariant",
+                "choice": "transport",
+                "options": {
+                  "ground": {
+                    "kind": "flat",
+                    "points": 0.5
+                  },
+                  "flying": {
+                    "kind": "flat",
+                    "points": 1
+                  }
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "category": "foot"
+                  }
+                ]
+              },
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "notOnHeroes"
+              }
+            ]
+          },
+          {
+            "code": "negateMagic",
+            "name": "Negate Magic",
+            "category": "standOrHero",
+            "variants": {
+              "reach": {
+                "self": "Self",
+                "zone": "Zone",
+                "mindless": "Mindless"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "self": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "zone": {
+                  "kind": "flat",
+                  "points": 2
+                },
+                "mindless": {
+                  "kind": "flat",
+                  "points": 0.5
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "noCamp",
+            "name": "No Camp",
+            "category": "army",
+            "cost": {
+              "kind": "flat",
+              "points": 4
+            },
+            "constraints": []
+          },
+          {
+            "code": "packTrain",
+            "name": "Pack Train and Herds",
+            "category": "army",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "preparedDefenses",
+            "name": "Prepared Defenses",
+            "category": "army",
+            "cost": {
+              "kind": "perCount",
+              "max": 6,
+              "each": {
+                "kind": "byTopography",
+                "points": 0.5,
+                "dense": 1
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "prowess",
+            "name": "Prowess",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "rangedAttack",
+            "name": "Ranged Attack",
+            "category": "standOrHero",
+            "variants": {
+              "effect": {
+                "physical": "Physical",
+                "magical": "Magical"
+              }
+            },
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ARC",
+                      "PAV",
+                      "WWG",
+                      "ART"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "regenerate",
+            "name": "Regenerate",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "notOnHeroes"
+              }
+            ]
+          },
+          {
+            "code": "slow",
+            "name": "Slow",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -0.5
+            },
+            "constraints": [
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fast",
+                  "flying"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "spellblast",
+            "name": "Spellblast",
+            "category": "standOrHero",
+            "variants": {
+              "reach": {
+                "limited": "Limited Spellblast",
+                "unlimited": "Unlimited Spellblast"
+              },
+              "effect": {
+                "physical": "Physical",
+                "magical": "Magical"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "limited": {
+                  "kind": "flat",
+                  "points": 3
+                },
+                "unlimited": {
+                  "kind": "flat",
+                  "points": 4.5
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "spikedCarts",
+            "name": "Spiked Carts",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "HFT"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying",
+                  "mobileInfantry"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "subcommander",
+            "name": "Subcommander",
+            "category": "hero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": [
+              {
+                "kind": "oncePerArmy"
+              }
+            ]
+          },
+          {
+            "code": "supportingShooters",
+            "name": "Supporting Shooters",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Close",
+                    "category": "foot"
+                  },
+                  {
+                    "troopTypes": [
+                      "LFT",
+                      "RDR",
+                      "LSP"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "PAV",
+                      "HRD",
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "rangedAttack"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "terrainAffinity",
+            "name": "Terrain Affinity",
+            "category": "stand",
+            "cost": {
+              "kind": "byTopography",
+              "points": 0.5,
+              "dense": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Open"
+                  },
+                  {
+                    "troopTypes": [
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "terror",
+            "name": "Terror",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": []
+          },
+          {
+            "code": "unreliable",
+            "name": "Unreliable",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -2,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "KNT",
+                      "ELE"
+                    ]
+                  },
+                  "points": -1
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "fierce"
+                    ]
+                  },
+                  "points": -1
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "maxPerArmy",
+                "stands": 4
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "unruly",
+            "name": "Unruly",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -1
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG",
+                      "ART",
+                      "ELE"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "weaken",
+            "name": "Weaken",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -0.5
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "BLV",
+                      "RBL",
+                      "HRD",
+                      "LFT",
+                      "LSP",
+                      "WBD",
+                      "WWG",
+                      "WRR",
+                      "BAD",
+                      "BTX",
+                      "ELE",
+                      "PAV",
+                      "SPR"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "games/fantasy/battle-card-text.json",
+        "eager": false,
+        "contents": {
+          "ambush": "Goblin sappers wait under the moss until the drums stop.\n\n#### In play\nRoll a die at deployment; that many stands may hide in rough ground away from the usual lines.",
+          "armored": "Plates hammered from fallen star-iron turn the arrows aside.\n\n#### In play\nEnemy shooting at this stand counts one less.",
+          "away": "The riders vanish into the cloud bank and come down somewhere else entirely.\n\n#### In play\nThe stand may leave the table and return on a later turn.",
+          "brittle": "Hired sprites who remember an urgent appointment the moment the battle turns.\n\n#### In play\nThe stand is shattered whenever it is beaten in close combat.",
+          "champion": "A duellist who hunts other heroes across the field.\n\n#### In play\nThe hero fights duels as if it cost three points more.",
+          "chargeThrough": "The lancers trust the pikemen to open their files on the horn call.\n\n#### In play\nOne tactical move may pass through friendly close order foot.",
+          "craven": "Mushroom folk who would honestly rather be anywhere else today.\n\n#### In play\nThe stand never moves into contact and never pursues.",
+          "deadly": "Their blades sing a single note that ends conversations.\n\n#### In play\nThe stand adds one in close combat.",
+          "delayedEntry": "The summoning circle is still smoking when the battle starts.\n\n#### In play\nMarked stands arrive later, when the army spends five command points.",
+          "fast": "Hooves shod with quicksilver carry them before the dust settles.\n\n#### In play\nThe stand moves a little further than others of its kind.",
+          "fierce": "Bog trolls who cannot be talked out of a good brawl.\n\n#### In play\nThe stand must follow up and may never break off.",
+          "flying": "Leathery wings beat over the heads of the battle line.\n\n#### In play\nThe stand flies, hovering in place or zooming across the table.",
+          "fortifiedCamp": "A ring of thorn hedges grown overnight by an irritable druid.\n\n#### In play\nThe camp fights harder when it is attacked.",
+          "hearten": "A banner that hums softly whenever courage is needed.\n\n#### In play\nA beaten stand adds one before the result is read.",
+          "holdTheLine": "Drilled shieldmaidens who stay put when the foe breaks.\n\n#### In play\nPlay the card to stop a pursuit after close combat.",
+          "illusion": "The wizard's apprentice paints soldiers on the morning fog.\n\n#### In play\nA stand on the table is either a phantom or something else in disguise.",
+          "marksman": "Owl-eyed bowmen who can split a falling acorn.\n\n#### In play\nThe stand adds one when it shoots.",
+          "massive": "Giants who simply do not get pushed around.\n\n#### In play\nThe stand is never pushed back and crushes friends who fall back into it.",
+          "mindblast": "A whisper that crawls into the ear and curdles the nerve.\n\n#### In play\nThe stand attacks minds at long range and ignores the terrain between.",
+          "mobileInfantry": "Spearmen who ride to the battle on giant tortoises and walk the last mile.\n\n#### In play\nMarked stands move quickly until they first fight.",
+          "negateMagic": "A silver ward that makes spells slide off like rain on oilcloth.\n\n#### In play\nThe stand shrugs off magical attacks.",
+          "noCamp": "The horde carries everything it owns, which is not much.\n\n#### In play\nThe army has no camp.",
+          "packTrain": "Herds of woolly goats that wander wherever the shepherd sleeps.\n\n#### In play\nThe camp may stand anywhere along the base edge.",
+          "preparedDefenses": "Ditches full of sharpened bones dug the night before.\n\n#### In play\nEach card places one obstacle in front of the army.",
+          "prowess": "Weapons forged in dragonfire glow along the line.\n\n#### In play\nA winning stand adds one before the result is read.",
+          "rangedAttack": "Rock-throwing ogres who never learned to use a bow.\n\n#### In play\nThe stand may shoot even though its kind usually cannot.",
+          "regenerate": "Bone soldiers who pull themselves back together after the fight.\n\n#### In play\nA lost stand may return by paying command points.",
+          "slow": "Clay golems who take their time about everything.\n\n#### In play\nThe stand moves a little less than others of its kind.",
+          "spellblast": "Fireballs, frogs from the sky and other loud arguments.\n\n#### In play\nThe stand casts a long range attack, limited or unlimited.",
+          "spikedCarts": "Wheelbarrows bristling with pitchforks, pushed by stubborn farmers.\n\n#### In play\nThe stand fights better against riders but moves only a short way.",
+          "subcommander": "A sergeant who knows what the general wants before the general does.\n\n#### In play\nMoves that include this hero cost fewer command points.",
+          "supportingShooters": "A thin line of slingers tucked behind the shield wall.\n\n#### In play\nThe stand adds one against charging riders and wild warriors.",
+          "terrainAffinity": "Swamp lizards who treat the marsh like a paved road.\n\n#### In play\nThe stand treats two chosen kinds of terrain as open ground.",
+          "terror": "A shambling horror whose very shadow makes horses bolt.\n\n#### In play\nA beaten enemy panics and a doubled one is destroyed.",
+          "unreliable": "Mercenary imps whose loyalty lasts exactly as long as the pay.\n\n#### In play\nWhen the command die rolls a one, the costliest such stand leaves.",
+          "unruly": "Undead conscripts who hear orders but rarely listen.\n\n#### In play\nThe stand costs one more command point to move.",
+          "weaken": "Enchanted sleepers still yawning when the trumpets sound.\n\n#### In play\nA beaten stand subtracts one before the result is read."
+        }
+      },
+      {
+        "path": "games/fantasy/format.json",
+        "eager": false,
+        "contents": {
+          "points": 51,
+          "pointsPerRequiredStand": 6,
+          "minimumStandCost": 1,
+          "heroes": {
+            "max": 3,
+            "maxPoints": 8,
+            "cost": 1,
+            "mayTakeNegativeCostCards": false
+          },
+          "invasion": {
+            "base": 2,
+            "costs": {
+              "0": 1,
+              "1": 0.5,
+              "2": 0,
+              "3": -0.5,
+              "4": -1
+            }
+          },
+          "maneuver": {
+            "base": 2,
+            "costs": {
+              "0": -3,
+              "1": -1,
+              "2": 0,
+              "3": 1,
+              "4": 3
+            }
+          },
+          "denseTopographies": [
+            "Dense Forest",
+            "Dense Marsh",
+            "Dense Wasteland",
+            "Dense Underground"
+          ],
+          "victory": {
+            "numerator": 1,
+            "denominator": 3
+          }
         }
       }
     ],
@@ -9582,6 +11441,1865 @@
           ],
           "enemies": [],
           "subFactions": null
+        }
+      },
+      {
+        "path": "games/fantasy/troop-types.json",
+        "eager": false,
+        "contents": [
+          {
+            "permanentCode": "BLV",
+            "displayName": "Leva de arco",
+            "displayCode": "BL",
+            "description": "Levas en masa que disparan flechas a cubos y esperan que alguna acierte.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "RBL",
+            "displayName": "Chusma",
+            "displayCode": "Rb",
+            "description": "Una turba con horcas, antorchas y opiniones firmes.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 1
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "HRD",
+            "displayName": "Horda",
+            "displayCode": "Hd",
+            "description": "Una multitud tambaleante que gana por ser demasiados.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 2,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 7,
+                "max": 8
+              }
+            }
+          },
+          {
+            "permanentCode": "ARC",
+            "displayName": "Tiradores",
+            "displayCode": "Arc",
+            "description": "Arqueros entrenados que disparan recto y guardan la distancia.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "LFT",
+            "displayName": "Infantería ligera",
+            "displayCode": "LFt",
+            "description": "Infantería ágil que combate en orden abierto desde la cobertura.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "LSP",
+            "displayName": "Lanza ligera",
+            "displayCode": "LSp",
+            "description": "Lanceros en orden abierto, rápidos en terreno difícil.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "RDR",
+            "displayName": "Saqueadores",
+            "displayCode": "Rd",
+            "description": "Saqueadores que golpean fuerte, cogen lo que pueden y huyen.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "SKM",
+            "displayName": "Hostigadores",
+            "displayCode": "Sk",
+            "description": "Exploradores y honderos que hostigan y desaparecen antes de la carga.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 1
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "WBD",
+            "displayName": "Banda de guerra",
+            "displayCode": "Wb",
+            "description": "Guerreros salvajes que cargan entre aullidos.",
+            "category": "foot",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 20,
+                "60": 30,
+                "80": 40
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "ART",
+            "displayName": "Artillería",
+            "displayCode": "Art",
+            "description": "Ingenios que lanzan virotes, piedras o cosas peores.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 4,
+                "shotAt": 3
+              }
+            },
+            "movement": 2,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "EFT",
+            "displayName": "Infantería de élite",
+            "displayCode": "EFt",
+            "description": "Infantería veterana, las mejores hojas de la hueste.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 5,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "HFT",
+            "displayName": "Infantería pesada",
+            "displayCode": "HFt",
+            "description": "Infantería acorazada que aguanta con hacha y escudo.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "PAV",
+            "displayName": "Paveseros",
+            "displayCode": "Pv",
+            "description": "Ballestas o arcos tras escudos altos.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 8,
+                "max": 8
+              }
+            }
+          },
+          {
+            "permanentCode": "PIK",
+            "displayName": "Picas",
+            "displayCode": "Pk",
+            "description": "Un seto de picas largas, letal mientras mantiene la forma.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "SPR",
+            "displayName": "Lanza",
+            "displayCode": "Sp",
+            "description": "Un muro de escudos y lanzas, espina dorsal de muchas huestes.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "WWG",
+            "displayName": "Carros de guerra",
+            "displayCode": "WWg",
+            "description": "Carros blindados erizados de tiradores.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 3,
+                "shotAt": 3
+              }
+            },
+            "movement": 2,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "WRR",
+            "displayName": "Guerreros",
+            "displayCode": "Wr",
+            "description": "Combatientes sin instrucción, fuertes en el primer choque.",
+            "category": "foot",
+            "order": "Close",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 3,
+            "basing": {
+              "depths": {
+                "40": 15,
+                "60": 20,
+                "80": 30
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "BAD",
+            "displayName": "Caballería mediocre",
+            "displayCode": "BH",
+            "description": "Jinetes sobre bestias que nadie más montaría.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "BTX",
+            "displayName": "Carro de transporte",
+            "displayCode": "BTx",
+            "description": "Monturas que llevan a la infantería al combate y la dejan allí.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 3,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "CHT",
+            "displayName": "Carros",
+            "displayCode": "Ch",
+            "description": "Carros que llegan, disparan y dan media vuelta.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          },
+          {
+            "permanentCode": "ECV",
+            "displayName": "Caballería de élite",
+            "displayCode": "ECv",
+            "description": "Los jinetes mejor montados, en orden cerrado.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 6,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "HBW",
+            "displayName": "Arqueros a caballo",
+            "displayCode": "HBw",
+            "description": "Jinetes que disparan desde la silla y nunca llegan a cerrar.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 2,
+                "vsMounted": 3
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 8,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "JCV",
+            "displayName": "Caballería de jabalina",
+            "displayCode": "JCv",
+            "description": "Jinetes ligeros que lanzan jabalinas y se retiran.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 2
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 8,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 2,
+                "max": 2
+              }
+            }
+          },
+          {
+            "permanentCode": "KNT",
+            "displayName": "Caballeros",
+            "displayCode": "Kn",
+            "description": "Jinetes acorazados que cargan rodilla con rodilla.",
+            "category": "mounted",
+            "order": "Open",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 3,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 2
+              }
+            },
+            "movement": 5,
+            "basing": {
+              "depths": {
+                "40": 30,
+                "60": 40,
+                "80": 60
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 3,
+                "max": 3
+              }
+            }
+          },
+          {
+            "permanentCode": "CAT",
+            "displayName": "Catafractos",
+            "displayCode": "Cat",
+            "description": "Jinetes acorazados de pies a cabeza, montura incluida.",
+            "category": "mounted",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 4,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "figures",
+                "min": 4,
+                "max": 4
+              }
+            }
+          },
+          {
+            "permanentCode": "ELE",
+            "displayName": "Behemots",
+            "displayCode": "El",
+            "description": "Grandes bestias que pisotean lo que no logran asustar.",
+            "category": "mounted",
+            "order": "Close",
+            "cost": 4,
+            "combatFactors": {
+              "closeCombat": {
+                "vsFoot": 5,
+                "vsMounted": 4
+              },
+              "rangedCombat": {
+                "shooting": 0,
+                "shotAt": 3
+              }
+            },
+            "movement": 4,
+            "basing": {
+              "depths": {
+                "40": 40,
+                "60": 60,
+                "80": 80
+              },
+              "figures": {
+                "kind": "modelWithCrew"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "path": "games/fantasy/battle-cards.json",
+        "eager": false,
+        "contents": [
+          {
+            "code": "ambush",
+            "name": "Emboscada",
+            "category": "army",
+            "variants": {
+              "reach": {
+                "home": "Solo en su topografía",
+                "anywhere": "En cualquier topografía"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "home": {
+                  "kind": "byTopography",
+                  "points": 1,
+                  "dense": 2
+                },
+                "anywhere": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "armored",
+            "name": "Acorazado",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 0.5
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "away",
+            "name": "Ausente",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "byBearer",
+              "stand": {
+                "kind": "flat",
+                "points": 0.5
+              },
+              "hero": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "brittle",
+            "name": "Quebradizo",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -2,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "ART"
+                    ]
+                  },
+                  "points": 0
+                },
+                {
+                  "when": {
+                    "troopTypes": [
+                      "BLV",
+                      "ARC"
+                    ]
+                  },
+                  "points": -1
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "mindblast",
+                      "spellblast"
+                    ]
+                  },
+                  "points": -1
+                }
+              ]
+            },
+            "constraints": []
+          },
+          {
+            "code": "champion",
+            "name": "Campeón",
+            "category": "hero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "chargeThrough",
+            "name": "Cargar a través",
+            "category": "event",
+            "cost": {
+              "kind": "perCount",
+              "max": 3,
+              "each": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": [
+              {
+                "kind": "oneClassPerArmy"
+              }
+            ]
+          },
+          {
+            "code": "craven",
+            "name": "Cobarde",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -1,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "PAV",
+                      "ARC"
+                    ]
+                  },
+                  "points": -0.5
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "rangedAttack"
+                    ]
+                  },
+                  "points": -0.5
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "WWG",
+                      "KNT",
+                      "WBD",
+                      "WRR",
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fierce"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "deadly",
+            "name": "Letal",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": []
+          },
+          {
+            "code": "delayedEntry",
+            "name": "Entrada retrasada",
+            "category": "army",
+            "cost": {
+              "kind": "perMarkedCappedAtValue",
+              "points": -2
+            },
+            "constraints": [
+              {
+                "kind": "maxPerArmy",
+                "stands": 4,
+                "heroes": 1
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "fast",
+            "name": "Rápido",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 0.5
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "minMovement": 8
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying",
+                  "slow"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "fierce",
+            "name": "Feroz",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -0.5,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "KNT",
+                      "ELE",
+                      "WRR",
+                      "WBD",
+                      "PIK"
+                    ]
+                  },
+                  "points": 0
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "craven"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "flying",
+            "name": "Volador",
+            "category": "stand",
+            "variants": {
+              "flight": {
+                "hover": "Vuelo estático",
+                "zoom": "Vuelo raudo"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "flight",
+              "options": {
+                "hover": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "zoom": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Open"
+                  },
+                  {
+                    "troopTypes": [
+                      "WWG",
+                      "ART"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fast",
+                  "slow"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "fortifiedCamp",
+            "name": "Campamento fortificado",
+            "category": "army",
+            "variants": {
+              "defenses": {
+                "fortified": "Campamento fortificado",
+                "heavily": "Campamento muy fortificado"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "defenses",
+              "options": {
+                "fortified": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "heavily": {
+                  "kind": "flat",
+                  "points": 2
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "oncePerArmy"
+              }
+            ]
+          },
+          {
+            "code": "hearten",
+            "name": "Alentar",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "holdTheLine",
+            "name": "Mantener la línea",
+            "category": "event",
+            "cost": {
+              "kind": "perCount",
+              "max": 3,
+              "each": {
+                "kind": "flat",
+                "points": 0.5
+              }
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "KNT",
+                      "WBD",
+                      "WRR",
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fierce"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "illusion",
+            "name": "Ilusión",
+            "category": "army",
+            "cost": {
+              "kind": "perCount",
+              "max": 6,
+              "each": {
+                "kind": "flat",
+                "points": 1
+              }
+            },
+            "constraints": [
+              {
+                "kind": "notOnHeroes"
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "marksman",
+            "name": "Tirador experto",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ARC",
+                      "PAV",
+                      "ART",
+                      "WWG"
+                    ]
+                  },
+                  {
+                    "cards": [
+                      "rangedAttack"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "requires",
+                "cards": [
+                  "rangedAttack"
+                ],
+                "bearer": "hero"
+              },
+              {
+                "kind": "maxPerArmy",
+                "stands": 4,
+                "heroes": 1
+              }
+            ]
+          },
+          {
+            "code": "massive",
+            "name": "Colosal",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": 1,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "WWG",
+                      "ELE",
+                      "ART"
+                    ]
+                  },
+                  "points": 0
+                }
+              ]
+            },
+            "constraints": []
+          },
+          {
+            "code": "mindblast",
+            "name": "Explosión mental",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 4
+            },
+            "constraints": []
+          },
+          {
+            "code": "mobileInfantry",
+            "name": "Infantería móvil",
+            "category": "army",
+            "variants": {
+              "transport": {
+                "ground": "Transporte terrestre",
+                "flying": "Transporte volador"
+              }
+            },
+            "cost": {
+              "kind": "perCount",
+              "max": 8,
+              "each": {
+                "kind": "byVariant",
+                "choice": "transport",
+                "options": {
+                  "ground": {
+                    "kind": "flat",
+                    "points": 0.5
+                  },
+                  "flying": {
+                    "kind": "flat",
+                    "points": 1
+                  }
+                }
+              }
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "category": "foot"
+                  }
+                ]
+              },
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "notOnHeroes"
+              }
+            ]
+          },
+          {
+            "code": "negateMagic",
+            "name": "Anular magia",
+            "category": "standOrHero",
+            "variants": {
+              "reach": {
+                "self": "Propia",
+                "zone": "Zona",
+                "mindless": "Sin mente"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "self": {
+                  "kind": "flat",
+                  "points": 1
+                },
+                "zone": {
+                  "kind": "flat",
+                  "points": 2
+                },
+                "mindless": {
+                  "kind": "flat",
+                  "points": 0.5
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "noCamp",
+            "name": "Sin campamento",
+            "category": "army",
+            "cost": {
+              "kind": "flat",
+              "points": 4
+            },
+            "constraints": []
+          },
+          {
+            "code": "packTrain",
+            "name": "Recua y rebaños",
+            "category": "army",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "preparedDefenses",
+            "name": "Defensas preparadas",
+            "category": "army",
+            "cost": {
+              "kind": "perCount",
+              "max": 6,
+              "each": {
+                "kind": "byTopography",
+                "points": 0.5,
+                "dense": 1
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "prowess",
+            "name": "Destreza",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": []
+          },
+          {
+            "code": "rangedAttack",
+            "name": "Ataque a distancia",
+            "category": "standOrHero",
+            "variants": {
+              "effect": {
+                "physical": "Física",
+                "magical": "Mágica"
+              }
+            },
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ARC",
+                      "PAV",
+                      "WWG",
+                      "ART"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "regenerate",
+            "name": "Regenerar",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "notOnHeroes"
+              }
+            ]
+          },
+          {
+            "code": "slow",
+            "name": "Lento",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -0.5
+            },
+            "constraints": [
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "fast",
+                  "flying"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "spellblast",
+            "name": "Explosión arcana",
+            "category": "standOrHero",
+            "variants": {
+              "reach": {
+                "limited": "Explosión arcana limitada",
+                "unlimited": "Explosión arcana ilimitada"
+              },
+              "effect": {
+                "physical": "Física",
+                "magical": "Mágica"
+              }
+            },
+            "cost": {
+              "kind": "byVariant",
+              "choice": "reach",
+              "options": {
+                "limited": {
+                  "kind": "flat",
+                  "points": 3
+                },
+                "unlimited": {
+                  "kind": "flat",
+                  "points": 4.5
+                }
+              }
+            },
+            "constraints": []
+          },
+          {
+            "code": "spikedCarts",
+            "name": "Carros con púas",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "HFT"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying",
+                  "mobileInfantry"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "subcommander",
+            "name": "Subcomandante",
+            "category": "hero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": [
+              {
+                "kind": "oncePerArmy"
+              }
+            ]
+          },
+          {
+            "code": "supportingShooters",
+            "name": "Tiradores de apoyo",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Close",
+                    "category": "foot"
+                  },
+                  {
+                    "troopTypes": [
+                      "LFT",
+                      "RDR",
+                      "LSP"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "ART",
+                      "PAV",
+                      "HRD",
+                      "WWG"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "rangedAttack"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "terrainAffinity",
+            "name": "Afinidad con el terreno",
+            "category": "stand",
+            "cost": {
+              "kind": "byTopography",
+              "points": 0.5,
+              "dense": 1
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "order": "Open"
+                  },
+                  {
+                    "troopTypes": [
+                      "ELE"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "excludedWith",
+                "cards": [
+                  "flying"
+                ]
+              }
+            ]
+          },
+          {
+            "code": "terror",
+            "name": "Terror",
+            "category": "standOrHero",
+            "cost": {
+              "kind": "flat",
+              "points": 2
+            },
+            "constraints": []
+          },
+          {
+            "code": "unreliable",
+            "name": "Poco fiable",
+            "category": "stand",
+            "cost": {
+              "kind": "byTroopType",
+              "points": -2,
+              "overrides": [
+                {
+                  "when": {
+                    "troopTypes": [
+                      "KNT",
+                      "ELE"
+                    ]
+                  },
+                  "points": -1
+                },
+                {
+                  "when": {
+                    "cards": [
+                      "fierce"
+                    ]
+                  },
+                  "points": -1
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "kind": "maxPerArmy",
+                "stands": 4
+              },
+              {
+                "kind": "notOnGeneral"
+              }
+            ]
+          },
+          {
+            "code": "unruly",
+            "name": "Indisciplinado",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -1
+            },
+            "constraints": [
+              {
+                "kind": "ineligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "WWG",
+                      "ART",
+                      "ELE"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "weaken",
+            "name": "Debilitado",
+            "category": "stand",
+            "cost": {
+              "kind": "flat",
+              "points": -0.5
+            },
+            "constraints": [
+              {
+                "kind": "eligible",
+                "anyOf": [
+                  {
+                    "troopTypes": [
+                      "BLV",
+                      "RBL",
+                      "HRD",
+                      "LFT",
+                      "LSP",
+                      "WBD",
+                      "WWG",
+                      "WRR",
+                      "BAD",
+                      "BTX",
+                      "ELE",
+                      "PAV",
+                      "SPR"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "games/fantasy/battle-card-text.json",
+        "eager": false,
+        "contents": {
+          "ambush": "Los zapadores trasgos esperan bajo el musgo hasta que callan los tambores.\n\n#### En juego\nTira un dado al desplegar; esa cantidad de peanas puede esconderse en terreno abrupto lejos de las líneas habituales.",
+          "armored": "Placas forjadas con hierro de estrella desvían las flechas.\n\n#### En juego\nEl enemigo que dispara contra esta peana cuenta uno menos.",
+          "away": "Los jinetes desaparecen en las nubes y bajan en otro lugar.\n\n#### En juego\nLa peana puede salir de la mesa y volver en un turno posterior.",
+          "brittle": "Duendes a sueldo que recuerdan una cita urgente en cuanto la batalla se tuerce.\n\n#### En juego\nLa peana queda destrozada siempre que pierde un combate cuerpo a cuerpo.",
+          "champion": "Un duelista que caza a otros héroes por el campo.\n\n#### En juego\nEl héroe libra duelos como si costara tres puntos más.",
+          "chargeThrough": "Los lanceros confían en que los piqueros abran filas al toque de cuerno.\n\n#### En juego\nUn movimiento táctico puede atravesar infantería amiga en orden cerrado.",
+          "craven": "Gente seta que, sinceramente, preferiría estar en cualquier otra parte.\n\n#### En juego\nLa peana nunca entra en contacto ni persigue.",
+          "deadly": "Sus hojas cantan una sola nota que pone fin a las conversaciones.\n\n#### En juego\nLa peana suma uno en combate cuerpo a cuerpo.",
+          "delayedEntry": "El círculo de invocación aún humea cuando empieza la batalla.\n\n#### En juego\nLas peanas marcadas llegan más tarde, cuando el ejército gasta cinco puntos de mando.",
+          "fast": "Herraduras de azogue los llevan antes de que se asiente el polvo.\n\n#### En juego\nLa peana mueve algo más que otras de su clase.",
+          "fierce": "Trols de ciénaga a los que no se puede disuadir de una buena pelea.\n\n#### En juego\nLa peana debe avanzar tras vencer y nunca puede retirarse.",
+          "flying": "Alas correosas baten sobre la línea de batalla.\n\n#### En juego\nLa peana vuela, inmóvil en el aire o cruzando la mesa a toda velocidad.",
+          "fortifiedCamp": "Un anillo de setos de espinos crecido en una noche por un druida irritable.\n\n#### En juego\nEl campamento lucha con más fuerza cuando lo atacan.",
+          "hearten": "Un estandarte que zumba suavemente cuando hace falta valor.\n\n#### En juego\nUna peana vencida suma uno antes de leer el resultado.",
+          "holdTheLine": "Escuderas bien instruidas que no se mueven cuando el enemigo huye.\n\n#### En juego\nJuega la carta para impedir una persecución tras el combate.",
+          "illusion": "El aprendiz del mago pinta soldados en la niebla de la mañana.\n\n#### En juego\nUna peana de la mesa es un fantasma u otra cosa disfrazada.",
+          "marksman": "Arqueros con ojos de búho capaces de partir una bellota al caer.\n\n#### En juego\nLa peana suma uno al disparar.",
+          "massive": "Gigantes a los que simplemente no se empuja.\n\n#### En juego\nLa peana nunca retrocede y aplasta a los amigos que retroceden contra ella.",
+          "mindblast": "Un susurro que se mete en el oído y cuaja el ánimo.\n\n#### En juego\nLa peana ataca las mentes a larga distancia e ignora el terreno intermedio.",
+          "mobileInfantry": "Lanceros que van a la batalla a lomos de tortugas gigantes y caminan la última milla.\n\n#### En juego\nLas peanas marcadas mueven deprisa hasta su primer combate.",
+          "negateMagic": "Una guarda de plata que hace resbalar los hechizos como lluvia en hule.\n\n#### En juego\nLa peana resiste los ataques mágicos.",
+          "noCamp": "La horda carga con todo lo que tiene, que no es mucho.\n\n#### En juego\nEl ejército no tiene campamento.",
+          "packTrain": "Rebaños de cabras lanudas que van donde duerma el pastor.\n\n#### En juego\nEl campamento puede ir en cualquier punto del borde propio.",
+          "preparedDefenses": "Zanjas llenas de huesos afilados cavadas la noche anterior.\n\n#### En juego\nCada carta coloca un obstáculo frente al ejército.",
+          "prowess": "Armas forjadas en fuego de dragón brillan a lo largo de la línea.\n\n#### En juego\nUna peana vencedora suma uno antes de leer el resultado.",
+          "rangedAttack": "Ogros que lanzan rocas y nunca aprendieron a usar un arco.\n\n#### En juego\nLa peana puede disparar aunque los de su clase no suelan hacerlo.",
+          "regenerate": "Soldados de hueso que se recomponen después del combate.\n\n#### En juego\nUna peana perdida puede volver pagando puntos de mando.",
+          "slow": "Gólems de arcilla que se toman su tiempo para todo.\n\n#### En juego\nLa peana mueve algo menos que otras de su clase.",
+          "spellblast": "Bolas de fuego, ranas del cielo y otras discusiones ruidosas.\n\n#### En juego\nLa peana lanza un ataque a larga distancia, limitado o ilimitado.",
+          "spikedCarts": "Carretillas erizadas de horcas empujadas por granjeros tozudos.\n\n#### En juego\nLa peana lucha mejor contra jinetes pero mueve muy poco.",
+          "subcommander": "Un sargento que sabe lo que quiere el general antes que el propio general.\n\n#### En juego\nLos movimientos que incluyen a este héroe cuestan menos puntos de mando.",
+          "supportingShooters": "Una fina línea de honderos tras el muro de escudos.\n\n#### En juego\nLa peana suma uno contra jinetes a la carga y guerreros salvajes.",
+          "terrainAffinity": "Lagartos de pantano que recorren la ciénaga como si fuera un camino empedrado.\n\n#### En juego\nLa peana trata dos tipos de terreno elegidos como terreno abierto.",
+          "terror": "Un horror tambaleante cuya sombra desboca a los caballos.\n\n#### En juego\nUn enemigo vencido entra en pánico y uno doblado es destruido.",
+          "unreliable": "Diablillos mercenarios cuya lealtad dura exactamente lo que dura la paga.\n\n#### En juego\nCuando el dado de mando saca un uno, la peana más cara de este tipo se marcha.",
+          "unruly": "Reclutas no muertos que oyen las órdenes pero rara vez escuchan.\n\n#### En juego\nMover la peana cuesta un punto de mando más.",
+          "weaken": "Durmientes encantados que aún bostezan cuando suenan las trompetas.\n\n#### En juego\nUna peana vencida resta uno antes de leer el resultado."
+        }
+      },
+      {
+        "path": "games/fantasy/format.json",
+        "eager": false,
+        "contents": {
+          "points": 51,
+          "pointsPerRequiredStand": 6,
+          "minimumStandCost": 1,
+          "heroes": {
+            "max": 3,
+            "maxPoints": 8,
+            "cost": 1,
+            "mayTakeNegativeCostCards": false
+          },
+          "invasion": {
+            "base": 2,
+            "costs": {
+              "0": 1,
+              "1": 0.5,
+              "2": 0,
+              "3": -0.5,
+              "4": -1
+            }
+          },
+          "maneuver": {
+            "base": 2,
+            "costs": {
+              "0": -3,
+              "1": -1,
+              "2": 0,
+              "3": 1,
+              "4": 3
+            }
+          },
+          "denseTopographies": [
+            "Dense Forest",
+            "Dense Marsh",
+            "Dense Wasteland",
+            "Dense Underground"
+          ],
+          "victory": {
+            "numerator": 1,
+            "denominator": 3
+          }
         }
       }
     ]

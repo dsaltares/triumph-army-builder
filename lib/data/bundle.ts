@@ -3,25 +3,28 @@ import type {
   BattleCardPurchaseScope,
 } from '../domain/battle-cards/cost-rules.ts';
 import { tagWords } from '../domain/collection/tag-words.ts';
+import type { FantasyCard } from '../domain/fantasy/battle-cards.ts';
 import { byKey } from '../domain/ordering.ts';
 import type { TroopTypeBasing } from '../domain/troop-types.ts';
 import { defaultLocale } from '../i18n/locales.ts';
-import type { Curation } from './curation-schema.ts';
-import type {
-  ArmyListStatus,
-  BattleCardCode,
-  MeshweshAllyArmyList,
-  MeshweshAllyOption,
-  MeshweshArmyList,
-  MeshweshBattleCard,
-  MeshweshBattleCardEntry,
-  MeshweshDateRange,
-  MeshweshHomeTopography,
-  MeshweshRating,
-  MeshweshThematicCategoryArmyLists,
-  MeshweshTroopOption,
-  MeshweshTroopType,
-  Topography,
+import type { Curation, FantasyCuration } from './curation-schema.ts';
+import {
+  type ArmyListStatus,
+  type BattleCardCode,
+  type FantasyCardCode,
+  fantasyCardCodes,
+  type MeshweshAllyArmyList,
+  type MeshweshAllyOption,
+  type MeshweshArmyList,
+  type MeshweshBattleCard,
+  type MeshweshBattleCardEntry,
+  type MeshweshDateRange,
+  type MeshweshHomeTopography,
+  type MeshweshRating,
+  type MeshweshThematicCategoryArmyLists,
+  type MeshweshTroopOption,
+  type MeshweshTroopType,
+  type Topography,
 } from './schema.ts';
 import type { MeshweshSnapshot } from './snapshot.ts';
 import {
@@ -60,6 +63,12 @@ export const bundlePaths = {
   thematicCategories: 'thematic-categories.json',
   tagWords: 'tag-words.json',
   army: (id: string) => `armies/${id}.json`,
+  fantasy: {
+    troopTypes: 'games/fantasy/troop-types.json',
+    battleCards: 'games/fantasy/battle-cards.json',
+    battleCardText: 'games/fantasy/battle-card-text.json',
+    format: 'games/fantasy/format.json',
+  },
 } as const;
 
 export const eagerPayloadBudgetBytes = 150 * 1024;
@@ -132,6 +141,10 @@ export type BundledTroopType = Omit<MeshweshTroopType, 'id' | 'importName'> & {
 };
 
 export type BattleCardText = Record<BattleCardCode, string>;
+
+export type BundledFantasyCard = FantasyCard & { code: FantasyCardCode };
+
+export type FantasyCardText = Record<FantasyCardCode, string>;
 
 export type BundleFile = {
   path: string;
@@ -359,6 +372,91 @@ const battleCardText = (
       ]),
   ) as BattleCardText;
 
+const fantasyTroopType = (
+  troopType: BundledTroopType,
+  names: FantasyCuration['troopTypeNames'],
+  translate: Translator,
+): BundledTroopType => {
+  const name = names[troopType.permanentCode];
+  return name === undefined
+    ? troopType
+    : {
+        ...troopType,
+        displayName: translate.fantasyTroopTypeName(
+          troopType.permanentCode,
+          name,
+        ),
+      };
+};
+
+const fantasyCardVariants = (
+  code: FantasyCardCode,
+  variants: NonNullable<FantasyCard['variants']>,
+  translate: Translator,
+) =>
+  Object.fromEntries(
+    Object.entries(variants).map(([choice, options]) => [
+      choice,
+      Object.fromEntries(
+        Object.entries(options).map(([option, name]) => [
+          option,
+          translate.fantasyCardVariantName(
+            `${code}.variants.${choice}.${option}`,
+            name,
+          ),
+        ]),
+      ),
+    ]),
+  );
+
+const fantasyCard = (
+  code: FantasyCardCode,
+  { name, category, variants, cost, constraints }: FantasyCard,
+  translate: Translator,
+): BundledFantasyCard => ({
+  code,
+  name: translate.fantasyCardName(code, name),
+  category,
+  ...optional(
+    'variants',
+    variants && fantasyCardVariants(code, variants, translate),
+  ),
+  cost,
+  constraints,
+});
+
+const fantasyFiles = (
+  troopTypes: readonly BundledTroopType[],
+  { troopTypeNames, cards, text, format }: FantasyCuration,
+  translate: Translator,
+): BundleFile[] => [
+  {
+    path: bundlePaths.fantasy.troopTypes,
+    eager: false,
+    contents: troopTypes.map((troopType) =>
+      fantasyTroopType(troopType, troopTypeNames, translate),
+    ),
+  },
+  {
+    path: bundlePaths.fantasy.battleCards,
+    eager: false,
+    contents: fantasyCardCodes.map((code) =>
+      fantasyCard(code, cards[code], translate),
+    ),
+  },
+  {
+    path: bundlePaths.fantasy.battleCardText,
+    eager: false,
+    contents: Object.fromEntries(
+      fantasyCardCodes.map((code) => [
+        code,
+        translate.fantasyCardText(code, text[code]),
+      ]),
+    ) as FantasyCardText,
+  },
+  { path: bundlePaths.fantasy.format, eager: false, contents: format },
+];
+
 const describedOptions = (details: readonly ArmyDetail[]) => {
   const contingents = new Map(
     details.flatMap(({ allyContingents }) =>
@@ -406,14 +504,16 @@ export const buildBundle = (
       indexEntry(armyList, categories.get(armyList.id) ?? [], translate),
     ),
   };
+  const troopTypes = [...snapshot.troopTypes]
+    .sort(byId)
+    .map((entry) => troopType(entry, curation, translate));
+  const { fantasy } = curation.games;
   return [
     { path: bundlePaths.index, eager: true, contents: index },
     {
       path: bundlePaths.troopTypes,
       eager: false,
-      contents: [...snapshot.troopTypes]
-        .sort(byId)
-        .map((entry) => troopType(entry, curation, translate)),
+      contents: troopTypes,
     },
     {
       path: bundlePaths.battleCards,
@@ -445,5 +545,6 @@ export const buildBundle = (
       eager: false,
       contents: detail,
     })),
+    ...(fantasy ? fantasyFiles(troopTypes, fantasy, translate) : []),
   ];
 };

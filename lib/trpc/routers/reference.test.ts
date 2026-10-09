@@ -193,6 +193,94 @@ describe('the reference reads', () => {
   });
 });
 
+describe('the Fantasy Triumph reference', () => {
+  const withoutFantasy = (): ReferencePack => ({
+    ...pack,
+    dataVersion: secondVersion,
+    locales: {
+      en: pack.locales.en.filter(({ path }) => !path.startsWith('games/')),
+      es: pack.locales.es.filter(({ path }) => !path.startsWith('games/')),
+    },
+  });
+
+  const names = (troopTypes: readonly { displayName: string }[]) =>
+    troopTypes.map(({ displayName }) => displayName);
+
+  it('offers both games when the pack carries the Fantasy Triumph section', async () => {
+    await seedReference(db, pack);
+
+    expect(await reference().games({ locale: 'en' })).toEqual([
+      'triumph',
+      'fantasy',
+    ]);
+  });
+
+  it('serves the troop types under the names of the game asked', async () => {
+    await seedReference(db, pack);
+    const read = reference();
+
+    expect(names(await read.troopTypes({ locale: 'en' }))).toContain('Archers');
+    expect(
+      names(await read.troopTypes({ locale: 'en', game: 'triumph' })),
+    ).toEqual(names(await read.troopTypes({ locale: 'en' })));
+    expect(
+      names(await read.troopTypes({ locale: 'en', game: 'fantasy' })),
+    ).toEqual(expect.arrayContaining(['Shooters', 'Behemoths']));
+    expect(
+      names(await read.troopTypes({ locale: 'en', game: 'fantasy' })),
+    ).not.toContain('Archers');
+  });
+
+  it('serves the section and its card text in the locale asked', async () => {
+    await seedReference(db, pack);
+
+    for (const locale of ['en', 'es'] as const) {
+      const input = { locale, game: 'fantasy' } as const;
+
+      expect(await reference().game(input)).toEqual({
+        battleCards: packed(locale, bundlePaths.fantasy.battleCards),
+        format: packed(locale, bundlePaths.fantasy.format),
+      });
+      expect(await reference().gameBattleCardText(input)).toEqual(
+        packed(locale, bundlePaths.fantasy.battleCardText),
+      );
+    }
+  });
+
+  it('offers only Triumph! when the pack has no Fantasy Triumph section', async () => {
+    await seedReference(db, withoutFantasy());
+    const input = { locale: 'en', game: 'fantasy' } as const;
+
+    expect(await reference().games({ locale: 'en' })).toEqual(['triumph']);
+    await expect(reference().troopTypes(input)).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    });
+    await expect(reference().game(input)).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    });
+    await expect(reference().gameBattleCardText(input)).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    });
+    expect(names(await reference().troopTypes({ locale: 'en' }))).toContain(
+      'Archers',
+    );
+  });
+
+  it('follows a rollback to a pack without the section', async () => {
+    await seedReference(db, pack);
+    await seedReference(db, withoutFantasy());
+
+    expect(await reference().games({ locale: 'en' })).toEqual(['triumph']);
+
+    await makeReferenceCurrent(db, pack.dataVersion);
+
+    expect(await reference().games({ locale: 'en' })).toEqual([
+      'triumph',
+      'fantasy',
+    ]);
+  });
+});
+
 describe('the reference responses', () => {
   beforeEach(async () => {
     await seedReference(db, pack);

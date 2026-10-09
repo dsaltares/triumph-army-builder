@@ -1,0 +1,1013 @@
+{
+  "ambush": {
+    "name": "Ambush",
+    "category": "army",
+    "variants": {
+      "reach": {
+        "home": "Home topography only",
+        "anywhere": "Any topography"
+      }
+    },
+    "cost": {
+      "kind": "byVariant",
+      "choice": "reach",
+      "options": {
+        "home": {
+          "kind": "byTopography",
+          "points": 1,
+          "dense": 2
+        },
+        "anywhere": {
+          "kind": "flat",
+          "points": 2
+        }
+      }
+    },
+    "constraints": [],
+    "sources": [
+      "FT 24"
+    ]
+  },
+  "armored": {
+    "name": "Armored",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 0.5
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "WWG"
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "FT 25"
+    ]
+  },
+  "away": {
+    "name": "Away",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "byBearer",
+      "stand": {
+        "kind": "flat",
+        "points": 0.5
+      },
+      "hero": {
+        "kind": "flat",
+        "points": 1
+      }
+    },
+    "constraints": [],
+    "sources": [
+      "FT 26"
+    ]
+  },
+  "brittle": {
+    "name": "Brittle",
+    "category": "stand",
+    "cost": {
+      "kind": "byTroopType",
+      "points": -2,
+      "overrides": [
+        {
+          "when": {
+            "troopTypes": [
+              "ART"
+            ]
+          },
+          "points": 0
+        },
+        {
+          "when": {
+            "troopTypes": [
+              "BLV",
+              "ARC"
+            ]
+          },
+          "points": -1
+        },
+        {
+          "when": {
+            "cards": [
+              "mindblast",
+              "spellblast"
+            ]
+          },
+          "points": -1
+        }
+      ]
+    },
+    "constraints": [],
+    "sources": [
+      "FT 27"
+    ]
+  },
+  "champion": {
+    "name": "Champion",
+    "category": "hero",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [],
+    "sources": [
+      "FT 28"
+    ]
+  },
+  "chargeThrough": {
+    "name": "Charge Through",
+    "category": "event",
+    "cost": {
+      "kind": "perCount",
+      "max": 3,
+      "each": {
+        "kind": "flat",
+        "points": 1
+      }
+    },
+    "constraints": [
+      {
+        "kind": "oneClassPerArmy"
+      }
+    ],
+    "sources": [
+      "FT 29"
+    ]
+  },
+  "craven": {
+    "name": "Craven",
+    "category": "stand",
+    "cost": {
+      "kind": "byTroopType",
+      "points": -1,
+      "overrides": [
+        {
+          "when": {
+            "troopTypes": [
+              "PAV",
+              "ARC"
+            ]
+          },
+          "points": -0.5
+        },
+        {
+          "when": {
+            "cards": [
+              "rangedAttack"
+            ]
+          },
+          "points": -0.5
+        }
+      ]
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "ART",
+              "WWG",
+              "KNT",
+              "WBD",
+              "WRR",
+              "ELE"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "fierce"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 30"
+    ]
+  },
+  "deadly": {
+    "name": "Deadly",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 2
+    },
+    "constraints": [],
+    "sources": [
+      "FT 31"
+    ]
+  },
+  "delayedEntry": {
+    "name": "Delayed Entry",
+    "category": "army",
+    "cost": {
+      "kind": "perMarkedCappedAtValue",
+      "points": -2
+    },
+    "constraints": [
+      {
+        "kind": "maxPerArmy",
+        "stands": 4,
+        "heroes": 1
+      },
+      {
+        "kind": "notOnGeneral"
+      }
+    ],
+    "sources": [
+      "FT 32"
+    ]
+  },
+  "fast": {
+    "name": "Fast",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 0.5
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "minMovement": 8
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "flying",
+          "slow"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 33"
+    ]
+  },
+  "fierce": {
+    "name": "Fierce",
+    "category": "stand",
+    "cost": {
+      "kind": "byTroopType",
+      "points": -0.5,
+      "overrides": [
+        {
+          "when": {
+            "troopTypes": [
+              "KNT",
+              "ELE",
+              "WRR",
+              "WBD",
+              "PIK"
+            ]
+          },
+          "points": 0
+        }
+      ]
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "ART",
+              "WWG"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "craven"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 34"
+    ]
+  },
+  "flying": {
+    "name": "Flying",
+    "category": "stand",
+    "variants": {
+      "flight": {
+        "hover": "Hover Flying",
+        "zoom": "Zoom Flying"
+      }
+    },
+    "cost": {
+      "kind": "byVariant",
+      "choice": "flight",
+      "options": {
+        "hover": {
+          "kind": "flat",
+          "points": 1
+        },
+        "zoom": {
+          "kind": "flat",
+          "points": 2
+        }
+      }
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "order": "Open"
+          },
+          {
+            "troopTypes": [
+              "WWG",
+              "ART"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "fast",
+          "slow"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 35"
+    ]
+  },
+  "fortifiedCamp": {
+    "name": "Fortified Camp",
+    "category": "army",
+    "variants": {
+      "defenses": {
+        "fortified": "Fortified Camp",
+        "heavily": "Heavily Fortified Camp"
+      }
+    },
+    "cost": {
+      "kind": "byVariant",
+      "choice": "defenses",
+      "options": {
+        "fortified": {
+          "kind": "flat",
+          "points": 1
+        },
+        "heavily": {
+          "kind": "flat",
+          "points": 2
+        }
+      }
+    },
+    "constraints": [
+      {
+        "kind": "oncePerArmy"
+      }
+    ],
+    "sources": [
+      "FT 36"
+    ]
+  },
+  "hearten": {
+    "name": "Hearten",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [],
+    "sources": [
+      "FT 37"
+    ]
+  },
+  "holdTheLine": {
+    "name": "Hold the Line",
+    "category": "event",
+    "cost": {
+      "kind": "perCount",
+      "max": 3,
+      "each": {
+        "kind": "flat",
+        "points": 0.5
+      }
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "KNT",
+              "WBD",
+              "WRR",
+              "ELE"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "fierce"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 38"
+    ]
+  },
+  "illusion": {
+    "name": "Illusion",
+    "category": "army",
+    "cost": {
+      "kind": "perCount",
+      "max": 6,
+      "each": {
+        "kind": "flat",
+        "points": 1
+      }
+    },
+    "constraints": [
+      {
+        "kind": "notOnHeroes"
+      },
+      {
+        "kind": "notOnGeneral"
+      }
+    ],
+    "sources": [
+      "FT 39"
+    ]
+  },
+  "marksman": {
+    "name": "Marksman",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "ARC",
+              "PAV",
+              "ART",
+              "WWG"
+            ]
+          },
+          {
+            "cards": [
+              "rangedAttack"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "requires",
+        "cards": [
+          "rangedAttack"
+        ],
+        "bearer": "hero"
+      },
+      {
+        "kind": "maxPerArmy",
+        "stands": 4,
+        "heroes": 1
+      }
+    ],
+    "sources": [
+      "FT 42"
+    ]
+  },
+  "massive": {
+    "name": "Massive",
+    "category": "stand",
+    "cost": {
+      "kind": "byTroopType",
+      "points": 1,
+      "overrides": [
+        {
+          "when": {
+            "troopTypes": [
+              "WWG",
+              "ELE",
+              "ART"
+            ]
+          },
+          "points": 0
+        }
+      ]
+    },
+    "constraints": [],
+    "sources": [
+      "FT 43"
+    ]
+  },
+  "mindblast": {
+    "name": "Mindblast",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 4
+    },
+    "constraints": [],
+    "sources": [
+      "FT 44"
+    ]
+  },
+  "mobileInfantry": {
+    "name": "Mobile Infantry",
+    "category": "army",
+    "variants": {
+      "transport": {
+        "ground": "Ground transport",
+        "flying": "Flying transport"
+      }
+    },
+    "cost": {
+      "kind": "perCount",
+      "max": 8,
+      "each": {
+        "kind": "byVariant",
+        "choice": "transport",
+        "options": {
+          "ground": {
+            "kind": "flat",
+            "points": 0.5
+          },
+          "flying": {
+            "kind": "flat",
+            "points": 1
+          }
+        }
+      }
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "category": "foot"
+          }
+        ]
+      },
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "WWG"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "notOnHeroes"
+      }
+    ],
+    "sources": [
+      "FT 45"
+    ]
+  },
+  "negateMagic": {
+    "name": "Negate Magic",
+    "category": "standOrHero",
+    "variants": {
+      "reach": {
+        "self": "Self",
+        "zone": "Zone",
+        "mindless": "Mindless"
+      }
+    },
+    "cost": {
+      "kind": "byVariant",
+      "choice": "reach",
+      "options": {
+        "self": {
+          "kind": "flat",
+          "points": 1
+        },
+        "zone": {
+          "kind": "flat",
+          "points": 2
+        },
+        "mindless": {
+          "kind": "flat",
+          "points": 0.5
+        }
+      }
+    },
+    "constraints": [],
+    "sources": [
+      "FT 46"
+    ]
+  },
+  "noCamp": {
+    "name": "No Camp",
+    "category": "army",
+    "cost": {
+      "kind": "flat",
+      "points": 4
+    },
+    "constraints": [],
+    "sources": [
+      "FT 47"
+    ]
+  },
+  "packTrain": {
+    "name": "Pack Train and Herds",
+    "category": "army",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [],
+    "sources": [
+      "FT 48"
+    ]
+  },
+  "preparedDefenses": {
+    "name": "Prepared Defenses",
+    "category": "army",
+    "cost": {
+      "kind": "perCount",
+      "max": 6,
+      "each": {
+        "kind": "byTopography",
+        "points": 0.5,
+        "dense": 1
+      }
+    },
+    "constraints": [],
+    "sources": [
+      "FT 49"
+    ]
+  },
+  "prowess": {
+    "name": "Prowess",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [],
+    "sources": [
+      "FT 50"
+    ]
+  },
+  "rangedAttack": {
+    "name": "Ranged Attack",
+    "category": "standOrHero",
+    "variants": {
+      "effect": {
+        "physical": "Physical",
+        "magical": "Magical"
+      }
+    },
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "ARC",
+              "PAV",
+              "WWG",
+              "ART"
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "FT 51"
+    ]
+  },
+  "regenerate": {
+    "name": "Regenerate",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [
+      {
+        "kind": "notOnHeroes"
+      }
+    ],
+    "sources": [
+      "FT 52"
+    ]
+  },
+  "slow": {
+    "name": "Slow",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": -0.5
+    },
+    "constraints": [
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "fast",
+          "flying"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 53"
+    ]
+  },
+  "spellblast": {
+    "name": "Spellblast",
+    "category": "standOrHero",
+    "variants": {
+      "reach": {
+        "limited": "Limited Spellblast",
+        "unlimited": "Unlimited Spellblast"
+      },
+      "effect": {
+        "physical": "Physical",
+        "magical": "Magical"
+      }
+    },
+    "cost": {
+      "kind": "byVariant",
+      "choice": "reach",
+      "options": {
+        "limited": {
+          "kind": "flat",
+          "points": 3
+        },
+        "unlimited": {
+          "kind": "flat",
+          "points": 4.5
+        }
+      }
+    },
+    "constraints": [],
+    "sources": [
+      "FT 54"
+    ]
+  },
+  "spikedCarts": {
+    "name": "Spiked Carts",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "HFT"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "flying",
+          "mobileInfantry"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 55"
+    ]
+  },
+  "subcommander": {
+    "name": "Subcommander",
+    "category": "hero",
+    "cost": {
+      "kind": "flat",
+      "points": 2
+    },
+    "constraints": [
+      {
+        "kind": "oncePerArmy"
+      }
+    ],
+    "sources": [
+      "FT 56"
+    ]
+  },
+  "supportingShooters": {
+    "name": "Supporting Shooters",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": 1
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "order": "Close",
+            "category": "foot"
+          },
+          {
+            "troopTypes": [
+              "LFT",
+              "RDR",
+              "LSP"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "ART",
+              "PAV",
+              "HRD",
+              "WWG"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "rangedAttack"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 57"
+    ]
+  },
+  "terrainAffinity": {
+    "name": "Terrain Affinity",
+    "category": "stand",
+    "cost": {
+      "kind": "byTopography",
+      "points": 0.5,
+      "dense": 1
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "order": "Open"
+          },
+          {
+            "troopTypes": [
+              "ELE"
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "excludedWith",
+        "cards": [
+          "flying"
+        ]
+      }
+    ],
+    "sources": [
+      "FT 58"
+    ]
+  },
+  "terror": {
+    "name": "Terror",
+    "category": "standOrHero",
+    "cost": {
+      "kind": "flat",
+      "points": 2
+    },
+    "constraints": [],
+    "sources": [
+      "FT 59"
+    ]
+  },
+  "unreliable": {
+    "name": "Unreliable",
+    "category": "stand",
+    "cost": {
+      "kind": "byTroopType",
+      "points": -2,
+      "overrides": [
+        {
+          "when": {
+            "troopTypes": [
+              "KNT",
+              "ELE"
+            ]
+          },
+          "points": -1
+        },
+        {
+          "when": {
+            "cards": [
+              "fierce"
+            ]
+          },
+          "points": -1
+        }
+      ]
+    },
+    "constraints": [
+      {
+        "kind": "maxPerArmy",
+        "stands": 4
+      },
+      {
+        "kind": "notOnGeneral"
+      }
+    ],
+    "sources": [
+      "FT 60"
+    ]
+  },
+  "unruly": {
+    "name": "Unruly",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": -1
+    },
+    "constraints": [
+      {
+        "kind": "ineligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "WWG",
+              "ART",
+              "ELE"
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "FT 61"
+    ]
+  },
+  "weaken": {
+    "name": "Weaken",
+    "category": "stand",
+    "cost": {
+      "kind": "flat",
+      "points": -0.5
+    },
+    "constraints": [
+      {
+        "kind": "eligible",
+        "anyOf": [
+          {
+            "troopTypes": [
+              "BLV",
+              "RBL",
+              "HRD",
+              "LFT",
+              "LSP",
+              "WBD",
+              "WWG",
+              "WRR",
+              "BAD",
+              "BTX",
+              "ELE",
+              "PAV",
+              "SPR"
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "FT 62"
+    ]
+  }
+}

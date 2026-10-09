@@ -3,6 +3,7 @@ import type { MeshweshArmyList, MeshweshBattleCard } from './schema.ts';
 export type CanarySource = {
   armyLists: readonly Pick<MeshweshArmyList, 'name'>[];
   battleCards: readonly Pick<MeshweshBattleCard, 'mdText'>[];
+  fantasyCardText?: readonly string[];
 };
 
 export type Canaries = {
@@ -30,6 +31,7 @@ const byLengthDescending = (a: string, b: string) => b.length - a.length;
 export const restrictedCanaries = ({
   armyLists,
   battleCards,
+  fantasyCardText = [],
 }: CanarySource): Canaries => ({
   armyNames: [
     ...new Set(armyLists.map(({ name }) => collapsedWhitespace(name))),
@@ -38,8 +40,8 @@ export const restrictedCanaries = ({
     .sort(byLengthDescending),
   battleCardLines: [
     ...new Set(
-      battleCards
-        .flatMap(({ mdText }) => mdText.split('\n'))
+      [...battleCards.map(({ mdText }) => mdText), ...fantasyCardText]
+        .flatMap((text) => text.split('\n'))
         .map(battleCardLine)
         .filter((line) => wordCount(line) >= minimumBattleCardLineWords),
     ),

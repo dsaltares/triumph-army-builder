@@ -25,6 +25,8 @@ export const translationFileNames = [
   'keywords',
   'notes',
   'sub-factions',
+  'games/fantasy/troop-types',
+  'games/fantasy/battle-cards',
 ] as const;
 
 export type TranslationFileName = (typeof translationFileNames)[number];
@@ -82,6 +84,10 @@ export type Translator = {
   battleCardText: (code: string, source: string) => string;
   battleCardName: (code: string, source: string) => string;
   battleCardListName: (code: string, source: string) => string;
+  fantasyTroopTypeName: (code: string, source: string) => string;
+  fantasyCardName: (code: string, source: string) => string;
+  fantasyCardVariantName: (key: string, source: string) => string;
+  fantasyCardText: (code: string, source: string) => string;
 };
 
 const byId =
@@ -108,6 +114,10 @@ export const createTranslator = (
   battleCardName: byId(catalogue['battle-cards'], '.name'),
   battleCardListName: byId(catalogue['battle-cards'], '.listName'),
   battleCardText: byId(catalogue['battle-cards'], '.text'),
+  fantasyTroopTypeName: byId(catalogue['games/fantasy/troop-types'], '.name'),
+  fantasyCardName: byId(catalogue['games/fantasy/battle-cards'], '.name'),
+  fantasyCardVariantName: byId(catalogue['games/fantasy/battle-cards']),
+  fantasyCardText: byId(catalogue['games/fantasy/battle-cards'], '.text'),
 });
 
 export const identityTranslator = (locale: Locale): Translator =>

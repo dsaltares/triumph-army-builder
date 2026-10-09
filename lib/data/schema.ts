@@ -63,6 +63,48 @@ export const battleCardCodes = [
   'SW',
 ] as const;
 
+export const games = ['triumph', 'fantasy'] as const;
+
+export const fantasyCardCodes = [
+  'ambush',
+  'armored',
+  'away',
+  'brittle',
+  'champion',
+  'chargeThrough',
+  'craven',
+  'deadly',
+  'delayedEntry',
+  'fast',
+  'fierce',
+  'flying',
+  'fortifiedCamp',
+  'hearten',
+  'holdTheLine',
+  'illusion',
+  'marksman',
+  'massive',
+  'mindblast',
+  'mobileInfantry',
+  'negateMagic',
+  'noCamp',
+  'packTrain',
+  'preparedDefenses',
+  'prowess',
+  'rangedAttack',
+  'regenerate',
+  'slow',
+  'spellblast',
+  'spikedCarts',
+  'subcommander',
+  'supportingShooters',
+  'terrainAffinity',
+  'terror',
+  'unreliable',
+  'unruly',
+  'weaken',
+] as const;
+
 export const topographies = [
   'Arable',
   'Delta',
@@ -72,6 +114,15 @@ export const topographies = [
   'Marsh',
   'Steppe',
 ] as const;
+
+export const denseTopographies = [
+  'Dense Forest',
+  'Dense Marsh',
+  'Dense Wasteland',
+  'Dense Underground',
+] as const;
+
+export const fantasyTopographies = [...topographies, ...denseTopographies];
 
 export const armyListStatuses = ['Revised', 'Ready', 'DRAFT'] as const;
 
@@ -273,3 +324,6 @@ export type TroopTypeCode = (typeof troopTypeCodes)[number];
 export type TroopTypeCategory = (typeof troopTypeCategories)[number];
 export type TroopTypeOrder = (typeof troopTypeOrders)[number];
 export type BattleCardCode = (typeof battleCardCodes)[number];
+export type Game = (typeof games)[number];
+export type FantasyCardCode = (typeof fantasyCardCodes)[number];
+export type FantasyTopography = (typeof fantasyTopographies)[number];

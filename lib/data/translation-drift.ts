@@ -24,6 +24,8 @@ const keying = {
   keywords: 'source',
   notes: 'source',
   'sub-factions': 'source',
+  'games/fantasy/troop-types': 'id',
+  'games/fantasy/battle-cards': 'id',
 } as const satisfies Record<TranslationFileName, 'id' | 'source'>;
 
 export type TranslationRequest = {
@@ -104,6 +106,26 @@ export const recordingTranslator = (
       inner.battleCardListName,
     ),
     battleCardText: byId('battle-cards', '.text', inner.battleCardText),
+    fantasyTroopTypeName: byId(
+      'games/fantasy/troop-types',
+      '.name',
+      inner.fantasyTroopTypeName,
+    ),
+    fantasyCardName: byId(
+      'games/fantasy/battle-cards',
+      '.name',
+      inner.fantasyCardName,
+    ),
+    fantasyCardVariantName: byId(
+      'games/fantasy/battle-cards',
+      '',
+      inner.fantasyCardVariantName,
+    ),
+    fantasyCardText: byId(
+      'games/fantasy/battle-cards',
+      '.text',
+      inner.fantasyCardText,
+    ),
   };
 
   return { translator, asked: () => [...asked.values()] };

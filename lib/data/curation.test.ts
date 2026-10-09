@@ -1,8 +1,14 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { curationFiles, loadCuration } from '@/lib/data/curation.ts';
+import {
+  curationFiles,
+  fantasyCurationDirectory,
+  fantasyCurationFiles,
+  loadCuration,
+} from '@/lib/data/curation.ts';
+import type { FantasyCuration } from '@/lib/data/curation-schema.ts';
 import { troopTypeCodes } from '@/lib/data/schema.ts';
 import { baseWidths } from '@/lib/domain/troop-types.ts';
 import { sampleCuration } from '@/test/sample.ts';
@@ -11,16 +17,38 @@ const { movement, basing } = sampleCuration;
 
 const directories: string[] = [];
 
+const sampleFantasy = sampleCuration.games.fantasy;
+
+type FantasyFiles = Partial<Record<keyof FantasyCuration, unknown>>;
+
+const writeFiles = async (
+  directory: string,
+  names: Readonly<Record<string, string>>,
+  contents: Readonly<Record<string, unknown>>,
+) => {
+  await mkdir(directory, { recursive: true });
+  for (const [key, file] of Object.entries(names)) {
+    if (key in contents) {
+      await writeFile(join(directory, file), JSON.stringify(contents[key]));
+    }
+  }
+};
+
 const curationDirectory = async (
   overrides: Partial<Record<keyof typeof curationFiles, unknown>>,
+  fantasy: FantasyFiles | null = { ...sampleFantasy },
 ) => {
   const directory = await mkdtemp(join(tmpdir(), 'triumph-curation-'));
   directories.push(directory);
-  const files = { ...sampleCuration, ...overrides };
-  for (const [key, file] of Object.entries(curationFiles)) {
-    await writeFile(
-      join(directory, file),
-      JSON.stringify(files[key as keyof typeof curationFiles]),
+  await writeFiles(directory, curationFiles, {
+    ...sampleCuration,
+    ...overrides,
+  });
+  if (fantasy) {
+    await writeFiles(
+      join(directory, fantasyCurationDirectory),
+      fantasyCurationFiles,
+      fantasy,
     );
   }
   return directory;
@@ -78,9 +106,47 @@ describe('the curated basing', () => {
 });
 
 describe('loadCuration', () => {
-  it('reads the four curation files back as they were written', async () => {
+  it('reads the curation files and the Fantasy Triumph section back as they were written', async () => {
     expect(await loadCuration(await curationDirectory({}))).toEqual(
       sampleCuration,
+    );
+  });
+
+  it('has no Fantasy Triumph section when the curation has no directory for it', async () => {
+    const curation = await loadCuration(await curationDirectory({}, null));
+
+    expect(curation.games).toEqual({});
+  });
+
+  it('refuses a Fantasy Triumph section with a file missing', async () => {
+    const { format: _format, ...withoutFormat } = sampleFantasy ?? {};
+    const directory = await curationDirectory({}, withoutFormat);
+
+    await expect(loadCuration(directory)).rejects.toThrow('format.json');
+  });
+
+  it('refuses a Fantasy Triumph card with no curation', async () => {
+    const { weaken: _weaken, ...withoutWeaken } = sampleFantasy?.cards ?? {};
+    const directory = await curationDirectory(
+      {},
+      { ...sampleFantasy, cards: withoutWeaken },
+    );
+
+    await expect(loadCuration(directory)).rejects.toThrow(
+      'the curation does not match its schema (games.fantasy.cards.weaken',
+    );
+  });
+
+  it('refuses a Fantasy Triumph card with no rules text', async () => {
+    const { illusion: _illusion, ...withoutIllusion } =
+      sampleFantasy?.text ?? {};
+    const directory = await curationDirectory(
+      {},
+      { ...sampleFantasy, text: withoutIllusion },
+    );
+
+    await expect(loadCuration(directory)).rejects.toThrow(
+      'the curation does not match its schema (games.fantasy.text.illusion',
     );
   });
 

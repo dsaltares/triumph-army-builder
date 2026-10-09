@@ -19,6 +19,10 @@ import {
 } from '@/lib/domain/battle-cards/costs.ts';
 import basing from '@/test/fixtures/reference/curation/basing.json';
 import battleCardCostCuration from '@/test/fixtures/reference/curation/battle-card-costs.json';
+import fantasyCards from '@/test/fixtures/reference/curation/games/fantasy/cards.json';
+import fantasyFormat from '@/test/fixtures/reference/curation/games/fantasy/format.json';
+import fantasyText from '@/test/fixtures/reference/curation/games/fantasy/text.json';
+import fantasyTroopTypeNames from '@/test/fixtures/reference/curation/games/fantasy/troop-type-names.json';
 import movement from '@/test/fixtures/reference/curation/movement.json';
 import subFactions from '@/test/fixtures/reference/curation/sub-factions.json';
 import snapshotBattleCards from '@/test/fixtures/reference/snapshot/battleCards.json';
@@ -40,6 +44,14 @@ export const sampleCuration = parseCuration({
   basing,
   battleCardCosts: battleCardCostCuration,
   subFactions,
+  games: {
+    fantasy: {
+      troopTypeNames: fantasyTroopTypeNames,
+      cards: fantasyCards,
+      text: fantasyText,
+      format: fantasyFormat,
+    },
+  },
 });
 
 export const sampleTroopTypes = troopTypeSchema

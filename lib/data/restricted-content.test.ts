@@ -44,6 +44,20 @@ describe('restrictedCanaries', () => {
   });
 });
 
+describe('restrictedCanaries, with Fantasy Triumph card text', () => {
+  it('takes the long lines of the card text as canaries too', () => {
+    expect(
+      restrictedCanaries({
+        armyLists: [],
+        battleCards: [],
+        fantasyCardText: [
+          'Short line.\n\n#### In play\n- Wyverns circle the *battle line* twice before they land.',
+        ],
+      }).battleCardLines,
+    ).toEqual(['Wyverns circle the battle line twice before they land.']);
+  });
+});
+
 describe('canaryScanner', () => {
   it('finds an army name as a whole word, on the line it is on', () => {
     expect(

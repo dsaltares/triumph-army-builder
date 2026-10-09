@@ -26,6 +26,9 @@ beforeAll(async () => {
 
 const encoded = (value: unknown) => gzipSync(JSON.stringify(value));
 
+const withoutFantasy = (files: ReferencePack['locales']['en']) =>
+  files.filter(({ path }) => !path.startsWith('games/fantasy/'));
+
 const withEnglishFiles = (
   change: (files: ReferencePack['locales']['en']) => unknown[],
 ) => ({ ...pack, locales: { ...pack.locales, en: change(pack.locales.en) } });
@@ -75,6 +78,58 @@ describe('reference pack', () => {
         ),
       ),
     ).toThrow('troop-types.json is missing');
+  });
+
+  it('carries a Fantasy Triumph section in every locale', () => {
+    for (const files of Object.values(pack.locales)) {
+      expect(files.map(({ path }) => path)).toEqual(
+        expect.arrayContaining(Object.values(bundlePaths.fantasy)),
+      );
+    }
+  });
+
+  it('accepts a pack with no Fantasy Triumph section, as packs built before it were', () => {
+    const older = {
+      ...pack,
+      locales: {
+        en: withoutFantasy(pack.locales.en),
+        es: withoutFantasy(pack.locales.es),
+      },
+    };
+
+    expect(decodeReferencePack(encoded(older))).toEqual(older);
+  });
+
+  it('refuses a Fantasy Triumph section with a file missing', () => {
+    expect(() =>
+      decodeReferencePack(
+        encoded(
+          withEnglishFiles((files) =>
+            files.filter(({ path }) => path !== bundlePaths.fantasy.format),
+          ),
+        ),
+      ),
+    ).toThrow(
+      `${bundlePaths.fantasy.format} is missing from the Fantasy Triumph section`,
+    );
+  });
+
+  it('refuses Fantasy Triumph cards that do not match the bundle schema', () => {
+    expect(() =>
+      decodeReferencePack(
+        encoded(
+          withEnglishFiles((files) =>
+            files.map((file) =>
+              file.path === bundlePaths.fantasy.battleCards
+                ? { ...file, contents: [{ code: 'dragonfire' }] }
+                : file,
+            ),
+          ),
+        ),
+      ),
+    ).toThrow(
+      `${bundlePaths.fantasy.battleCards} does not match the data bundle schema`,
+    );
   });
 
   it('refuses a file the bundle does not write', () => {

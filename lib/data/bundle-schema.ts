@@ -6,12 +6,16 @@ import type {
   ArmyIndex,
   BattleCardText,
   BundledBattleCard,
+  BundledFantasyCard,
   BundledTroopType,
+  FantasyCardText,
 } from './bundle.ts';
 import {
   battleCardCostRuleSchema,
   battleCardPurchaseScopeSchema,
+  fantasyCardShape,
   movementSchema,
+  pricesEveryVariant,
   subFactionGroupSchema,
   troopTypeBasingSchema,
 } from './curation-schema.ts';
@@ -22,6 +26,7 @@ import {
   battleCardCodes,
   battleCardEntrySchema,
   dateRangeSchema,
+  fantasyCardCodes,
   generalTroopEntriesSchema,
   homeTopographySchema,
   ratingSchema,
@@ -133,4 +138,17 @@ export const tagWordsSchema: z.ZodType<TagWord[]> = z.array(
     troopTypes: z.array(z.enum(troopTypeCodes)),
     options: z.int().min(1),
   }),
+);
+
+export const bundledFantasyCardsSchema: z.ZodType<BundledFantasyCard[]> = z
+  .array(
+    z
+      .strictObject({ code: z.enum(fantasyCardCodes), ...fantasyCardShape })
+      .superRefine(pricesEveryVariant),
+  )
+  .min(1);
+
+export const fantasyCardTextSchema: z.ZodType<FantasyCardText> = z.record(
+  z.enum(fantasyCardCodes),
+  z.string(),
 );
