@@ -98,7 +98,7 @@ export type FantasyFormat = {
   victory: { numerator: number; denominator: number };
 };
 
-const variantChoicesOf = (
+export const variantChoicesOf = (
   cost: FantasyCardCost,
 ): readonly { choice: string; options: readonly string[] }[] => {
   switch (cost.kind) {

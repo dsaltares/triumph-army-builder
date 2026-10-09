@@ -21,10 +21,13 @@ export default async function ReferencePage() {
     return <ReferenceUnavailable />;
   }
   const t = await getTranslations('pages');
-  const [troopTypes, battleCards] = await Promise.all([
-    reference.bundle.readTroopTypes(),
-    reference.bundle.readBattleCards(),
-  ]);
+  const [troopTypes, battleCards, fantasyTroopTypes, fantasyBattleCards] =
+    await Promise.all([
+      reference.bundle.readTroopTypes(),
+      reference.bundle.readBattleCards(),
+      reference.bundle.readFantasyTroopTypes(),
+      reference.bundle.readFantasyBattleCards(),
+    ]);
   const sections = [
     {
       href: routes.troopTypes,
@@ -37,6 +40,25 @@ export default async function ReferencePage() {
       description: t('battleCardsCard', { count: battleCards.length }),
     },
   ];
+  const fantasySections =
+    fantasyTroopTypes && fantasyBattleCards
+      ? [
+          {
+            href: routes.fantasyTroopTypes,
+            title: t('fantasyTroopTypes'),
+            description: t('fantasyTroopTypesCard', {
+              count: fantasyTroopTypes.length,
+            }),
+          },
+          {
+            href: routes.fantasyBattleCards,
+            title: t('fantasyBattleCards'),
+            description: t('fantasyBattleCardsCard', {
+              count: fantasyBattleCards.length,
+            }),
+          },
+        ]
+      : [];
   const documents = [
     {
       href: externalLinks.rules,
@@ -70,6 +92,20 @@ export default async function ReferencePage() {
           </LinkCard>
         ))}
       </LinkCardGrid>
+      {fantasySections.length > 0 && (
+        <Section
+          title={(await getTranslations('games'))('fantasy')}
+          description={t('fantasyReferenceDescription')}
+        >
+          <LinkCardGrid className="lg:grid-cols-2">
+            {fantasySections.map(({ href, title, description }) => (
+              <LinkCard key={href} href={href} title={title}>
+                {description}
+              </LinkCard>
+            ))}
+          </LinkCardGrid>
+        </Section>
+      )}
       <Section title={t('rules')} description={t('rulesDescription')}>
         <LinkCardGrid>
           {documents.map(({ href, title, description }) => (

@@ -40,6 +40,8 @@ test('every route fits the viewport', async ({ page, request }) => {
     '/reference',
     '/reference/troop-types',
     '/reference/battle-cards',
+    '/fantasy/troop-types',
+    '/fantasy/battle-cards',
     '/my-armies',
     '/collection',
     '/sign-in',
