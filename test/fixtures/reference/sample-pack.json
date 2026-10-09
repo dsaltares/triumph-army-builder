@@ -1,7 +1,7 @@
 {
   "dataVersion": "2026-09-29.11a65697",
   "source": "https://sample.triumph-army-builder.test/api/v1",
-  "builtAt": "2026-10-09T11:20:02.285Z",
+  "builtAt": "2026-10-09T12:22:40.062Z",
   "locales": {
     "en": [
       {
@@ -6467,7 +6467,6 @@
                 {
                   "when": {
                     "troopTypes": [
-                      "KNT",
                       "ELE"
                     ]
                   },
@@ -13130,7 +13129,6 @@
                 {
                   "when": {
                     "troopTypes": [
-                      "KNT",
                       "ELE"
                     ]
                   },

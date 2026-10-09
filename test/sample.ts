@@ -4,8 +4,14 @@ import {
   type ArmyDetail,
   type BundleFile,
   buildBundle,
+  bundlePaths,
 } from '@/lib/data/bundle.ts';
+import {
+  bundledFantasyCardsSchema,
+  bundledTroopTypesSchema,
+} from '@/lib/data/bundle-schema.ts';
 import { parseCuration } from '@/lib/data/curation.ts';
+import { fantasyFormatSchema } from '@/lib/data/curation-schema.ts';
 import {
   battleCardSchema,
   type TroopTypeCode,
@@ -17,6 +23,7 @@ import {
   type BattleCardCosts,
   battleCardCosts,
 } from '@/lib/domain/battle-cards/costs.ts';
+import type { FantasyReference } from '@/lib/domain/fantasy/reference.ts';
 import basing from '@/test/fixtures/reference/curation/basing.json';
 import battleCardCostCuration from '@/test/fixtures/reference/curation/battle-card-costs.json';
 import fantasyCards from '@/test/fixtures/reference/curation/games/fantasy/cards.json';
@@ -109,4 +116,19 @@ export const sampleArmyList = async (name: string): Promise<ArmyList> => {
     throw new Error(`${name} is not in the sample pack`);
   }
   return found;
+};
+
+export const sampleFantasyReference = async (): Promise<FantasyReference> => {
+  const files = await sampleBundle();
+  const contents = (path: string) =>
+    files.find((file) => file.path === path)?.contents;
+  return {
+    troopTypes: bundledTroopTypesSchema.parse(
+      contents(bundlePaths.fantasy.troopTypes),
+    ),
+    cards: bundledFantasyCardsSchema.parse(
+      contents(bundlePaths.fantasy.battleCards),
+    ),
+    format: fantasyFormatSchema.parse(contents(bundlePaths.fantasy.format)),
+  };
 };

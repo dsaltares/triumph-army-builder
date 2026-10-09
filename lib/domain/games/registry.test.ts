@@ -2,12 +2,25 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { readArmyListReference } from '@/lib/data/game-reference';
 import { sampleBundleHolding } from '@/test/bundle-source.ts';
 import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
+import {
+  cards,
+  fantasySelection,
+  fantasyUnit,
+} from '@/test/fixtures/fantasy.ts';
+import { sampleFantasyReference } from '@/test/sample.ts';
 import { pointsMeter } from '../army/builder.ts';
 import { canonicalSelection } from '../army/canonical-selection.ts';
 import { armyPoints, pointCosts } from '../army/points.ts';
 import { defaultListName } from '../army/saved-army.ts';
 import { selectionSchema } from '../army/selection-schema.ts';
 import { validationReport } from '../army/validation-report.ts';
+import {
+  type FantasyReference,
+  fantasyCatalogue,
+} from '../fantasy/reference.ts';
+import { canonicalFantasySelection } from '../fantasy/share.ts';
+import { fantasySheet } from '../fantasy/sheet-data.ts';
+import { fantasyValidationReport } from '../fantasy/validation.ts';
 import { games } from '../game.ts';
 import { troopTypeNames } from '../troop-types.ts';
 import { gameModule } from './registry.ts';
@@ -85,6 +98,68 @@ describe('the Triumph! module', () => {
 
     expect(triumph.listTitle(reference, at)).toBe(
       defaultListName(reference.armyList.name, at),
+    );
+  });
+});
+
+describe('the Fantasy Triumph module', () => {
+  const fantasy = gameModule('fantasy');
+  let fantasyReference: FantasyReference;
+
+  beforeAll(async () => {
+    fantasyReference = await sampleFantasyReference();
+  });
+
+  const list = fantasySelection({
+    units: [
+      fantasyUnit('spears', 'SPR', { stands: 8 }),
+      fantasyUnit('dragon', 'ELE', {
+        cards: cards('deadly', 'armored'),
+        marks: { delayedEntry: 1 },
+      }),
+    ],
+    general: 'spears',
+  });
+
+  it('files a list under no army list and reads its own selection', () => {
+    expect(fantasy.armyListId(list)).toBeNull();
+    expect(fantasy.selectionSchema.parse(list)).toEqual(list);
+    expect(fantasy.canonicalise(list)).toEqual(canonicalFantasySelection(list));
+  });
+
+  it('meters the total against the list’s own points total, with the victory value beside it', () => {
+    expect(fantasy.points(list, fantasyReference)).toEqual({
+      total: 36.5,
+      cap: 51,
+      remaining: 14.5,
+      status: 'under',
+      standPoints: 38.5,
+      allyStandPoints: 0,
+      battleCardPoints: -2,
+      filled: 36.5 / 51,
+      victoryValue: 38.5,
+    });
+  });
+
+  it('validates and prints a list the way the Fantasy Triumph engine does', () => {
+    expect(fantasy.validate(list, fantasyReference)).toEqual(
+      fantasyValidationReport(list, fantasyCatalogue(fantasyReference)),
+    );
+    expect(
+      fantasy.sheetData(
+        { name: 'Wyrm host', selection: list },
+        fantasyReference,
+      ),
+    ).toEqual(
+      fantasySheet({ name: 'Wyrm host', selection: list }, fantasyReference),
+    );
+  });
+
+  it('names a new list after the game and the day it was started', () => {
+    const at = new Date('2026-09-20T10:00:00.000Z');
+
+    expect(fantasy.listTitle(fantasyReference, at)).toBe(
+      defaultListName('Fantasy Triumph', at),
     );
   });
 });

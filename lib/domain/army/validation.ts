@@ -5,6 +5,7 @@ import {
   type BattleCardCosts,
 } from '../battle-cards/costs.ts';
 import type { BattleCardNames } from '../battle-cards/listing.ts';
+import { type FindingSeverity, hasNoErrors } from '../findings.ts';
 import { triumphRules } from '../games/triumph-rules.ts';
 import { byKey } from '../ordering.ts';
 import type { TroopTypeNames } from '../troop-types.ts';
@@ -30,9 +31,7 @@ import {
   troopOptionStandCount,
 } from './selection.ts';
 
-export const findingSeverities = ['error', 'warning', 'info'] as const;
-
-export type FindingSeverity = (typeof findingSeverities)[number];
+export { type FindingSeverity, findingSeverities } from '../findings.ts';
 
 export type FindingTarget =
   | { kind: 'army' }
@@ -689,5 +688,4 @@ export const validateArmy = (
   ];
 };
 
-export const isLegal = (findings: readonly Finding[]) =>
-  !findings.some(({ severity }) => severity === 'error');
+export const isLegal = (findings: readonly Finding[]) => hasNoErrors(findings);

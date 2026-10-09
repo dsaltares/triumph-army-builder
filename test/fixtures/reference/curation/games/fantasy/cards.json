@@ -921,7 +921,6 @@
         {
           "when": {
             "troopTypes": [
-              "KNT",
               "ELE"
             ]
           },
