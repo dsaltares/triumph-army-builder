@@ -50,8 +50,16 @@ const item = (
   children: readonly string[] = [],
 ): FantasyTextItem => ({ text, children });
 
-const cardText = ({ name, variants }: FantasySheetCard) =>
-  variants.length === 0 ? name : `${name} (${variants.join(', ')})`;
+const cardText = ({
+  name,
+  variants,
+  note = null,
+}: Pick<FantasySheetCard, 'name' | 'variants'> & {
+  note?: FantasySheetCard['note'];
+}) => {
+  const details = [...variants, ...(note === null ? [] : [note])];
+  return details.length === 0 ? name : `${name} (${details.join(', ')})`;
+};
 
 const cardsLine = (cards: readonly FantasySheetCard[]) =>
   cards.length === 0 ? [] : [cards.map(cardText).join(', ')];

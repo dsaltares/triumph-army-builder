@@ -27,7 +27,10 @@ const goblins = fantasySelection({
       name: 'Warg riders',
       tags: ['wolf'],
       stands: 4,
-      cards: cards('slow', 'fierce', 'terrainAffinity'),
+      cards: cards('slow', 'fierce', {
+        code: 'terrainAffinity',
+        note: ' Hills and woods ',
+      }),
       marks: { eventCards: { chargeThrough: 1 } },
     }),
     fantasyUnit('archers', 'ARC', {
@@ -79,9 +82,14 @@ describe('fantasySheet', () => {
         stands: 4,
         general: true,
         cards: [
-          { code: 'slow', name: 'Slow', variants: [] },
-          { code: 'fierce', name: 'Fierce', variants: [] },
-          { code: 'terrainAffinity', name: 'Terrain Affinity', variants: [] },
+          { code: 'slow', name: 'Slow', variants: [], note: null },
+          { code: 'fierce', name: 'Fierce', variants: [], note: null },
+          {
+            code: 'terrainAffinity',
+            name: 'Terrain Affinity',
+            variants: [],
+            note: 'Hills and woods',
+          },
         ],
         delayedStands: 0,
         transports: 0,
@@ -100,6 +108,7 @@ describe('fantasySheet', () => {
             code: 'rangedAttack',
             name: 'Ranged Attack',
             variants: ['Magical'],
+            note: null,
           },
         ],
         delayedStands: 2,
@@ -120,7 +129,7 @@ describe('fantasySheet', () => {
       {
         id: 'shaman',
         name: 'Hyperborean shaman',
-        cards: [{ code: 'hearten', name: 'Hearten', variants: [] }],
+        cards: [{ code: 'hearten', name: 'Hearten', variants: [], note: null }],
         delayedEntry: true,
         points: 2,
       },

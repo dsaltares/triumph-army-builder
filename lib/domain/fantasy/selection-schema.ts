@@ -12,6 +12,8 @@ export const fantasyTagMaxLength = 40;
 
 export const fantasyTagsMax = 12;
 
+export const fantasyCardNoteMaxLength = 60;
+
 const idSchema = z.string().min(1).max(64);
 
 const nameSchema = z.string().max(fantasyNameMaxLength);
@@ -34,6 +36,7 @@ const variantsSchema = z.record(z.string().min(1), z.string().min(1));
 export const fantasyCardChoiceSchema = z.object({
   code: cardCodeSchema,
   variants: variantsSchema.exactOptional(),
+  note: z.string().max(fantasyCardNoteMaxLength).exactOptional(),
 });
 
 export const fantasyListFormatSchema = z.object({

@@ -136,4 +136,25 @@ describe('fantasyTextGroups', () => {
     expect(heroes?.[1]).toEqual({ kind: 'line', text: '<noHeroes>' });
     expect(armyCards?.[1]).toEqual({ kind: 'line', text: '<noArmyCards>' });
   });
+
+  it('prints a card note beside the card, after its variants', () => {
+    const [, , units] = groups(
+      fantasySelection({
+        units: [
+          fantasyUnit('rangers', 'LFT', {
+            name: 'Rangers',
+            cards: cards({ code: 'terrainAffinity', note: 'Hills, woods' }),
+          }),
+        ],
+        general: 'rangers',
+      }),
+    );
+
+    expect(units?.[1]).toMatchObject({
+      kind: 'list',
+      items: [
+        { children: ['Terrain Affinity (Hills, woods)', expect.any(String)] },
+      ],
+    });
+  });
 });
