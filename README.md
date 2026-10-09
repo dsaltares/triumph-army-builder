@@ -47,10 +47,13 @@ Army lists come from the public [Meshwesh](https://meshwesh.wgcwar.com/api/v1) A
 snapshot and curated overlays kept in the private data repo. `yarn data:pack` turns them into a
 reference pack, `yarn db:import-reference` writes a pack into the database, and the app serves it
 from there; neither the build nor the image carries reference data. `yarn db:seed:reference`,
-which `yarn dev` runs, does the import for you. The reasoning is in ADRs
+which `yarn dev` runs, does the import for you. A pack takes the snapshot's data version, so a
+change to the curated data or the translations alone ships only after `yarn data:bump` in the data
+repo stamps a new one. The reasoning is in ADRs
 [0001](docs/adr/0001-snapshot-over-live-api.md), [0003](docs/adr/0003-one-data-version-per-army.md),
-[0034](docs/adr/0034-reference-data-lives-in-sqlite-served-over-trpc.md) and
-[0035](docs/adr/0035-reference-data-ships-as-a-pack-from-a-private-repo.md).
+[0034](docs/adr/0034-reference-data-lives-in-sqlite-served-over-trpc.md),
+[0035](docs/adr/0035-reference-data-ships-as-a-pack-from-a-private-repo.md) and
+[0042](docs/adr/0042-a-data-version-can-be-bumped-by-hand.md).
 
 ## Configuration
 

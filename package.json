@@ -24,6 +24,8 @@
     "sync:meshwesh": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-meshwesh.ts",
     "validate:snapshot": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-snapshot.ts",
     "data:pack": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/data-pack.ts",
+    "data:version": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/data-version.ts",
+    "data:bump": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/data-bump.ts",
     "data:sample": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/data-pack.ts --snapshot test/fixtures/reference/snapshot --curation test/fixtures/reference/curation --translations test/fixtures/reference/translations --out test/fixtures/reference/sample-pack.json",
     "check:restricted": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-restricted.ts",
     "refresh:report": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/refresh-report.ts",

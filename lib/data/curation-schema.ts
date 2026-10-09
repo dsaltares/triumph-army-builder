@@ -56,12 +56,17 @@ export type GameCurations = {
   fantasy?: FantasyCuration;
 };
 
+export type CurationRelease = {
+  bumpedAt: string;
+};
+
 export type Curation = {
   movement: Readonly<Partial<Record<TroopTypeCode, number>>>;
   basing: Readonly<Partial<Record<TroopTypeCode, TroopTypeBasing>>>;
   battleCardCosts: Readonly<Record<BattleCardCode, CuratedBattleCardCost>>;
   subFactions: Readonly<Record<string, SubFactionGroup>>;
   games: GameCurations;
+  release?: CurationRelease;
 };
 
 const identifier = z.string().min(1);
@@ -356,6 +361,10 @@ export const fantasyCurationSchema = z.strictObject({
   format: fantasyFormatSchema,
 }) satisfies z.ZodType<FantasyCuration>;
 
+export const curationReleaseSchema = z.strictObject({
+  bumpedAt: z.iso.datetime(),
+}) satisfies z.ZodType<CurationRelease>;
+
 export const curationSchema = z.strictObject({
   movement: z.partialRecord(z.enum(troopTypeCodes), movementSchema),
   basing: z.partialRecord(z.enum(troopTypeCodes), troopTypeBasingSchema),
@@ -365,4 +374,5 @@ export const curationSchema = z.strictObject({
   ),
   subFactions: z.record(identifier, subFactionGroupSchema),
   games: z.strictObject({ fantasy: fantasyCurationSchema.exactOptional() }),
+  release: curationReleaseSchema.exactOptional(),
 }) satisfies z.ZodType<Curation>;
