@@ -2,11 +2,11 @@ import { buildArmyList } from '../domain/army/army-list.ts';
 import type { ArmySelection } from '../domain/army/selection.ts';
 import type { SavedSelection } from '../domain/army/selection-schema.ts';
 import type { ListViewData } from '../domain/army/shared-view.ts';
-import type { Game } from '../domain/game.ts';
+import type { SavableGame } from '../domain/game.ts';
 import type { GameModules } from '../domain/games/registry.ts';
 import type { ArmyBundle } from './bundle-source.ts';
 
-export type GameReference<G extends Game> = Parameters<
+export type GameReference<G extends SavableGame> = Parameters<
   GameModules[G]['points']
 >[1];
 
@@ -29,7 +29,7 @@ const referenceReaders = {
   triumph: (bundle: ArmyBundle, selection: ArmySelection) =>
     readArmyListReference(bundle, selection.army),
 } satisfies {
-  [G in Game]: (
+  [G in SavableGame]: (
     bundle: ArmyBundle,
     selection: Extract<SavedSelection, { game: G }>['selection'],
   ) => Promise<GameReference<G> | null>;

@@ -26,11 +26,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import type { ArmySheet } from '@/lib/domain/army/sheet';
-import type { Game } from '@/lib/domain/game';
+import type { SavableGame } from '@/lib/domain/game';
 
 const useListExport = (
   sheet: ArmySheet,
-  game: Game,
+  game: SavableGame,
   selection: ArmySelection,
 ) => {
   const t = useTranslations('builder');
@@ -90,7 +90,7 @@ export function ListActionsMenu({
   children,
 }: {
   sheet: ArmySheet;
-  game: Game;
+  game: SavableGame;
   selection: ArmySelection;
   onCanIBuildIt: () => void;
   children?: ReactNode;

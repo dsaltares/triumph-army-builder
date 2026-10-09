@@ -1,4 +1,4 @@
-import { pointsMeter } from '../army/builder.ts';
+import { type PointsMeter, pointsMeter } from '../army/builder.ts';
 import { canonicalSelection } from '../army/canonical-selection.ts';
 import { armyPoints, pointCosts } from '../army/points.ts';
 import { defaultListName } from '../army/saved-army.ts';
@@ -6,7 +6,11 @@ import type { ArmySelection } from '../army/selection.ts';
 import { selectionSchema } from '../army/selection-schema.ts';
 import type { ListViewData } from '../army/shared-view.ts';
 import { type ArmySheet, armySheet } from '../army/sheet.ts';
-import { validationReport } from '../army/validation-report.ts';
+import type { ValidationRules } from '../army/validation.ts';
+import {
+  type ValidationReport,
+  validationReport,
+} from '../army/validation-report.ts';
 import { battleCardNames } from '../battle-cards/listing.ts';
 import type { GameModule } from '../game.ts';
 import {
@@ -53,4 +57,10 @@ export const triumph = {
     }),
   subjectName: ({ armyList }) => armyList.name,
   listTitle: ({ armyList }, at) => defaultListName(armyList.name, at),
-} satisfies GameModule<ArmySelection, TriumphReference, ArmySheet>;
+} satisfies GameModule<
+  ArmySelection,
+  TriumphReference,
+  ArmySheet,
+  PointsMeter,
+  ValidationReport
+> & { rules: ValidationRules };

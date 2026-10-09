@@ -32,7 +32,7 @@ import { useSession } from '@/lib/auth/client';
 import { isSignedIn } from '@/lib/auth/session';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import { searchSavedArmies } from '@/lib/domain/army/saved-army-index';
-import { games } from '@/lib/domain/game';
+import { savableGames } from '@/lib/domain/game';
 import { describeError } from '@/lib/errors';
 import { routes } from '@/lib/navigation';
 
@@ -131,7 +131,7 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
 
       <ChipGroup
         label={t('gameFilter')}
-        options={games}
+        options={savableGames}
         selected={chosenGames}
         onToggle={(game) =>
           setGames(

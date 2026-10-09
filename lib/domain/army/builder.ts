@@ -132,8 +132,13 @@ const statusOf = (total: number, cap: number): PointsStatus => {
   return total === cap ? 'exact' : 'under';
 };
 
+export type MeteredPoints = Pick<
+  ArmyPoints,
+  'total' | 'standPoints' | 'allyStandPoints' | 'battleCardPoints'
+>;
+
 export const pointsMeter = (
-  { total, standPoints, allyStandPoints, battleCardPoints }: ArmyPoints,
+  { total, standPoints, allyStandPoints, battleCardPoints }: MeteredPoints,
   { pointsCap }: ValidationRules = triumphRules,
 ): PointsMeter => ({
   total,

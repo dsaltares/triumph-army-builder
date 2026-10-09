@@ -24,7 +24,7 @@ import {
 } from '../../domain/army/saved-army.ts';
 import { selectionSchema } from '../../domain/army/selection-schema.ts';
 import { stalePins } from '../../domain/collection/pins.ts';
-import { defaultGame, gameSchema } from '../../domain/game.ts';
+import { defaultGame, savableGameSchema } from '../../domain/game.ts';
 import type { Caller, Context } from '../context.ts';
 import { writeEvent } from '../events.ts';
 import { publicProcedure, router, signedInProcedure } from '../trpc.ts';
@@ -33,7 +33,7 @@ const listChangeThrottleMs = 10 * 60 * 1000;
 
 const armyIdSchema = z.object({ id: z.string().min(1) });
 
-const gameInputSchema = gameSchema.default(defaultGame);
+const gameInputSchema = savableGameSchema.default(defaultGame);
 
 const capReached = () =>
   new TRPCError({

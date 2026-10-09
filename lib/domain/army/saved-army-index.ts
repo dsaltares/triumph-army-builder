@@ -1,4 +1,4 @@
-import type { Game } from '../game.ts';
+import type { Game, SavableGame } from '../game.ts';
 import { gameModule } from '../games/registry.ts';
 import type { TriumphReference } from '../games/triumph.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
@@ -25,7 +25,7 @@ export type SavedListReading = {
 };
 
 export const savedListReading = (
-  { game, selection }: { game: Game; selection: ArmySelection },
+  { game, selection }: { game: SavableGame; selection: ArmySelection },
   reference: TriumphReference,
 ): SavedListReading => {
   const module = gameModule(game);
