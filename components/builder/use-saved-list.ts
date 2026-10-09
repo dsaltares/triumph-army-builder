@@ -1,9 +1,17 @@
 'use client';
 
-import { parseAsString, useQueryState } from 'nuqs';
+import { parseAsString, useQueryStates } from 'nuqs';
 
-export const savedListParser = parseAsString.withOptions({
-  history: 'replace',
-});
+const builderListParsers = {
+  list: parseAsString,
+  draft: parseAsString,
+};
 
-export const useSavedListId = () => useQueryState('list', savedListParser);
+export const useSavedListId = () => {
+  const [{ list }, setParams] = useQueryStates(builderListParsers, {
+    history: 'replace',
+    urlKeys: { draft: 's' },
+  });
+  const setListId = (id: string | null) => setParams({ list: id, draft: null });
+  return [list, setListId] as const;
+};

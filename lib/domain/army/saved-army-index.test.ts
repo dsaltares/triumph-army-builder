@@ -1,26 +1,29 @@
 import { describe, expect, it } from 'vitest';
 import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
-import { sampleBattleCardCosts, sampleTroopTypes } from '@/test/sample.ts';
-import { troopTypeCosts, troopTypeNames } from '../troop-types.ts';
+import { sampleBattleCards, sampleBundledTroopTypes } from '@/test/sample.ts';
 import { buildArmyList } from './army-list';
 import type { SavedArmy } from './saved-army';
 import {
   type SavedArmyEntry,
-  savedArmyStanding,
+  savedListReading,
   searchSavedArmies,
 } from './saved-army-index';
-import { withStands } from './selection';
-
-const costs = {
-  troopTypes: troopTypeCosts(sampleTroopTypes),
-  battleCards: sampleBattleCardCosts,
-};
-const names = troopTypeNames(sampleTroopTypes);
+import { type ArmySelection, withStands } from './selection';
 
 const list = buildArmyList(armyDetail());
 
+const reference = {
+  armyList: list,
+  troopTypes: sampleBundledTroopTypes,
+  battleCards: sampleBattleCards,
+};
+
+const standingOf = (selection: ArmySelection) =>
+  savedListReading({ game: 'triumph', selection }, reference).standing;
+
 const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
   id: 'army-1',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: list.id,
   dataVersion: '2026-09-17.abcdef01',
@@ -42,9 +45,18 @@ const entry = (
 const found = (entries: readonly SavedArmyEntry[]) =>
   entries.map(({ army }) => army.name);
 
-describe('savedArmyStanding', () => {
+describe('savedListReading', () => {
+  it('names a saved list after the army list it was built from', () => {
+    expect(
+      savedListReading(
+        { game: 'triumph', selection: fixtureSelection() },
+        reference,
+      ).listName,
+    ).toBe(list.name);
+  });
+
   it('prices a saved selection and says whether it is legal', () => {
-    const standing = savedArmyStanding(list, fixtureSelection(), costs, names);
+    const standing = standingOf(fixtureSelection());
 
     expect(standing.meter.total).toBeGreaterThan(0);
     expect(standing.meter.cap).toBe(48);
@@ -57,13 +69,8 @@ describe('savedArmyStanding', () => {
     if (!spearmen) {
       throw new Error('the fixture army no longer has a first troop option');
     }
-    const four = savedArmyStanding(list, fixtureSelection(), costs, names);
-    const six = savedArmyStanding(
-      list,
-      withStands(fixtureSelection(), spearmen, 'SPR', 6),
-      costs,
-      names,
-    );
+    const four = standingOf(fixtureSelection());
+    const six = standingOf(withStands(fixtureSelection(), spearmen, 'SPR', 6));
 
     expect(six.meter.total).toBeGreaterThan(four.meter.total);
   });
@@ -110,5 +117,16 @@ describe('searchSavedArmies', () => {
     expect(
       found(searchSavedArmies([entry({ name: 'Zama' }, null)], 'army')),
     ).toEqual([]);
+  });
+
+  it('keeps the lists of the games asked for, alongside the search', () => {
+    expect(found(searchSavedArmies(entries, 'a', ['triumph']))).toEqual([
+      'Cannae',
+      'Zama',
+      'Ilipa',
+    ]);
+    expect(found(searchSavedArmies(entries, 'zam', ['triumph']))).toEqual([
+      'Zama',
+    ]);
   });
 });

@@ -3,9 +3,9 @@ import { servedReference } from '@/lib/data/served-bundle';
 import { armySheetResponse } from '@/lib/export/sheet-response';
 import { defaultLocale, isLocale } from '@/lib/i18n/locales';
 
-export const GET = async (
+export const servedSheetResponse = async (
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  armyId?: string,
 ) => {
   const asked = new URL(request.url).searchParams.get('lang');
   const locale = isLocale(asked) ? asked : defaultLocale;
@@ -18,7 +18,7 @@ export const GET = async (
   }
   return armySheetResponse({
     request,
-    armyId: (await params).id,
+    armyId,
     bundle: reference.bundle,
     siteUrl: serverBaseUrl(),
     generatedAt: new Date(),

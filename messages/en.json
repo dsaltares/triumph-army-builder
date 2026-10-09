@@ -270,7 +270,9 @@
     "noArmyMatchesBody": "Nothing in the index answers to that search. Widen it and the armies come back.",
     "firstMatchesShown": "The first {count} are shown · narrow the search to reach the rest.",
     "startFirstList": "Start your first list",
-    "viewList": "View {name}"
+    "viewList": "View {name}",
+    "gameFilter": "Game",
+    "noSavedFilterMatchesBody": "Nothing you have saved answers to that search and those games."
   },
   "builder": {
     "requiredTroops": "Required Troops",
@@ -895,6 +897,11 @@
     "filterArmiesInvasion": "Army invasion rating",
     "filterArmiesManoeuvre": "Army manoeuvre rating",
     "filterCollectionTroopType": "Collection troop type",
-    "filterCollectionStatus": "Collection status"
+    "filterCollectionStatus": "Collection status",
+    "filterMyArmiesGame": "Game of a saved list"
+  },
+  "games": {
+    "triumph": "Triumph!",
+    "fantasy": "Fantasy Triumph"
   }
 }

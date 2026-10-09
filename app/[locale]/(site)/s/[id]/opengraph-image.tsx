@@ -4,7 +4,6 @@ import { ImageResponse } from 'next/og';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { servedReference } from '@/lib/data/served-bundle';
 import { getDatabase } from '@/lib/db/client';
-import { triumphRules } from '@/lib/domain/games/triumph-rules';
 import { formatPoints, formatYear } from '@/lib/format';
 import type { IdRouteProps } from '@/lib/navigation';
 import { loadSharedView } from '@/lib/share/shared-view';
@@ -157,7 +156,7 @@ export default async function SharedListImage({ params }: IdRouteProps) {
           { value: `${view.sheet.totals.stands}`, label: t('ogStands') },
           {
             value: view.report.legal ? t('ogLegal') : t('ogIllegal'),
-            label: t('ogArmyOf', { cap: triumphRules.pointsCap }),
+            label: t('ogArmyOf', { cap: view.meter.cap }),
             colour: view.report.legal ? cardColors.legal : cardColors.illegal,
           },
         ],

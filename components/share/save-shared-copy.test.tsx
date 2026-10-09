@@ -52,9 +52,7 @@ describe('SaveSharedCopy', () => {
     await user.click(dialog().getByRole('button', { name: 'Save copy' }));
 
     await waitFor(() =>
-      expect(router.push).toHaveBeenCalledWith(
-        '/armies/army-1/build?list=army-1',
-      ),
+      expect(router.push).toHaveBeenCalledWith('/triumph/build?list=army-1'),
     );
   });
 });

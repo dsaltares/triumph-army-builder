@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { topographies, troopTypeCodes } from '../../data/schema.ts';
 import { ratingValues } from '../army-index.ts';
 import { collectionStatuses } from '../collection/entry.ts';
+import { gameSchema } from '../game.ts';
 
 export const trackedRoutes = [
   '/account',
@@ -26,6 +27,7 @@ export const trackedRoutes = [
   '/sign-in',
   '/sign-up',
   '/terms',
+  '/triumph/build',
 ] as const;
 
 export type TrackedRoute = (typeof trackedRoutes)[number];
@@ -69,6 +71,7 @@ export const filterValueSchemas = {
   'armies.manoeuvre': z.enum(ratings),
   'collection.troopType': z.enum(troopTypeCodes),
   'collection.status': z.enum(collectionStatuses),
+  'myArmies.game': gameSchema,
 } satisfies Record<string, z.ZodType<string>>;
 
 export type FilterKey = keyof typeof filterValueSchemas;

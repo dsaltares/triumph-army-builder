@@ -78,9 +78,7 @@ describe('the new list dialog', () => {
     await user.click(screen.getByRole('button', { name: /Goblin Warrens/ }));
 
     await waitFor(() =>
-      expect(router.push).toHaveBeenCalledWith(
-        '/armies/army-sumer/build?list=army-1',
-      ),
+      expect(router.push).toHaveBeenCalledWith('/triumph/build?list=army-1'),
     );
     expect(
       (await listArmies(api.database(), owner)).map((a) => a.name),
@@ -106,9 +104,7 @@ describe('the new list dialog', () => {
     await user.type(search(), 'elf{Enter}');
 
     await waitFor(() =>
-      expect(router.push).toHaveBeenCalledWith(
-        '/armies/army-gallic/build?list=army-1',
-      ),
+      expect(router.push).toHaveBeenCalledWith('/triumph/build?list=army-1'),
     );
   });
 

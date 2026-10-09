@@ -95,6 +95,7 @@ const entry = (
 
 const saved = (selection: ArmySelection): SavedArmy => ({
   id: 'saved-1',
+  game: 'triumph',
   name: 'Lagash',
   armyListId: armyList.id,
   dataVersion,

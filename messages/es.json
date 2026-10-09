@@ -235,7 +235,9 @@
     "noArmyMatchesBody": "Nada en el índice responde a esa búsqueda. Amplíala y los ejércitos vuelven.",
     "firstMatchesShown": "Se muestran los {count} primeros · afina la búsqueda para llegar al resto.",
     "startFirstList": "Empieza tu primera lista",
-    "viewList": "Ver {name}"
+    "viewList": "Ver {name}",
+    "gameFilter": "Juego",
+    "noSavedFilterMatchesBody": "Nada de lo que has guardado responde a esa búsqueda y esos juegos."
   },
   "builder": {
     "requiredTroops": "Tropas obligatorias",
@@ -895,6 +897,11 @@
     "filterArmiesInvasion": "Índice de invasión del ejército",
     "filterArmiesManoeuvre": "Índice de maniobra del ejército",
     "filterCollectionTroopType": "Tipo de tropa de la colección",
-    "filterCollectionStatus": "Estado de la colección"
+    "filterCollectionStatus": "Estado de la colección",
+    "filterMyArmiesGame": "Juego de una lista guardada"
+  },
+  "games": {
+    "triumph": "Triumph!",
+    "fantasy": "Fantasy Triumph"
   }
 }

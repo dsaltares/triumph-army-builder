@@ -15,6 +15,7 @@ import { useErrorMessage } from '@/components/use-error-message';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
 import { buildArmyList } from '@/lib/domain/army/army-list';
 import { pointCosts } from '@/lib/domain/army/points';
+import type { ArmySelection } from '@/lib/domain/army/selection';
 import {
   troopTypeFactors,
   troopTypeMovements,
@@ -70,7 +71,12 @@ const useBuilderData = (armyId: string) => {
     : ({ status: 'loading' } as const);
 };
 
-export function ArmyBuilder({ armyId }: { armyId: string }) {
+export type ArmyBuilderProps = {
+  armyId: string;
+  draft?: ArmySelection | null;
+};
+
+export function ArmyBuilder({ armyId, draft = null }: ArmyBuilderProps) {
   const t = useTranslations('builder');
   const [listId] = useSavedListId();
   const saved = useSavedArmy(listId);
@@ -96,6 +102,7 @@ export function ArmyBuilder({ armyId }: { armyId: string }) {
       key={saved.data?.id ?? 'unsaved'}
       {...state.data}
       saved={saved.data ?? null}
+      draft={draft}
     />
   );
 }

@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
-  armySheetUrl,
   armyUrl,
   buildArmyUrl,
   categoryUrl,
+  draftListUrl,
+  gameBuilderUrl,
   isActiveRoute,
   legalDocuments,
+  listSheetUrl,
   primaryNavItems,
   routes,
   savedListUrl,
@@ -71,10 +73,22 @@ describe('armyUrl', () => {
   it('addresses an army under the index', () => {
     expect(armyUrl('66c')).toBe('/armies/66c');
   });
+});
 
-  it('addresses a saved list in the builder of the army it was built from', () => {
-    expect(savedListUrl('66c', 'army 1')).toBe(
-      '/armies/66c/build?list=army%201',
+describe('gameBuilderUrl', () => {
+  it('addresses the builder of a game under its name', () => {
+    expect(gameBuilderUrl('triumph')).toBe('/triumph/build');
+  });
+
+  it('addresses a saved list in the builder of its game', () => {
+    expect(savedListUrl({ game: 'triumph', id: 'army 1' })).toBe(
+      '/triumph/build?list=army+1',
+    );
+  });
+
+  it('addresses an unsaved list in the builder of its game', () => {
+    expect(draftListUrl({ game: 'triumph', code: '2.ab_c-d' })).toBe(
+      '/triumph/build?s=2.ab_c-d',
     );
   });
 });
@@ -93,62 +107,56 @@ describe('categoryUrl', () => {
   });
 });
 
-describe('armySheetUrl', () => {
-  it('addresses the sheet of the army the list was built from', () => {
-    expect(armySheetUrl({ armyListId: '66c', code: '1.abcd' })).toBe(
-      '/api/armies/66c/sheet?s=1.abcd',
-    );
+describe('listSheetUrl', () => {
+  it('addresses the sheet of whatever list the code describes', () => {
+    expect(listSheetUrl({ code: '1.abcd' })).toBe('/api/lists/sheet?s=1.abcd');
   });
 
   it('names the download after the list when it has a name', () => {
     expect(
-      armySheetUrl({
-        armyListId: '66c',
+      listSheetUrl({
         code: '1.abcd',
         name: 'Cannae rematch',
       }),
-    ).toBe('/api/armies/66c/sheet?s=1.abcd&name=Cannae+rematch');
+    ).toBe('/api/lists/sheet?s=1.abcd&name=Cannae+rematch');
   });
 
   it('leaves the name out of an unsaved list', () => {
-    expect(armySheetUrl({ armyListId: '66c', code: '1.abcd', name: '' })).toBe(
-      '/api/armies/66c/sheet?s=1.abcd',
+    expect(listSheetUrl({ code: '1.abcd', name: '' })).toBe(
+      '/api/lists/sheet?s=1.abcd',
     );
   });
 
   it('carries the short link the sheet puts in its QR code', () => {
     expect(
-      armySheetUrl({
-        armyListId: '66c',
+      listSheetUrl({
         code: '1.abcd',
         share: 'Ab3xK9_mQ1zT',
       }),
-    ).toBe('/api/armies/66c/sheet?s=1.abcd&share=Ab3xK9_mQ1zT');
+    ).toBe('/api/lists/sheet?s=1.abcd&share=Ab3xK9_mQ1zT');
   });
 
   it('exports without a QR code when no short link could be made', () => {
-    expect(
-      armySheetUrl({ armyListId: '66c', code: '1.abcd', share: null }),
-    ).toBe('/api/armies/66c/sheet?s=1.abcd');
+    expect(listSheetUrl({ code: '1.abcd', share: null })).toBe(
+      '/api/lists/sheet?s=1.abcd',
+    );
   });
 
   it('asks for the sheet inline when it is to be previewed', () => {
     expect(
-      armySheetUrl({
-        armyListId: '66c',
+      listSheetUrl({
         code: '1.abcd',
         disposition: 'inline',
       }),
-    ).toBe('/api/armies/66c/sheet?s=1.abcd&disposition=inline');
+    ).toBe('/api/lists/sheet?s=1.abcd&disposition=inline');
   });
 
   it('leaves a download unmarked, since that is what the route serves', () => {
     expect(
-      armySheetUrl({
-        armyListId: '66c',
+      listSheetUrl({
         code: '1.abcd',
         disposition: 'attachment',
       }),
-    ).toBe('/api/armies/66c/sheet?s=1.abcd');
+    ).toBe('/api/lists/sheet?s=1.abcd');
   });
 });

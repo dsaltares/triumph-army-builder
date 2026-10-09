@@ -25,5 +25,6 @@ export type GameModule<Selection, Reference, Sheet> = {
   points: (selection: Selection, reference: Reference) => PointsMeter;
   validate: (selection: Selection, reference: Reference) => ValidationReport;
   sheetData: (list: NamedSelection<Selection>, reference: Reference) => Sheet;
+  subjectName: (reference: Reference) => string;
   listTitle: (reference: Reference, at: Date) => string;
 };

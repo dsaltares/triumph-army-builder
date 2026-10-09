@@ -71,6 +71,11 @@ const lastSeen = async (id: string) =>
 
 const laterBy = (ms: number) => () => new Date(Date.parse(at) + ms);
 
+const goneArmyList = {
+  army_list_id: 'army-gone',
+  selection: JSON.stringify({ ...fixtureSelection(), army: 'army-gone' }),
+};
+
 describe('loadSharedView', () => {
   it('reads the copy back as a sheet, a report and a points meter', async () => {
     const shared = await shareList();
@@ -117,7 +122,7 @@ describe('loadSharedView', () => {
     const shared = await shareList();
     await db
       .updateTable('shares')
-      .set({ army_list_id: 'army-gone' })
+      .set(goneArmyList)
       .where('id', '=', shared.id)
       .execute();
 
@@ -360,7 +365,7 @@ describe('loadSavedView', () => {
     const saved = await saveList();
     await db
       .updateTable('armies')
-      .set({ army_list_id: 'army-gone' })
+      .set(goneArmyList)
       .where('id', '=', saved.id)
       .execute();
 
@@ -386,6 +391,7 @@ describe('loadDraftView', () => {
     expect(loaded?.kind).toBe('draft');
     expect(loaded?.list).toEqual({
       name: armyList.name,
+      game: 'triumph',
       dataVersion: fixtureSelection().dataVersion,
       selection: fixtureSelection(),
       armyListId: armyList.id,

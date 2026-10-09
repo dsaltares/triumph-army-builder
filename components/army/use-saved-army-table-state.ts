@@ -1,7 +1,15 @@
 'use client';
 
 import type { SortingState, Updater } from '@tanstack/react-table';
-import { parseAsString, parseAsStringLiteral, useQueryStates } from 'nuqs';
+import {
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from 'nuqs';
+import { sendFilterUses } from '@/components/usage/send-filter-uses';
+import { type Game, games } from '@/lib/domain/game';
+import { addedFilterValues } from '@/lib/domain/usage/tracked';
 
 export const savedArmyColumns = [
   'name',
@@ -19,13 +27,14 @@ const directions = ['asc', 'desc'] as const;
 export const defaultSorting: SortingState = [{ id: 'updatedAt', desc: true }];
 
 export const useSavedArmyTableState = () => {
-  const [{ search, sort, dir }, setState] = useQueryStates(
+  const [{ search, games: chosenGames, sort, dir }, setState] = useQueryStates(
     {
       search: parseAsString.withDefault(''),
+      games: parseAsArrayOf(parseAsStringLiteral(games)).withDefault([]),
       sort: parseAsStringLiteral(savedArmyColumns).withDefault('updatedAt'),
       dir: parseAsStringLiteral(directions).withDefault('desc'),
     },
-    { urlKeys: { search: 'q' } },
+    { urlKeys: { search: 'q', games: 'game' } },
   );
 
   const sorting: SortingState = [{ id: sort, desc: dir === 'desc' }];
@@ -43,9 +52,22 @@ export const useSavedArmyTableState = () => {
     });
   };
 
+  const setGames = (next: Game[]) => {
+    sendFilterUses(
+      addedFilterValues(
+        { games: 'myArmies.game' },
+        { games: chosenGames },
+        { games: next },
+      ),
+    );
+    void setState({ games: next });
+  };
+
   return {
     search,
     setSearch: (next: string) => void setState({ search: next }),
+    games: chosenGames,
+    setGames,
     sorting,
     setSorting,
   };

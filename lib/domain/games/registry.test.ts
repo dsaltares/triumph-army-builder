@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { readViewData } from '@/lib/share/shared-view';
+import { readArmyListReference } from '@/lib/data/game-reference';
 import { sampleBundleHolding } from '@/test/bundle-source.ts';
 import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
 import { pointsMeter } from '../army/builder.ts';
@@ -16,7 +16,7 @@ import type { TriumphReference } from './triumph.ts';
 let reference: TriumphReference;
 
 beforeAll(async () => {
-  const data = await readViewData(
+  const data = await readArmyListReference(
     await sampleBundleHolding(armyDetail()),
     armyDetail().id,
   );
@@ -74,6 +74,10 @@ describe('the Triumph! module', () => {
         reference,
       ),
     ).toMatchObject({ listName: 'Cannae', armyId: armyDetail().id });
+  });
+
+  it('says what a list is of by the army list it was built from', () => {
+    expect(triumph.subjectName(reference)).toBe(reference.armyList.name);
   });
 
   it('names a new list after its army and the day it was started', () => {

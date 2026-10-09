@@ -13,6 +13,7 @@ import {
 
 const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
   id: 'army-1',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: 'army-1',
   dataVersion: '2026-09-17.abcdef01',

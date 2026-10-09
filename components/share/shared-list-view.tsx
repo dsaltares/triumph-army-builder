@@ -23,7 +23,7 @@ import {
 } from '@/components/stacked-table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { encodeSelection } from '@/lib/domain/army/share-codec';
+import { encodeShareCode } from '@/lib/domain/army/share-codec';
 import type {
   ListView,
   SavedView,
@@ -46,7 +46,7 @@ import {
 } from '@/lib/export/sheet-layout';
 import { formatDate, formatPoints, formatStandCount } from '@/lib/format';
 import { wordsFor } from '@/lib/i18n/translator';
-import { armySheetUrl, buildArmyUrl, savedListUrl } from '@/lib/navigation';
+import { buildArmyUrl, listSheetUrl, savedListUrl } from '@/lib/navigation';
 
 const cardColumns =
   'grid gap-x-4 gap-y-1 px-3 py-3 sm:grid-cols-[minmax(10rem,2fr)_4.5rem_4.5rem_4.5rem]';
@@ -156,9 +156,8 @@ function SharedProvenance({ view }: { view: SharedView }) {
       })}
       <a
         className={linkClass}
-        href={armySheetUrl({
-          armyListId: sheet.armyId,
-          code: encodeSelection(list.selection),
+        href={listSheetUrl({
+          code: encodeShareCode(list),
           name: list.name,
           share: list.id,
           lang: locale,
@@ -189,7 +188,7 @@ function SavedProvenance({ view }: { view: SavedView }) {
         version: list.dataVersion,
       })}
       {s('followsEdits')}
-      <Link className={linkClass} href={savedListUrl(list.armyListId, list.id)}>
+      <Link className={linkClass} href={savedListUrl(list)}>
         {s('editInBuilder')}
       </Link>
       .

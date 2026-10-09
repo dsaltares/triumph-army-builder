@@ -4,13 +4,11 @@ import { skipToken, useQueries, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
 import { buildArmyList } from '@/lib/domain/army/army-list';
-import { pointCosts } from '@/lib/domain/army/points';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import {
   type SavedArmyEntry,
-  savedArmyStanding,
+  savedListReading,
 } from '@/lib/domain/army/saved-army-index';
-import { troopTypeNames } from '@/lib/domain/troop-types';
 import { useTRPC } from '@/lib/trpc/client';
 
 export type SavedArmyEntries = {
@@ -54,36 +52,26 @@ export const useSavedArmyEntries = (
     () => new Map(details.lists.map((armyList) => [armyList.id, armyList])),
     [details.lists],
   );
-  const pricing = useMemo(
-    () =>
-      troopTypes.data && battleCards.data
-        ? {
-            costs: pointCosts(troopTypes.data, battleCards.data),
-            names: troopTypeNames(troopTypes.data),
-          }
-        : null,
-    [troopTypes.data, battleCards.data],
-  );
-
   const entries = useMemo(
     () =>
       armies.map((army): SavedArmyEntry => {
         const armyList = armyLists.get(army.armyListId);
+        if (!armyList) {
+          return { army, listName: null, standing: null };
+        }
+        if (!troopTypes.data || !battleCards.data) {
+          return { army, listName: armyList.name, standing: null };
+        }
         return {
           army,
-          listName: armyList?.name ?? null,
-          standing:
-            armyList && pricing
-              ? savedArmyStanding(
-                  armyList,
-                  army.selection,
-                  pricing.costs,
-                  pricing.names,
-                )
-              : null,
+          ...savedListReading(army, {
+            armyList,
+            troopTypes: troopTypes.data,
+            battleCards: battleCards.data,
+          }),
         };
       }),
-    [armies, armyLists, pricing],
+    [armies, armyLists, troopTypes.data, battleCards.data],
   );
 
   return {
