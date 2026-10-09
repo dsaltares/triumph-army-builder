@@ -1,6 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
 import { photoBytes } from '../test/photos.ts';
 import { armyId, freshEmail, signUpAndIn } from './helpers';
+import { expect, type Page, test } from './test';
 
 const saveStatus = (page: Page) =>
   page.getByRole('status', { name: 'Save status' });

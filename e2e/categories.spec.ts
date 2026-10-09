@@ -1,10 +1,5 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
 import { categoryId } from './helpers';
+import { type APIRequestContext, expect, type Page, test } from './test';
 
 const _openCategory = async (
   page: Page,

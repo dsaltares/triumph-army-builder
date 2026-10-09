@@ -1,10 +1,5 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
 import { armyId, section } from './helpers';
+import { type APIRequestContext, expect, type Page, test } from './test';
 
 const openArmy = async (page: Page, request: APIRequestContext, name: string) =>
   page.goto(`/armies/${await armyId(request, name)}`);

@@ -1,5 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
 import { armyId } from './helpers';
+import { expect, type Page, test } from './test';
 
 const savedRow = (page: Page, name: string) =>
   page.getByRole('row').filter({ hasText: name }).first();

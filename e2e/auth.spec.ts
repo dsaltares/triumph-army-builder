@@ -1,4 +1,3 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
 import { discordClientId, googleClientId } from '../playwright.config.ts';
 import {
   accountButton,
@@ -15,6 +14,7 @@ import {
   signUp,
   signUpAndIn,
 } from './helpers.ts';
+import { expect, type Locator, type Page, test } from './test';
 
 const signUpAwaitingConfirmation = async (page: Page, email: string) => {
   await signUp(page, email);

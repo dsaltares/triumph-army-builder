@@ -1,11 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
 import { armyId, section } from './helpers';
+import { type APIRequestContext, expect, type Page, test } from './test';
 
 const openBuilder = async (
   page: Page,

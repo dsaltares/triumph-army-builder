@@ -1,5 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
 import { armyId, section } from './helpers';
+import { expect, type Page, test } from './test';
 
 // One journey, not a translated copy of the suite. What is worth proving is
 // that the setting takes, that it reaches both the chrome and the game data,

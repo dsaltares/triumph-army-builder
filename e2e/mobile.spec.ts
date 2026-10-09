@@ -1,11 +1,6 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
 import { installRecordKey } from '../lib/install.ts';
 import { armyId, categoryId } from './helpers';
+import { type APIRequestContext, expect, type Page, test } from './test';
 
 const fitsTheViewport = async (page: Page) =>
   expect(

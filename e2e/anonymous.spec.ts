@@ -1,4 +1,3 @@
-import { expect, type Page, test } from '@playwright/test';
 import { fixtureSelection } from '../test/fixtures/army.ts';
 import {
   accountButton,
@@ -7,6 +6,7 @@ import {
   signOut,
   signUpAndIn,
 } from './helpers.ts';
+import { expect, type Page, test } from './test';
 
 const sessionCookie = async (page: Page) =>
   (await page.context().cookies()).find(({ name }) =>

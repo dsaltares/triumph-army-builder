@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { expect, type Page, test } from '@playwright/test';
 import { pageAlert, ready } from './helpers.ts';
+import { expect, type Page, test } from './test';
 
 const freshEmail = () => `hannibal-${randomUUID()}@example.test`;
 
