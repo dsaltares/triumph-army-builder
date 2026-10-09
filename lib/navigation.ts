@@ -150,6 +150,8 @@ export const externalLinks = {
   triumph: 'https://www.wgcwar.com',
   repository: 'https://github.com/dsaltares/triumph-army-builder',
   rules: 'https://www.wargamevault.com/en/product/196955/triumph-v1-2',
+  fantasyRules:
+    'https://www.wargamevault.com/product/401307/Fantasy-TRIUMPH-Early-Access',
   setupQrs:
     'https://wgc-qrs.s3.us-east-2.amazonaws.com/Setting+Up+a+Game+QRS+v1-2.pdf',
   gameplayQrs:

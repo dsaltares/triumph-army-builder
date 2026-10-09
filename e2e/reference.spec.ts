@@ -53,6 +53,14 @@ test('the Fantasy Triumph pages sit in the reference under their own names', asy
 }) => {
   await page.goto('/reference');
 
+  const main = page.getByRole('main');
+  await expect(
+    main.getByRole('heading', { level: 2 }).allTextContents(),
+  ).resolves.toEqual(['Triumph!', 'Fantasy Triumph', 'Rules']);
+  await expect(
+    main.getByRole('link', { name: /^Fantasy Triumph rules/ }),
+  ).toHaveAttribute('href', /wargamevault\.com\/product\/401307\//);
+
   await page
     .getByRole('main')
     .getByRole('link', { name: 'Fantasy Triumph troop types' })

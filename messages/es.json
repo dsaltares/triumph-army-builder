@@ -730,7 +730,7 @@
     "battleCardsCard": "Las {count} cartas de batalla completas: cómo se elige cada una, lo que cuesta, cómo despliega y cómo se juega.",
     "battleCardsDescription": "Las {count} cartas de batalla de Triumph! completas, tal como las publica Meshwesh: cómo se elige cada una, lo que cuesta, cómo despliega y cómo se juega.",
     "rules": "Reglas",
-    "rulesDescription": "Los documentos oficiales de Triumph! de la Washington Grand Company.",
+    "rulesDescription": "Los documentos oficiales de Triumph! y Fantasy Triumph de la Washington Grand Company.",
     "rulesBook": "Reglas de Triumph!",
     "rulesBookCard": "Las reglas completas en PDF, v1.2, en Wargame Vault.",
     "setupQrs": "Preparar una partida",
@@ -775,7 +775,10 @@
     "fantasyBattleCardsDescription": "Las {count} cartas de batalla de Fantasy Triumph, según para qué se compran: lo que cuesta cada una, quién puede tomarla y cómo se juega.",
     "ogBattleCards": "Cartas de batalla",
     "ogTroopTypes": "Tipos de tropa",
-    "ogRenamed": "Renombrados"
+    "ogRenamed": "Renombrados",
+    "triumphReferenceDescription": "El juego histórico: cada tipo de tropa del que tiran las listas de ejército y las cartas de batalla que publica Meshwesh.",
+    "fantasyRulesBook": "Reglas de Fantasy Triumph",
+    "fantasyRulesBookCard": "El suplemento Fantasy Triumph en PDF, en acceso anticipado, en Wargame Vault. Necesita las reglas de Triumph!."
   },
   "email": {
     "resetSubject": "Restablece tu contraseña de Triumph! Army Builder",

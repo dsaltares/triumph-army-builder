@@ -765,7 +765,7 @@
     "battleCardsCard": "All {count} battle cards in full — how each one is selected, what it costs, how it deploys and how it plays.",
     "battleCardsDescription": "All {count} Triumph! battle cards in full, as Meshwesh publishes them: how each one is selected, what it costs, how it deploys and how it plays.",
     "rules": "Rules",
-    "rulesDescription": "The official Triumph! documents from the Washington Grand Company.",
+    "rulesDescription": "The official Triumph! and Fantasy Triumph documents from the Washington Grand Company.",
     "rulesBook": "Triumph! rules",
     "rulesBookCard": "The full rules as a PDF, v1.2, on Wargame Vault.",
     "setupQrs": "Setting up a game",
@@ -810,7 +810,10 @@
     "fantasyBattleCardsDescription": "All {count} Fantasy Triumph battle cards, by what they are bought for: what each one costs, who may take it and how it plays.",
     "ogBattleCards": "Battle cards",
     "ogTroopTypes": "Troop types",
-    "ogRenamed": "Renamed"
+    "ogRenamed": "Renamed",
+    "triumphReferenceDescription": "The historical game: every troop type an army list draws on, and the battle cards Meshwesh publishes.",
+    "fantasyRulesBook": "Fantasy Triumph rules",
+    "fantasyRulesBookCard": "The Fantasy Triumph supplement as a PDF, Early Access, on Wargame Vault. It needs the Triumph! rules."
   },
   "email": {
     "resetSubject": "Reset your Triumph! Army Builder password",

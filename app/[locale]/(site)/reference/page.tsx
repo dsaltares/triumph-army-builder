@@ -21,6 +21,7 @@ export default async function ReferencePage() {
     return <ReferenceUnavailable />;
   }
   const t = await getTranslations('pages');
+  const games = await getTranslations('games');
   const [troopTypes, battleCards, fantasyTroopTypes, fantasyBattleCards] =
     await Promise.all([
       reference.bundle.readTroopTypes(),
@@ -66,6 +67,11 @@ export default async function ReferencePage() {
       description: t('rulesBookCard'),
     },
     {
+      href: externalLinks.fantasyRules,
+      title: t('fantasyRulesBook'),
+      description: t('fantasyRulesBookCard'),
+    },
+    {
       href: externalLinks.setupQrs,
       title: t('setupQrs'),
       description: t('setupQrsCard'),
@@ -85,16 +91,21 @@ export default async function ReferencePage() {
           battleCards: battleCards.length,
         })}
       />
-      <LinkCardGrid className="lg:grid-cols-2">
-        {sections.map(({ href, title, description }) => (
-          <LinkCard key={href} href={href} title={title}>
-            {description}
-          </LinkCard>
-        ))}
-      </LinkCardGrid>
+      <Section
+        title={games('triumph')}
+        description={t('triumphReferenceDescription')}
+      >
+        <LinkCardGrid className="lg:grid-cols-2">
+          {sections.map(({ href, title, description }) => (
+            <LinkCard key={href} href={href} title={title}>
+              {description}
+            </LinkCard>
+          ))}
+        </LinkCardGrid>
+      </Section>
       {fantasySections.length > 0 && (
         <Section
-          title={(await getTranslations('games'))('fantasy')}
+          title={games('fantasy')}
           description={t('fantasyReferenceDescription')}
         >
           <LinkCardGrid className="lg:grid-cols-2">
