@@ -162,13 +162,24 @@ describe('MyArmies', () => {
     expect(screen.getByText(/^Illegal · \d+ errors?$/)).toBeInTheDocument();
   });
 
-  it('flags a list saved before the data the server serves moved on', async () => {
+  it('flags a list saved before the data the server serves revised its army', async () => {
+    await save('Cannae', 0);
+    await api.importVersion('2026-09-28.0123abcd', {
+      [bundlePaths.army(detail.id)]: { ...detail, name: 'Revised Army' },
+    });
+    open();
+
+    expect(await screen.findByRole('link', { name: 'Cannae' })).toBeVisible();
+    expect(screen.getByText('Older list data')).toBeInTheDocument();
+  });
+
+  it('flags nothing when the data moved on without touching the list', async () => {
     await save('Cannae', 0);
     await api.importVersion('2026-09-28.0123abcd');
     open();
 
     expect(await screen.findByRole('link', { name: 'Cannae' })).toBeVisible();
-    expect(screen.getByText('Older list data')).toBeInTheDocument();
+    expect(screen.queryByText('Older list data')).toBeNull();
   });
 
   it('flags nothing while a list matches the data the server serves', async () => {

@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { currentListDataVersions } from '../../data/list-data-version.ts';
 import { recordEvent, recordThrottledEvent } from '../../db/activity-events.ts';
 import {
   countArmies,
@@ -62,6 +63,9 @@ const forgetStalePins = async (
   await unpinEntries(db, owner, stalePins(selection, pins, entries));
 };
 
+const presented = async (db: Context['db'], army: SavedArmy) =>
+  (await currentListDataVersions(db))(army);
+
 const notFound = () =>
   new TRPCError({
     code: 'NOT_FOUND',
@@ -69,8 +73,14 @@ const notFound = () =>
   });
 
 export const armyRouter = router({
-  list: publicProcedure.query(({ ctx }) =>
-    ctx.caller ? listArmies(ctx.db, ctx.caller.userId) : [],
+  list: publicProcedure.query(async ({ ctx }) =>
+    ctx.caller
+      ? Promise.all(
+          (await listArmies(ctx.db, ctx.caller.userId)).map(
+            await currentListDataVersions(ctx.db),
+          ),
+        )
+      : [],
   ),
 
   byId: signedInProcedure.input(armyIdSchema).query(async ({ ctx, input }) => {
@@ -81,7 +91,7 @@ export const armyRouter = router({
     if (!army) {
       throw notFound();
     }
-    return army;
+    return presented(ctx.db, army);
   }),
 
   create: signedInProcedure
@@ -173,7 +183,7 @@ export const armyRouter = router({
       if (!army) {
         throw notFound();
       }
-      return army;
+      return presented(ctx.db, army);
     }),
 
   duplicate: signedInProcedure
@@ -206,7 +216,7 @@ export const armyRouter = router({
       if (!copy) {
         throw notFound();
       }
-      return copy;
+      return presented(ctx.db, copy);
     }),
 
   delete: signedInProcedure

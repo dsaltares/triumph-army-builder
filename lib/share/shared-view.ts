@@ -4,6 +4,7 @@ import {
   readArmyListReference,
   readGameReference,
 } from '../data/game-reference.ts';
+import { currentListDataVersions } from '../data/list-data-version.ts';
 import { findArmy } from '../db/armies.ts';
 import { listCollectionEntries } from '../db/collection.ts';
 import { listArmyPins } from '../db/collection-pins.ts';
@@ -62,11 +63,12 @@ export const loadSharedView = async ({
   if (!shareIdPattern.test(id)) {
     return null;
   }
-  const shared = await findShare(db, id);
-  if (!shared) {
+  const found = await findShare(db, id);
+  if (!found) {
     return null;
   }
   await markSeen(db, id, now);
+  const shared = await (await currentListDataVersions(db))(found);
   const data = await readGameReference(bundle, shared);
   return data && sharedView({ shared, ...data });
 };
@@ -78,10 +80,11 @@ export const loadSavedView = async ({
   userId,
   isAnonymous,
 }: SavedViewRequest): Promise<SavedView | null> => {
-  const saved = await findArmy(db, { id, userId });
-  if (!saved) {
+  const found = await findArmy(db, { id, userId });
+  if (!found) {
     return null;
   }
+  const saved = await (await currentListDataVersions(db))(found);
   const [data, collection, pins] = await Promise.all([
     readGameReference(bundle, saved),
     isAnonymous ? null : listCollectionEntries(db, userId),

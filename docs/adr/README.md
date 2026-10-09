@@ -50,6 +50,7 @@ reconstruct from the code. Everything else belongs in `docs/DOMAIN.md` (how the 
 | [0040](0040-a-fantasy-triumph-list-is-named-units-of-identical-stands.md) | A Fantasy Triumph list is named units of identical stands, heroes and army cards | Proposed | 2026-10-09 |
 | [0041](0041-a-share-code-deflates-its-payload.md) | Deflate a share code's payload from version 2, with a synchronous codec | Accepted | 2026-10-09 |
 | [0042](0042-a-data-version-can-be-bumped-by-hand.md) | Let the curation bump the data version by hand | Accepted | 2026-10-09 |
+| [0043](0043-an-unchanged-army-reads-at-the-current-version.md) | Read a list at the current data version when nothing it reads has changed | Accepted | 2026-10-09 |
 
 ## How to add one
 

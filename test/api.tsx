@@ -197,8 +197,8 @@ export const serveApi = ({
 
   return {
     database: () => db,
-    importVersion: (next: string) =>
-      seedDataVersion(db, next, bundle, translated),
+    importVersion: (next: string, revised: BundleFiles = {}) =>
+      seedDataVersion(db, next, { ...bundle, ...revised }, translated),
     answered: () => answered,
     photos: () => photos,
     limitPhotos: (quota: PhotoQuota) => {
