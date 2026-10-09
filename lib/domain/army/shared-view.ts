@@ -9,7 +9,7 @@ import {
   type ListCoverage,
   listCoverage,
 } from '../collection/list-coverage.ts';
-import type { Game } from '../game.ts';
+import type { SavableGame } from '../game.ts';
 import { gameModule } from '../games/registry.ts';
 import type {
   TroopTypeCost,
@@ -26,7 +26,7 @@ import type { ValidationReport } from './validation-report.ts';
 
 export type ViewedList = {
   name: string;
-  game: Game;
+  game: SavableGame;
   dataVersion: string;
   selection: ArmySelection;
 };

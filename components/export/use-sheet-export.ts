@@ -5,11 +5,11 @@ import { useCallback } from 'react';
 import { useShareId } from '@/components/share/use-share-link';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import { encodeShareCode } from '@/lib/domain/army/share-codec';
-import type { Game } from '@/lib/domain/game';
+import type { SavableGame } from '@/lib/domain/game';
 import { listSheetUrl, type SheetDisposition } from '@/lib/navigation';
 
 export type SheetList = {
-  game: Game;
+  game: SavableGame;
   name: string;
   selection: ArmySelection;
 };

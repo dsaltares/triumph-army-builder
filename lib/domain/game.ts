@@ -1,8 +1,10 @@
 import { z } from 'zod';
-import type { Game } from '../data/schema.ts';
+import { type Game, games } from '../data/schema.ts';
 import type { PointsMeter } from './army/builder.ts';
 
 export { type Game, games } from '../data/schema.ts';
+
+export const gameSchema = z.enum(games);
 
 export const savableGames = ['triumph'] as const satisfies readonly Game[];
 

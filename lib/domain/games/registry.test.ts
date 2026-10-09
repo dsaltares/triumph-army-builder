@@ -155,9 +155,10 @@ describe('the Fantasy Triumph module', () => {
     );
   });
 
-  it('names a new list after the game and the day it was started', () => {
+  it('names a list after the game, with the day it was started on a new one', () => {
     const at = new Date('2026-09-20T10:00:00.000Z');
 
+    expect(fantasy.subjectName(fantasyReference)).toBe('Fantasy Triumph');
     expect(fantasy.listTitle(fantasyReference, at)).toBe(
       defaultListName('Fantasy Triumph', at),
     );

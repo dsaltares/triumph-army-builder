@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Game } from '../game.ts';
+import type { SavableGame } from '../game.ts';
 import type { ArmySelection } from './selection.ts';
 
 export const armyNameMaxLength = 80;
@@ -19,7 +19,7 @@ export type ArmyNameForm = z.infer<typeof armyNameFormSchema>;
 export type SavedArmy = {
   id: string;
   name: string;
-  game: Game;
+  game: SavableGame;
   armyListId: string;
   dataVersion: string;
   selection: ArmySelection;

@@ -44,6 +44,7 @@ export const fantasy = {
   validate: (selection, reference) =>
     fantasyValidationReport(selection, fantasyCatalogue(reference)),
   sheetData: fantasySheet,
+  subjectName: (_reference) => fantasyGameName,
   listTitle: (_reference, at) => defaultListName(fantasyGameName, at),
 } satisfies GameModule<
   FantasySelection,
