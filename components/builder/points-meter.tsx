@@ -51,9 +51,11 @@ const describeSubtotals = (
 
 export function PointsMeterBar({
   meter,
+  subtotals,
   trailing,
 }: {
   meter: PointsMeter;
+  subtotals?: string;
   trailing?: ReactNode;
 }) {
   const t = useTranslations('builder');
@@ -102,7 +104,7 @@ export function PointsMeterBar({
       </div>
       <div className="flex items-center gap-2">
         <p className="text-xs text-muted-foreground tabular-nums">
-          {describeSubtotals(meter, t)}
+          {subtotals ?? describeSubtotals(meter, t)}
         </p>
         {trailing && (
           <div className="ml-auto flex shrink-0 items-center gap-2">

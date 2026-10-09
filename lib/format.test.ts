@@ -14,6 +14,7 @@ import {
   formatYear,
   formatYearSpan,
   formatYearSpans,
+  joinWithAnd,
   joinWithOr,
 } from './format.ts';
 
@@ -145,6 +146,18 @@ describe('joinWithOr', () => {
     );
     expect(joinWithOr(['Archers', 'Bow Levy', 'Pikes'], 'en')).toBe(
       'Archers, Bow Levy or Pikes',
+    );
+  });
+});
+
+describe('joinWithAnd', () => {
+  it('names every card a card requires', () => {
+    expect(joinWithAnd(['Ranged Attack'], 'en')).toBe('Ranged Attack');
+    expect(joinWithAnd(['Ranged Attack', 'Deadly'], 'en')).toBe(
+      'Ranged Attack and Deadly',
+    );
+    expect(joinWithAnd(['Ranged Attack', 'Deadly'], 'es')).toBe(
+      'Ranged Attack y Deadly',
     );
   });
 });

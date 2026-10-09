@@ -28,6 +28,10 @@ const alternatives = perLocale(
   (tag) => new Intl.ListFormat(tag, { type: 'disjunction' }),
 );
 
+const conjunctions = perLocale(
+  (tag) => new Intl.ListFormat(tag, { type: 'conjunction' }),
+);
+
 const wordsFor = (() => {
   const made = new Map<
     Locale,
@@ -128,6 +132,9 @@ export const formatTopographies = (
 
 export const joinWithOr = (items: readonly string[], locale: Locale) =>
   alternatives(locale).format(items);
+
+export const joinWithAnd = (items: readonly string[], locale: Locale) =>
+  conjunctions(locale).format(items);
 
 export type AlternativePart =
   | { kind: 'item'; index: number }

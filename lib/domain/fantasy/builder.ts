@@ -3,6 +3,7 @@ import type { FantasyCardCode, TroopTypeCode } from '../../data/schema.ts';
 import type {
   FantasyCardCategory,
   FantasyCardConstraint,
+  FantasyCardCost,
   FantasyFormat,
 } from './battle-cards.ts';
 import {
@@ -577,3 +578,25 @@ export const ratingPoints = (
   kind: 'invasion' | 'maneuver',
   rating: FantasyRating,
 ) => format[kind].costs[`${rating}`];
+
+const pricedByTopography = (cost: FantasyCardCost): boolean => {
+  switch (cost.kind) {
+    case 'byTopography':
+      return true;
+    case 'byVariant':
+      return Object.values(cost.options).some(pricedByTopography);
+    case 'perCount':
+      return pricedByTopography(cost.each);
+    case 'byBearer':
+      return pricedByTopography(cost.stand) || pricedByTopography(cost.hero);
+    case 'flat':
+    case 'byTroopType':
+    case 'perMarkedCappedAtValue':
+      return false;
+  }
+};
+
+export const topographyPricedCards = (
+  catalogue: FantasyCatalogue,
+): readonly BundledFantasyCard[] =>
+  [...catalogue.cards.values()].filter(({ cost }) => pricedByTopography(cost));

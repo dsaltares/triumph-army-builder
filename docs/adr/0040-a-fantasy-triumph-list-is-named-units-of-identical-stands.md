@@ -30,7 +30,8 @@ A Fantasy Triumph selection is:
 - the **format**: a points total the player sets, 51 unless changed, the home topography including
   the four dense ones, and the invasion and manoeuvre ratings, each 0–4 with 2 as the unpaid base;
 - **units**, each with a stable id, a player-typed name, optional tags, one troop type, a stand
-  count, the stand cards bought for it with their variant where the card has one, and the per-stand
+  count, the stand cards bought for it with their variant where the card has one and a short
+  free-text note where the card asks for one (Terrain Affinity's two terrains), and the per-stand
   marks the army cards place on it (stands on Delayed Entry, stands with a transport, event cards
   bought for the class); every card on a unit applies to every stand in it;
 - **heroes**, each with an id, a name, optional tags, its cards and whether it is on Delayed Entry;

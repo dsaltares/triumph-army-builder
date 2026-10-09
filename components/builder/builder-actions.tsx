@@ -157,7 +157,7 @@ export function BuilderActions() {
     <>
       <SaveDraftAction
         listName={snapshot.listName}
-        selection={snapshot.selection}
+        list={{ game: triumph.game, selection: snapshot.selection }}
       />
       <BuilderMenu snapshot={snapshot} view={null} />
     </>

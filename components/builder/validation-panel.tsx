@@ -22,8 +22,13 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import type { Finding, FindingSeverity } from '@/lib/domain/army/validation';
+import type { Finding } from '@/lib/domain/army/validation';
 import type { ValidationReport } from '@/lib/domain/army/validation-report';
+import type {
+  FindingReport,
+  FindingSeverity,
+  SeverityFinding,
+} from '@/lib/domain/findings';
 import { describeFinding } from '@/lib/findings';
 import { cn } from '@/lib/utils';
 
@@ -53,8 +58,15 @@ const severityStyles = {
 
 type BuilderWords = ReturnType<typeof useTranslations<'builder'>>;
 
+type AnyReport = FindingReport<SeverityFinding>;
+
+export type FindingPresenter<Found extends SeverityFinding> = {
+  describe: (finding: Found) => string;
+  anchorOf: (finding: Found) => string;
+};
+
 const describeCounts = (
-  { errors, warnings, notes }: ValidationReport,
+  { errors, warnings, notes }: AnyReport,
   t: BuilderWords,
 ) => {
   const parts = [
@@ -65,7 +77,7 @@ const describeCounts = (
   return parts.length > 0 ? parts.join(' · ') : null;
 };
 
-const summarise = (report: ValidationReport, t: BuilderWords) =>
+const summarise = (report: AnyReport, t: BuilderWords) =>
   describeCounts(report, t) ?? t('listValid');
 
 const verdict = (legal: boolean, t: BuilderWords) =>
@@ -75,12 +87,38 @@ const noAnchors: ReadonlySet<string> = new Set();
 
 const hoverDelayMs = 150;
 
+const useTriumphFindings = (): FindingPresenter<Finding> => {
+  const t = useTranslations('findings');
+  return {
+    describe: (finding) => describeFinding(finding, t),
+    anchorOf: (finding) => findingAnchor(finding.target),
+  };
+};
+
 export function LegalityBadge({
   report,
   anchors = noAnchors,
 }: {
   report: ValidationReport;
   anchors?: ReadonlySet<string>;
+}) {
+  return (
+    <FindingsBadge
+      report={report}
+      anchors={anchors}
+      presenter={useTriumphFindings()}
+    />
+  );
+}
+
+export function FindingsBadge<Found extends SeverityFinding>({
+  report,
+  anchors = noAnchors,
+  presenter,
+}: {
+  report: FindingReport<Found>;
+  anchors?: ReadonlySet<string>;
+  presenter: FindingPresenter<Found>;
 }) {
   const t = useTranslations('builder');
   const [open, setOpen] = useState(false);
@@ -124,24 +162,30 @@ export function LegalityBadge({
           </a>
         </PopoverTitle>
         <Verdict report={report} />
-        <FindingList report={report} anchors={anchors} onFollow={close} />
+        <FindingList
+          report={report}
+          anchors={anchors}
+          presenter={presenter}
+          onFollow={close}
+        />
       </PopoverContent>
     </Popover>
   );
 }
 
 function FindingRow({
-  finding,
+  severity,
+  text,
   anchor,
   onFollow,
 }: {
-  finding: Finding;
+  severity: FindingSeverity;
+  text: string;
   anchor: string | null;
   onFollow?: (() => void) | undefined;
 }) {
-  const t = useTranslations('findings');
   const b = useTranslations('builder');
-  const { icon: Icon, label, colour } = severityStyles[finding.severity];
+  const { icon: Icon, label, colour } = severityStyles[severity];
   return (
     <li className="flex items-start gap-2 text-xs">
       <Icon className={cn('mt-0.5 size-3.5 shrink-0', colour)} />
@@ -152,11 +196,11 @@ function FindingRow({
           href={`#${anchor}`}
           onClick={onFollow}
         >
-          {describeFinding(finding, t)}
+          {text}
         </a>
       ) : (
         <span className="max-w-reading text-pretty text-muted-foreground">
-          {describeFinding(finding, t)}
+          {text}
         </span>
       )}
     </li>
@@ -167,7 +211,7 @@ function Verdict({
   report,
   live = false,
 }: {
-  report: ValidationReport;
+  report: AnyReport;
   live?: boolean;
 }) {
   const t = useTranslations('builder');
@@ -187,13 +231,15 @@ function Verdict({
   );
 }
 
-function FindingList({
+function FindingList<Found extends SeverityFinding>({
   report,
   anchors,
+  presenter,
   onFollow,
 }: {
-  report: ValidationReport;
+  report: FindingReport<Found>;
   anchors: ReadonlySet<string>;
+  presenter: FindingPresenter<Found>;
   onFollow?: () => void;
 }) {
   if (report.findings.length === 0) {
@@ -202,11 +248,13 @@ function FindingList({
   return (
     <ul className="flex flex-col gap-2">
       {report.findings.map((finding) => {
-        const anchor = findingAnchor(finding.target);
+        const anchor = presenter.anchorOf(finding);
+        const text = presenter.describe(finding);
         return (
           <FindingRow
-            key={`${finding.code}/${anchor}`}
-            finding={finding}
+            key={`${text}/${anchor}`}
+            severity={finding.severity}
+            text={text}
             anchor={anchors.has(anchor) ? anchor : null}
             onFollow={onFollow}
           />
@@ -223,6 +271,24 @@ export function ValidationPanel({
   report: ValidationReport;
   anchors: ReadonlySet<string>;
 }) {
+  return (
+    <FindingsPanel
+      report={report}
+      anchors={anchors}
+      presenter={useTriumphFindings()}
+    />
+  );
+}
+
+export function FindingsPanel<Found extends SeverityFinding>({
+  report,
+  anchors,
+  presenter,
+}: {
+  report: FindingReport<Found>;
+  anchors: ReadonlySet<string>;
+  presenter: FindingPresenter<Found>;
+}) {
   const t = useTranslations('builder');
   return (
     <Section
@@ -233,7 +299,11 @@ export function ValidationPanel({
       <Card size="sm">
         <CardContent className="flex flex-col gap-3">
           <Verdict report={report} live />
-          <FindingList report={report} anchors={anchors} />
+          <FindingList
+            report={report}
+            anchors={anchors}
+            presenter={presenter}
+          />
         </CardContent>
       </Card>
     </Section>

@@ -1,11 +1,12 @@
 'use client';
 
-import { IconPlus } from '@tabler/icons-react';
+import { IconArrowLeft, IconPlus } from '@tabler/icons-react';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useStartList } from '@/components/army/use-start-list';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
+import { NewFantasyList } from '@/components/fantasy/new-fantasy-list';
 import { LoadFailure } from '@/components/load-failure';
 import { SearchField } from '@/components/search-field';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useErrorMessage } from '@/components/use-error-message';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
 import { filterArmies, noArmyFilters } from '@/lib/domain/army-index';
+import { type SavableGame, savableGames } from '@/lib/domain/game';
 import { formatYearSpan } from '@/lib/format';
 import { useTRPC } from '@/lib/trpc/client';
 
@@ -153,10 +155,52 @@ function ArmyPicker() {
   );
 }
 
+function GamePicker({ onPick }: { onPick: (game: SavableGame) => void }) {
+  const t = useTranslations('fantasyBuilder');
+  const g = useTranslations('games');
+  const descriptions = {
+    triumph: t('triumphGameDescription'),
+    fantasy: t('fantasyGameDescription'),
+  } as const satisfies Record<SavableGame, string>;
+  return (
+    <ul className="-mx-2 flex flex-col">
+      {savableGames.map((game) => (
+        <li key={game}>
+          <button
+            type="button"
+            onClick={() => onPick(game)}
+            className="flex min-h-11 w-full flex-col justify-center gap-0.5 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            <span className="text-sm font-medium">{g(game)}</span>
+            <span className="text-xs text-pretty text-muted-foreground">
+              {descriptions[game]}
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const useOffersFantasy = () => {
+  const trpc = useTRPC();
+  const { reference } = useReference();
+  const games = useQuery(
+    trpc.reference.games.queryOptions(reference ?? skipToken, {
+      staleTime: referenceStaleTime,
+    }),
+  );
+  return games.data?.includes('fantasy') ?? false;
+};
+
 export function NewListDialog({ label }: { label?: string } = {}) {
   const pages = useTranslations('pages');
+  const t = useTranslations('fantasyBuilder');
+  const offersFantasy = useOffersFantasy();
+  const [game, setGame] = useState<SavableGame | null>(null);
+  const chosen = offersFantasy ? game : 'triumph';
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => !open && setGame(null)}>
       <DialogTrigger render={<Button size="touch" className="shrink-0" />}>
         <IconPlus data-icon="inline-start" />
         {label ?? pages('newList')}
@@ -165,7 +209,20 @@ export function NewListDialog({ label }: { label?: string } = {}) {
         <DialogHeader>
           <DialogTitle>{pages('newList')}</DialogTitle>
         </DialogHeader>
-        <ArmyPicker />
+        {chosen === null && <GamePicker onPick={setGame} />}
+        {chosen !== null && offersFantasy && (
+          <Button
+            variant="ghost"
+            size="touch"
+            className="justify-self-start"
+            onClick={() => setGame(null)}
+          >
+            <IconArrowLeft data-icon="inline-start" />
+            {t('chooseAnotherGame')}
+          </Button>
+        )}
+        {chosen === 'triumph' && <ArmyPicker />}
+        {chosen === 'fantasy' && <NewFantasyList />}
       </DialogContent>
     </Dialog>
   );

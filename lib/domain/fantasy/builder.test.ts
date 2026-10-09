@@ -16,6 +16,7 @@ import {
   ratingPoints,
   startFantasyList,
   takesNote,
+  topographyPricedCards,
   unitCardOffers,
   unitEventCardOffers,
   unitMayBeDelayed,
@@ -105,6 +106,12 @@ describe('the format', () => {
       invasion: 2,
       maneuver: 2,
     });
+  });
+
+  it('names the cards a dense home topography makes dearer', () => {
+    expect(
+      codes(topographyPricedCards(catalogue).map((card) => ({ card }))),
+    ).toEqual(['ambush', 'preparedDefenses', 'terrainAffinity']);
   });
 
   it('prices each rating from the pack', () => {

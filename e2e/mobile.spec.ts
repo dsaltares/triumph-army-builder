@@ -198,6 +198,29 @@ test("my armies and a list's view fit the viewport with lists in them", async ({
   await fitsTheViewport(page);
 });
 
+test('the Fantasy Triumph builder fits a phone, units, cards and all', async ({
+  page,
+}) => {
+  await page.goto('/fantasy/build');
+  await expect(page.getByRole('progressbar')).toBeVisible({ timeout: 15_000 });
+
+  await page.getByRole('button', { name: 'Add unit' }).click();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: /^Light Foot/ })
+    .click();
+  await page.getByRole('button', { name: 'Add card' }).click();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: /^Terrain Affinity/ })
+    .click();
+
+  await expect(
+    page.getByRole('textbox', { name: 'Terrain Affinity note' }),
+  ).toBeVisible();
+  await fitsTheViewport(page);
+});
+
 test('the new list picker fits a phone, search field and matches and all', async ({
   page,
 }) => {
@@ -205,6 +228,7 @@ test('the new list picker fits a phone, search field and matches and all', async
   await page.getByRole('button', { name: 'Start your first list' }).click();
 
   const picker = page.getByRole('dialog');
+  await picker.getByRole('button', { name: /^Triumph!/ }).click();
   await picker
     .getByRole('searchbox', { name: 'Search army lists' })
     .fill('Sunspire');

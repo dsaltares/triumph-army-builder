@@ -10,7 +10,6 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useCreateArmy } from '@/components/army/use-saved-armies';
-import type { BuilderSnapshot } from '@/components/builder/builder-state';
 import type {
   AutosaveStatus as Status,
   useAutosave,
@@ -19,12 +18,16 @@ import { useSavedListId } from '@/components/builder/use-saved-list';
 import { HeaderActionLabel, iconOnlyBelowMd } from '@/components/header-action';
 import { Button } from '@/components/ui/button';
 import { useErrorMessage } from '@/components/use-error-message';
+import type { SavedSelection } from '@/lib/domain/army/selection-schema';
 import { cn } from '@/lib/utils';
 
 export function SaveDraftAction({
   listName,
-  selection,
-}: Pick<BuilderSnapshot, 'listName' | 'selection'>) {
+  list,
+}: {
+  listName: string;
+  list: SavedSelection;
+}) {
   const t = useTranslations('builder');
   const create = useCreateArmy();
   const describe = useErrorMessage();
@@ -33,7 +36,7 @@ export function SaveDraftAction({
 
   const save = async () => {
     try {
-      const created = await create.mutateAsync({ name, selection });
+      const created = await create.mutateAsync({ name, ...list });
       await setListId(created.id);
     } catch (thrown: unknown) {
       toast.error(describe(thrown));
