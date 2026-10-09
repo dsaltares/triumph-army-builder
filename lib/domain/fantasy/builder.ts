@@ -91,6 +91,12 @@ const withUnit = (
   units: selection.units.map((unit) => (unit.id === id ? change(unit) : unit)),
 });
 
+export const withUnitTroopType = (
+  selection: FantasySelection,
+  id: FantasyUnitId,
+  troopType: TroopTypeCode,
+) => withUnit(selection, id, (unit) => ({ ...unit, troopType }));
+
 export const withUnitName = (
   selection: FantasySelection,
   id: FantasyUnitId,

@@ -47,6 +47,7 @@ import {
   withUnitSplit,
   withUnitStands,
   withUnitTags,
+  withUnitTroopType,
 } from './builder.ts';
 import { fantasyPoints } from './points.ts';
 import { type FantasyCatalogue, fantasyCatalogue } from './reference.ts';
@@ -144,6 +145,26 @@ describe('units', () => {
       tags: ['wolf', 'goblin'],
       stands: 4,
     });
+  });
+
+  it('changes its troop type and keeps everything else', () => {
+    const selection = fantasySelection({
+      units: [
+        fantasyUnit('wargs', 'JCV', {
+          name: 'Warg riders',
+          stands: 3,
+          cards: cards('fierce'),
+        }),
+      ],
+    });
+
+    expect(withUnitTroopType(selection, 'wargs', 'ECV').units[0]).toEqual(
+      fantasyUnit('wargs', 'ECV', {
+        name: 'Warg riders',
+        stands: 3,
+        cards: cards('fierce'),
+      }),
+    );
   });
 
   it('keeps at least one stand, and never more marks than stands', () => {

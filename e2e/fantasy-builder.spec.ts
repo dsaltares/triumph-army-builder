@@ -28,11 +28,11 @@ test('a Fantasy Triumph list is built from the home page and kept in My Armies',
 
   const units = section(page, 'Units');
   await units.getByRole('button', { name: 'Add unit' }).click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: /^Javelin Cavalry/ })
-    .click();
   await units.getByRole('textbox', { name: 'Unit name' }).fill('Warg riders');
+  await units
+    .getByRole('combobox', { name: 'Troop type' })
+    .fill('Javelin Cavalry');
+  await page.getByRole('option', { name: / · Javelin Cavalry$/ }).click();
   await units
     .getByRole('button', { name: 'One more stand of Warg riders' })
     .click();

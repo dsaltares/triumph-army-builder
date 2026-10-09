@@ -205,10 +205,8 @@ test('the Fantasy Triumph builder fits a phone, units, cards and all', async ({
   await expect(page.getByRole('progressbar')).toBeVisible({ timeout: 15_000 });
 
   await page.getByRole('button', { name: 'Add unit' }).click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: /^Light Foot/ })
-    .click();
+  await page.getByRole('combobox', { name: 'Troop type' }).fill('Light Foot');
+  await page.getByRole('option', { name: / · Light Foot$/ }).click();
   await page.getByRole('button', { name: 'Add card' }).click();
   await page
     .getByRole('dialog')

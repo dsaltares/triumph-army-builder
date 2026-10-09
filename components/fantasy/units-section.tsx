@@ -1,18 +1,16 @@
 'use client';
 
-import { IconArrowsSplit, IconTrash } from '@tabler/icons-react';
+import { IconArrowsSplit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
+import { Autocomplete } from '@/components/autocomplete';
 import { findingAnchorClass } from '@/components/builder/finding-anchor';
 import { Stepper } from '@/components/builder/stepper';
 import { TagField } from '@/components/collection/tag-field';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
 import { ChosenCard } from '@/components/fantasy/chosen-card';
 import { unitAnchor } from '@/components/fantasy/fantasy-anchors';
-import {
-  PickerDialog,
-  type PickerGroup,
-} from '@/components/fantasy/picker-dialog';
+import { PickerDialog } from '@/components/fantasy/picker-dialog';
 import { usePointsWords } from '@/components/fantasy/points-words';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
 import { Section } from '@/components/layout/section';
@@ -28,15 +26,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import type { BundledFantasyCard } from '@/lib/data/bundle';
 import {
   type FantasyCardCode,
   type TroopTypeCode,
-  troopTypeCategories,
-  troopTypeOrders,
+  troopTypeCodes,
 } from '@/lib/data/schema';
 import {
   canSplit,
   cardCountMax,
+  cardPoints,
   takesNote,
   unitCardOffers,
   unitEventCardOffers,
@@ -54,9 +54,15 @@ import {
   withUnitSplit,
   withUnitStands,
   withUnitTags,
+  withUnitTroopType,
 } from '@/lib/domain/fantasy/builder';
 import { fantasyCardName, unitName } from '@/lib/domain/fantasy/naming';
-import type { FantasyUnitPoints } from '@/lib/domain/fantasy/points';
+import {
+  delayedEntryCode,
+  eventCardsOf,
+  type FantasyUnitPoints,
+  mobileInfantryCode,
+} from '@/lib/domain/fantasy/points';
 import type { FantasyCatalogue } from '@/lib/domain/fantasy/reference';
 import type {
   FantasyListFormat,
@@ -72,6 +78,160 @@ type UnitContext = {
   onEdit: SelectionEdit;
   newId: () => string;
 };
+
+const troopTypeOptions = (catalogue: FantasyCatalogue) =>
+  troopTypeCodes.filter((code) => catalogue.troopTypes.has(code));
+
+const troopTypeLabel =
+  (catalogue: FantasyCatalogue) => (code: TroopTypeCode) => {
+    const name = catalogue.troopTypes.get(code)?.displayName;
+    return name ? `${code} · ${name}` : code;
+  };
+
+const markCards = {
+  delayedEntry: delayedEntryCode,
+  transports: mobileInfantryCode,
+} as const;
+
+function CountedCard({
+  code,
+  card,
+  cost,
+  bearer,
+  count,
+  max,
+  caption,
+  removeLabel,
+  addLabel,
+  onCount,
+}: {
+  code: FantasyCardCode;
+  card: BundledFantasyCard | undefined;
+  cost: string;
+  bearer: string;
+  count: number;
+  max: number;
+  caption: string;
+  removeLabel: string;
+  addLabel: string;
+  onCount: (count: number) => void;
+}) {
+  return (
+    <ChosenCard
+      code={code}
+      card={card && { ...card, variants: {} }}
+      choice={{}}
+      cost={cost}
+      bearer={bearer}
+      onRemove={() => onCount(0)}
+      onVariant={() => undefined}
+    >
+      <div className="flex items-center gap-3">
+        <Stepper
+          count={count}
+          countLabel={caption}
+          removeLabel={removeLabel}
+          addLabel={addLabel}
+          canRemove={count > 1}
+          canAdd={count < max}
+          onChange={onCount}
+        />
+        <p className="text-xs text-muted-foreground tabular-nums">{caption}</p>
+      </div>
+    </ChosenCard>
+  );
+}
+
+function UnitIdentity({
+  catalogue,
+  troopType,
+  name,
+  placeholder,
+  onTroopType,
+  onName,
+}: {
+  catalogue: FantasyCatalogue;
+  troopType: TroopTypeCode | null;
+  name: string;
+  placeholder: string;
+  onTroopType: (troopType: TroopTypeCode) => void;
+  onName: (name: string) => void;
+}) {
+  const t = useTranslations('fantasyBuilder');
+  const id = useId();
+  const options = useMemo(() => troopTypeOptions(catalogue), [catalogue]);
+  const label = useMemo(() => troopTypeLabel(catalogue), [catalogue]);
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <Autocomplete<TroopTypeCode>
+        id={`${id}-troop-type`}
+        label={t('troopType')}
+        options={options}
+        optionLabel={label}
+        empty={t('noTroopTypes')}
+        value={troopType}
+        onValueChange={(code) => code && onTroopType(code)}
+      />
+      <div className="flex flex-col gap-2">
+        <Label htmlFor={`${id}-name`}>{t('unitName')}</Label>
+        <Input
+          id={`${id}-name`}
+          value={name}
+          placeholder={placeholder}
+          autoComplete="off"
+          className="h-11 min-w-0 font-medium sm:h-9"
+          onChange={(event) => onName(event.target.value)}
+        />
+      </div>
+    </div>
+  );
+}
+
+function PendingUnitCard({
+  name,
+  catalogue,
+  onName,
+  onTroopType,
+  onRemove,
+}: {
+  name: string;
+  catalogue: FantasyCatalogue;
+  onName: (name: string) => void;
+  onTroopType: (troopType: TroopTypeCode) => void;
+  onRemove: () => void;
+}) {
+  const t = useTranslations('fantasyBuilder');
+  return (
+    <li>
+      <Card size="sm">
+        <CardContent className="flex flex-col gap-4">
+          <UnitIdentity
+            catalogue={catalogue}
+            troopType={null}
+            name={name}
+            placeholder={t('unitNamePending')}
+            onTroopType={onTroopType}
+            onName={onName}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground">
+              {t('pickTroopType')}
+            </p>
+            <Button
+              variant="outline"
+              size="touch"
+              aria-label={t('discardUnit')}
+              onClick={onRemove}
+            >
+              <IconTrash data-icon="inline-start" />
+              {t('remove')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </li>
+  );
+}
 
 function SplitDialog({
   unit,
@@ -191,6 +351,11 @@ function UnitCard({
   );
   const delayable = unitMayBeDelayed(catalogue, unit);
   const rides = unitMayRide(catalogue, unit);
+  const boughtEvents = eventCardsOf(unit);
+  const transportCard = fantasyCardName(
+    mobileInfantryCode,
+    catalogue.cards.get(mobileInfantryCode),
+  );
   const edit = (change: Parameters<SelectionEdit>[0]) => onEdit(change);
 
   return (
@@ -198,27 +363,28 @@ function UnitCard({
       <Card size="sm">
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Input
-                aria-label={t('unitName')}
-                value={unit.name}
-                placeholder={troopTypeName}
-                className="h-11 min-w-0 flex-1 font-medium sm:h-9"
-                onChange={(event) =>
-                  edit((selection) =>
-                    withUnitName(selection, unit.id, event.target.value),
-                  )
-                }
-              />
-              {general && <Badge variant="secondary">{t('general')}</Badge>}
-            </div>
-            <p className="text-xs text-muted-foreground tabular-nums">
+            <UnitIdentity
+              catalogue={catalogue}
+              troopType={unit.troopType}
+              name={unit.name}
+              placeholder={troopTypeName}
+              onTroopType={(troopType) =>
+                edit((selection) =>
+                  withUnitTroopType(selection, unit.id, troopType),
+                )
+              }
+              onName={(next) =>
+                edit((selection) => withUnitName(selection, unit.id, next))
+              }
+            />
+            <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground tabular-nums">
               {t('unitCost', {
                 troopType: troopTypeName,
                 stands: unit.stands,
                 perStand: formatPoints(priced?.pointsPerStand ?? 0),
                 points: formatPoints(priced?.points ?? 0),
               })}
+              {general && <Badge variant="secondary">{t('general')}</Badge>}
             </p>
           </div>
 
@@ -235,7 +401,7 @@ function UnitCard({
           />
 
           <StepperRow
-            title={t('stands')}
+            title={t('standsTitle', { count: unit.stands })}
             detail={t('standsDetail', {
               perStand: formatPoints(priced?.pointsPerStand ?? 0),
             })}
@@ -251,7 +417,10 @@ function UnitCard({
 
           <div className="flex flex-col gap-2">
             <h3 className="text-xs font-medium">{t('cards')}</h3>
-            {unit.cards.length > 0 && (
+            {(unit.cards.length > 0 ||
+              boughtEvents.length > 0 ||
+              unit.marks.delayedEntry > 0 ||
+              unit.marks.transports > 0) && (
               <ul className="flex flex-col gap-2">
                 {unit.cards.map((choice, index) => (
                   <ChosenCard
@@ -292,6 +461,79 @@ function UnitCard({
                     }
                   />
                 ))}
+                {boughtEvents.map(([code, count]) => {
+                  const card = catalogue.cards.get(code);
+                  const cardName = fantasyCardName(code, card);
+                  return (
+                    <CountedCard
+                      key={code}
+                      code={code}
+                      card={card}
+                      cost={words.each(
+                        card ? cardPoints(card, null, format, catalogue) : null,
+                      )}
+                      bearer={name}
+                      count={count}
+                      max={card ? cardCountMax(card) : count}
+                      caption={t('cardsBought', { count })}
+                      removeLabel={t('oneFewerCard', {
+                        card: cardName,
+                        unit: name,
+                      })}
+                      addLabel={t('oneMoreCard', {
+                        card: cardName,
+                        unit: name,
+                      })}
+                      onCount={(next) =>
+                        edit((selection) =>
+                          withUnitEventCard(selection, unit.id, code, next),
+                        )
+                      }
+                    />
+                  );
+                })}
+                {(['delayedEntry', 'transports'] as const)
+                  .filter((mark) => unit.marks[mark] > 0)
+                  .map((mark) => {
+                    const code = markCards[mark];
+                    const card = catalogue.cards.get(code);
+                    return (
+                      <CountedCard
+                        key={mark}
+                        code={code}
+                        card={card}
+                        cost={
+                          mark === 'delayedEntry'
+                            ? t('delayedEntryHint')
+                            : t('transportsHint', { card: transportCard })
+                        }
+                        bearer={name}
+                        count={unit.marks[mark]}
+                        max={unit.stands}
+                        caption={t('standsMarked', {
+                          count: unit.marks[mark],
+                          stands: unit.stands,
+                        })}
+                        removeLabel={t(
+                          mark === 'delayedEntry'
+                            ? 'oneFewerDelayed'
+                            : 'oneFewerTransport',
+                          { unit: name },
+                        )}
+                        addLabel={t(
+                          mark === 'delayedEntry'
+                            ? 'oneMoreDelayed'
+                            : 'oneMoreTransport',
+                          { unit: name },
+                        )}
+                        onCount={(next) =>
+                          edit((selection) =>
+                            withUnitMark(selection, unit.id, mark, next),
+                          )
+                        }
+                      />
+                    );
+                  })}
               </ul>
             )}
             <PickerDialog<FantasyCardCode>
@@ -308,81 +550,52 @@ function UnitCard({
                     detail: words.perStand(points),
                   })),
                 },
+                {
+                  heading: t('eventCards'),
+                  options: eventOffers
+                    .filter(({ card }) => !unit.marks.eventCards[card.code])
+                    .map(({ card, points }) => ({
+                      value: card.code,
+                      label: card.name,
+                      detail: words.each(points),
+                    })),
+                },
+                {
+                  heading: t('markedStands'),
+                  options: (['delayedEntry', 'transports'] as const)
+                    .filter(
+                      (mark) =>
+                        unit.marks[mark] === 0 &&
+                        (mark === 'delayedEntry' ? delayable : rides),
+                    )
+                    .map((mark) => ({
+                      value: markCards[mark],
+                      label: fantasyCardName(
+                        markCards[mark],
+                        catalogue.cards.get(markCards[mark]),
+                      ),
+                      detail:
+                        mark === 'delayedEntry'
+                          ? t('delayedEntryHint')
+                          : t('transportsHint', { card: transportCard }),
+                    })),
+                },
               ]}
               onPick={(code) =>
-                edit((selection) => withUnitCard(selection, unit.id, code))
+                edit((selection) => {
+                  if (code === delayedEntryCode) {
+                    return withUnitMark(selection, unit.id, 'delayedEntry', 1);
+                  }
+                  if (code === mobileInfantryCode) {
+                    return withUnitMark(selection, unit.id, 'transports', 1);
+                  }
+                  return catalogue.cards.get(code)?.category === 'event'
+                    ? withUnitEventCard(selection, unit.id, code, 1)
+                    : withUnitCard(selection, unit.id, code);
+                })
               }
             />
           </div>
-
-          {eventOffers.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <h3 className="text-xs font-medium">{t('eventCards')}</h3>
-              {eventOffers.map(({ card, points }) => (
-                <StepperRow
-                  key={card.code}
-                  title={card.name}
-                  detail={words.each(points)}
-                  count={unit.marks.eventCards[card.code] ?? 0}
-                  max={cardCountMax(card)}
-                  removeLabel={t('oneFewerCard', {
-                    card: card.name,
-                    unit: name,
-                  })}
-                  addLabel={t('oneMoreCard', { card: card.name, unit: name })}
-                  onChange={(count) =>
-                    edit((selection) =>
-                      withUnitEventCard(selection, unit.id, card.code, count),
-                    )
-                  }
-                />
-              ))}
-            </div>
-          )}
-
-          {(delayable || rides) && (
-            <div className="flex flex-col gap-2">
-              <h3 className="text-xs font-medium">{t('markedStands')}</h3>
-              {delayable && (
-                <StepperRow
-                  title={fantasyCardName(
-                    'delayedEntry',
-                    catalogue.cards.get('delayedEntry'),
-                  )}
-                  detail={t('delayedEntryHint')}
-                  count={unit.marks.delayedEntry}
-                  max={unit.stands}
-                  removeLabel={t('oneFewerDelayed', { unit: name })}
-                  addLabel={t('oneMoreDelayed', { unit: name })}
-                  onChange={(count) =>
-                    edit((selection) =>
-                      withUnitMark(selection, unit.id, 'delayedEntry', count),
-                    )
-                  }
-                />
-              )}
-              {rides && (
-                <StepperRow
-                  title={t('transports')}
-                  detail={t('transportsHint', {
-                    card: fantasyCardName(
-                      'mobileInfantry',
-                      catalogue.cards.get('mobileInfantry'),
-                    ),
-                  })}
-                  count={unit.marks.transports}
-                  max={unit.stands}
-                  removeLabel={t('oneFewerTransport', { unit: name })}
-                  addLabel={t('oneMoreTransport', { unit: name })}
-                  onChange={(count) =>
-                    edit((selection) =>
-                      withUnitMark(selection, unit.id, 'transports', count),
-                    )
-                  }
-                />
-              )}
-            </div>
-          )}
 
           <div className="flex flex-wrap justify-end gap-2">
             <Button
@@ -424,26 +637,7 @@ function UnitCard({
   );
 }
 
-const troopTypeGroups = (
-  catalogue: FantasyCatalogue,
-  heading: (category: string, order: string) => string,
-  cost: (points: number) => string,
-): readonly PickerGroup<TroopTypeCode>[] =>
-  troopTypeCategories.flatMap((category) =>
-    troopTypeOrders.map((order) => ({
-      heading: heading(category, order),
-      options: [...catalogue.troopTypes.values()]
-        .filter(
-          (troopType) =>
-            troopType.category === category && troopType.order === order,
-        )
-        .map((troopType) => ({
-          value: troopType.permanentCode,
-          label: troopType.displayName,
-          detail: cost(troopType.cost),
-        })),
-    })),
-  );
+type PendingUnit = { id: string; name: string };
 
 export function UnitsSection({
   units,
@@ -458,32 +652,26 @@ export function UnitsSection({
 }) {
   const t = useTranslations('fantasyBuilder');
   const { catalogue, onEdit, newId } = context;
-  const groups = useMemo(
-    () =>
-      troopTypeGroups(
-        catalogue,
-        (category, order) => t('troopTypeGroup', { category, order }),
-        (points) => t('baseCost', { points: formatPoints(points) }),
-      ),
-    [catalogue, t],
-  );
+  const [pending, setPending] = useState<readonly PendingUnit[]>([]);
+  const drop = (id: string) =>
+    setPending((current) => current.filter((unit) => unit.id !== id));
   const addUnit = (
-    <PickerDialog<TroopTypeCode>
-      trigger={t('addUnit')}
-      title={t('addUnit')}
-      description={t('addUnitDescription')}
-      empty={t('noTroopTypes')}
-      groups={groups}
-      onPick={(troopType) => {
-        const id = newId();
-        onEdit((selection) => withUnitAdded(selection, id, troopType));
-      }}
-    />
+    <Button
+      variant="outline"
+      size="touch"
+      className="self-start"
+      onClick={() =>
+        setPending((current) => [...current, { id: newId(), name: '' }])
+      }
+    >
+      <IconPlus data-icon="inline-start" />
+      {t('addUnit')}
+    </Button>
   );
 
   return (
     <Section title={t('units')} description={t('unitsDescription')}>
-      {units.length === 0 ? (
+      {units.length === 0 && pending.length === 0 ? (
         <EmptyState title={t('noUnits')} actions={addUnit}>
           <EmptyStateText>{t('noUnitsBody')}</EmptyStateText>
         </EmptyState>
@@ -497,6 +685,33 @@ export function UnitsSection({
                 priced={priced.find((candidate) => candidate.unit === unit.id)}
                 general={unit.id === general}
                 context={context}
+              />
+            ))}
+            {pending.map((unit) => (
+              <PendingUnitCard
+                key={unit.id}
+                name={unit.name}
+                catalogue={catalogue}
+                onName={(name) =>
+                  setPending((current) =>
+                    current.map((candidate) =>
+                      candidate.id === unit.id
+                        ? { ...candidate, name }
+                        : candidate,
+                    ),
+                  )
+                }
+                onTroopType={(troopType) => {
+                  onEdit((selection) =>
+                    withUnitName(
+                      withUnitAdded(selection, unit.id, troopType),
+                      unit.id,
+                      unit.name,
+                    ),
+                  );
+                  drop(unit.id);
+                }}
+                onRemove={() => drop(unit.id)}
               />
             ))}
           </ul>

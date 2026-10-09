@@ -83,12 +83,33 @@ const pick = async (user: User, trigger: HTMLElement, option: string) => {
   );
 };
 
-const addUnit = (user: User, troopType: string) =>
-  pick(
-    user,
-    section('Units').getByRole('button', { name: 'Add unit' }),
-    troopType,
+const chooseTroopType = async (
+  user: User,
+  combobox: HTMLElement,
+  troopType: string,
+) => {
+  await user.click(combobox);
+  await user.type(combobox, troopType);
+  await user.click(
+    await screen.findByRole('option', { name: new RegExp(` · ${troopType}$`) }),
   );
+};
+
+const pendingTroopType = () => {
+  const comboboxes = section('Units').getAllByRole('combobox', {
+    name: 'Troop type',
+  });
+  const last = comboboxes[comboboxes.length - 1];
+  if (!last) {
+    throw new Error('there is no unit waiting for a troop type');
+  }
+  return last;
+};
+
+const addUnit = async (user: User, troopType: string) => {
+  await user.click(section('Units').getByRole('button', { name: 'Add unit' }));
+  await chooseTroopType(user, pendingTroopType(), troopType);
+};
 
 const total = () =>
   screen
@@ -187,19 +208,60 @@ describe('a unit', () => {
     ).toBeChecked();
   });
 
-  it('offers troop types grouped by category and order', async () => {
+  it('starts as a card with no troop type, joining the list once one is picked', async () => {
     const { user } = await openBuilder();
 
     await user.click(
       section('Units').getByRole('button', { name: 'Add unit' }),
     );
-    const dialog = within(await screen.findByRole('dialog'));
+    await user.type(
+      section('Units').getByRole('textbox', { name: 'Unit name' }),
+      'Warg riders',
+    );
+
+    const troopType = pendingTroopType();
+    expect(troopType).toHaveValue('');
+    expect(total()).toHaveTextContent('0/ 51');
+
+    await user.click(troopType);
 
     expect(
-      within(dialog.getByRole('region', { name: 'Mounted · close order' }))
-        .getAllByRole('button')
-        .map((option) => option.firstChild?.textContent),
-    ).toEqual(['Cataphracts', 'Behemoths']);
+      screen.getByRole('option', { name: 'RBL · Rabble' }),
+    ).toBeInTheDocument();
+
+    await chooseTroopType(user, troopType, 'Javelin Cavalry');
+
+    expect(unitNames()).toEqual(['Warg riders']);
+    expect(total()).toHaveTextContent('4/ 51');
+    expect(
+      section('General').getByRole('radio', { name: 'Warg riders' }),
+    ).toBeChecked();
+  });
+
+  it('discards a card left without a troop type', async () => {
+    const { user } = await openBuilder();
+
+    await user.click(
+      section('Units').getByRole('button', { name: 'Add unit' }),
+    );
+    await user.click(
+      section('Units').getByRole('button', { name: 'Discard this unit' }),
+    );
+
+    expect(section('Units').getByText('No units yet')).toBeInTheDocument();
+  });
+
+  it('changes its troop type in place', async () => {
+    const { user } = await openBuilder();
+    await addUnit(user, 'Javelin Cavalry');
+    const troopType = unitCard().getByRole('combobox', { name: 'Troop type' });
+
+    await user.clear(troopType);
+    await chooseTroopType(user, troopType, 'Light Foot');
+
+    expect(
+      unitCard().getByText('Light Foot · 1 stand at 3 · costs 3'),
+    ).toBeInTheDocument();
   });
 
   it('takes a name, tags and stands', async () => {
@@ -244,7 +306,7 @@ describe('a unit', () => {
     expect(
       card.getByRole('button', { name: 'Zoom Flying', pressed: true }),
     ).toBeInTheDocument();
-    expect(card.getByText('+2 a stand')).toBeInTheDocument();
+    expect(card.getByText('+2 per stand')).toBeInTheDocument();
     expect(total()).toHaveTextContent('5/ 51');
 
     await user.click(
@@ -253,6 +315,55 @@ describe('a unit', () => {
 
     expect(card.queryByText('Flying')).not.toBeInTheDocument();
     expect(total()).toHaveTextContent('3/ 51');
+  });
+
+  it('counts event cards and marked stands among its cards', async () => {
+    const { user } = await openBuilder(
+      '',
+      fantasySelection({
+        units: [fantasyUnit('spears', 'SPR', { name: 'Spears', stands: 3 })],
+        general: 'spears',
+      }),
+    );
+    const card = unitCard();
+
+    await pick(
+      user,
+      card.getByRole('button', { name: 'Add card' }),
+      'Hold the Line',
+    );
+    await user.click(
+      card.getByRole('button', { name: 'One more Hold the Line for Spears' }),
+    );
+    await pick(
+      user,
+      card.getByRole('button', { name: 'Add card' }),
+      'Delayed Entry',
+    );
+    await user.click(
+      card.getByRole('button', { name: 'One more delayed stand of Spears' }),
+    );
+
+    expect(card.getByText('2 cards for the unit')).toBeInTheDocument();
+    expect(card.getByText('2 of 3 stands')).toBeInTheDocument();
+    expect(total()).toHaveTextContent('9/ 51');
+
+    await user.click(card.getByRole('button', { name: 'Add card' }));
+    const dialog = within(await screen.findByRole('dialog'));
+    expect(
+      dialog.queryByRole('button', { name: /^Hold the Line/ }),
+    ).not.toBeInTheDocument();
+    expect(
+      dialog.queryByRole('button', { name: /^Delayed Entry/ }),
+    ).not.toBeInTheDocument();
+    await user.keyboard('{Escape}');
+
+    await user.click(
+      card.getByRole('button', { name: 'Remove Delayed Entry from Spears' }),
+    );
+
+    expect(card.queryByText('2 of 3 stands')).not.toBeInTheDocument();
+    expect(total()).toHaveTextContent('13/ 51');
   });
 
   it('asks Terrain Affinity which terrains it favours', async () => {
