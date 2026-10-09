@@ -1,7 +1,7 @@
 {
   "dataVersion": "2026-09-29.11a65697",
   "source": "https://sample.triumph-army-builder.test/api/v1",
-  "builtAt": "2026-10-09T12:22:40.062Z",
+  "builtAt": "2026-10-09T12:34:54.988Z",
   "locales": {
     "en": [
       {
@@ -6462,15 +6462,16 @@
             "category": "stand",
             "cost": {
               "kind": "byTroopType",
-              "points": -2,
+              "points": -1,
               "overrides": [
                 {
                   "when": {
                     "troopTypes": [
+                      "KNT",
                       "ELE"
                     ]
                   },
-                  "points": -1
+                  "points": -2
                 },
                 {
                   "when": {
@@ -6478,7 +6479,7 @@
                       "fierce"
                     ]
                   },
-                  "points": -1
+                  "points": -2
                 }
               ]
             },
@@ -13124,15 +13125,16 @@
             "category": "stand",
             "cost": {
               "kind": "byTroopType",
-              "points": -2,
+              "points": -1,
               "overrides": [
                 {
                   "when": {
                     "troopTypes": [
+                      "KNT",
                       "ELE"
                     ]
                   },
-                  "points": -1
+                  "points": -2
                 },
                 {
                   "when": {
@@ -13140,7 +13142,7 @@
                       "fierce"
                     ]
                   },
-                  "points": -1
+                  "points": -2
                 }
               ]
             },

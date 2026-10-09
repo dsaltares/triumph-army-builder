@@ -916,15 +916,16 @@
     "category": "stand",
     "cost": {
       "kind": "byTroopType",
-      "points": -2,
+      "points": -1,
       "overrides": [
         {
           "when": {
             "troopTypes": [
+              "KNT",
               "ELE"
             ]
           },
-          "points": -1
+          "points": -2
         },
         {
           "when": {
@@ -932,7 +933,7 @@
               "fierce"
             ]
           },
-          "points": -1
+          "points": -2
         }
       ]
     },

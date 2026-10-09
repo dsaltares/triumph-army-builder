@@ -75,7 +75,6 @@ export const fantasySelectionSchema = z.object({
   dataVersion: z
     .string()
     .regex(dataVersionPattern, `is not a data version of ${dataVersionFormat}`),
-  name: nameSchema,
   format: fantasyListFormatSchema,
   units: z.array(fantasyUnitSchema).readonly(),
   heroes: z.array(fantasyHeroSchema).readonly(),

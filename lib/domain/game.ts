@@ -1,9 +1,8 @@
 import { z } from 'zod';
+import type { Game } from '../data/schema.ts';
 import type { PointsMeter } from './army/builder.ts';
 
-export const games = ['triumph', 'fantasy'] as const;
-
-export type Game = (typeof games)[number];
+export { type Game, games } from '../data/schema.ts';
 
 export const savableGames = ['triumph'] as const satisfies readonly Game[];
 

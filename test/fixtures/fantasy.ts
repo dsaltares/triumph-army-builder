@@ -48,7 +48,6 @@ export const fantasySelection = (
   overrides: Partial<FantasySelection> = {},
 ): FantasySelection => ({
   dataVersion: fixtureDataVersion,
-  name: 'Goblin host',
   format: { pointsTotal: 51, topography: 'Hilly', invasion: 2, maneuver: 2 },
   units: [],
   heroes: [],

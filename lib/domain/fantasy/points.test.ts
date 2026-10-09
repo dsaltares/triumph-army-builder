@@ -219,17 +219,17 @@ describe('fantasyPoints', () => {
       }).units[0]?.cards;
 
     expect(unit('ELE', 'unreliable')).toEqual([
-      { code: 'unreliable', points: -1 },
+      { code: 'unreliable', points: -2 },
     ]);
     expect(unit('KNT', 'unreliable')).toEqual([
       { code: 'unreliable', points: -2 },
     ]);
     expect(unit('SPR', 'unreliable')).toEqual([
-      { code: 'unreliable', points: -2 },
+      { code: 'unreliable', points: -1 },
     ]);
     expect(unit('SPR', 'fierce', 'unreliable')).toContainEqual({
       code: 'unreliable',
-      points: -1,
+      points: -2,
     });
     expect(
       priced({ heroes: [fantasyHero('hero', { cards: cards('away') })] })

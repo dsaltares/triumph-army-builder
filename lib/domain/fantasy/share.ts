@@ -66,7 +66,6 @@ export const canonicalFantasySelection = (
   selection: FantasySelection,
 ): FantasySelection => ({
   dataVersion: selection.dataVersion,
-  name: selection.name,
   format: {
     pointsTotal: selection.format.pointsTotal,
     topography: selection.format.topography,
