@@ -74,6 +74,15 @@ working.
 
 - One migration: `game` on `armies` and `shares`, `army_list_id` nullable. The share codec version
   bumps so an old code without a game decodes as Triumph! (ADR 0010).
+- Nothing that exists today stops working. The stored selection JSON of every current row has no
+  game in it, so the column is the discriminator and the JSON is parsed with the branch the column
+  names, never rewritten. The share decoder accepts the old and the new code version for good,
+  because codes already copied carry the old one. The pack's per-game section is optional: a pack
+  without it imports, and a game whose section is missing is simply not offered, so the pinned pack
+  keeps working until the data lands and a rollback to an older pack still imports. The create and
+  share inputs default the game to Triumph! so a tab opened before a deploy still saves. The only
+  one-way step is the migration itself once a list without an army list exists; rolling back past
+  it means restoring the pre-deploy backup.
 - The first stage ships with Triumph! as the only member of the registry and changes no behaviour:
   the golden exports, the e2e journeys and every existing test pass unchanged, which is the proof
   the seams are in the right place. New Triumph! links are minted under `/triumph/build` from then
