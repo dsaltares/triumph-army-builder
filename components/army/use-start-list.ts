@@ -30,7 +30,7 @@ export const useOpenNewList = () => {
           name: defaultListName(armyName, new Date()),
           selection,
         });
-        router.push(savedListUrl(selection.army, created.id));
+        router.push(savedListUrl(created));
       } catch (thrown: unknown) {
         toast.error(describe(thrown));
       }

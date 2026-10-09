@@ -1,11 +1,10 @@
+import type { Game } from '../game.ts';
+import { gameModule } from '../games/registry.ts';
+import type { TriumphReference } from '../games/triumph.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
-import type { TroopTypeNames } from '../troop-types.ts';
-import type { ArmyList } from './army-list.ts';
-import { type PointsMeter, pointsMeter } from './builder.ts';
-import { armyPoints, type PointCosts } from './points.ts';
+import type { PointsMeter } from './builder.ts';
 import type { SavedArmy } from './saved-army.ts';
 import type { ArmySelection } from './selection.ts';
-import { validationReport } from './validation-report.ts';
 
 export type SavedArmyStanding = {
   meter: PointsMeter;
@@ -20,32 +19,37 @@ export type SavedArmyEntry = {
   standing: SavedArmyStanding | null;
 };
 
-export const savedArmyStanding = (
-  armyList: ArmyList,
-  selection: ArmySelection,
-  costs: PointCosts,
-  names: TroopTypeNames,
-): SavedArmyStanding => {
-  const { legal, errors, warnings } = validationReport(
-    armyList,
-    selection,
-    costs,
-    names,
-  );
+export type SavedListReading = {
+  listName: string;
+  standing: SavedArmyStanding;
+};
+
+export const savedListReading = (
+  { game, selection }: { game: Game; selection: ArmySelection },
+  reference: TriumphReference,
+): SavedListReading => {
+  const module = gameModule(game);
+  const { legal, errors, warnings } = module.validate(selection, reference);
   return {
-    meter: pointsMeter(armyPoints(armyList, selection, costs)),
-    legal,
-    errors,
-    warnings,
+    listName: module.subjectName(reference),
+    standing: {
+      meter: module.points(selection, reference),
+      legal,
+      errors,
+      warnings,
+    },
   };
 };
 
 export const searchSavedArmies = (
   entries: readonly SavedArmyEntry[],
   search: string,
+  games: readonly Game[] = [],
 ): SavedArmyEntry[] => {
   const terms = searchTerms(search);
-  return entries.filter(({ army, listName }) =>
-    matchesAllTerms([army.name, listName], terms),
+  return entries.filter(
+    ({ army, listName }) =>
+      (games.length === 0 || games.includes(army.game)) &&
+      matchesAllTerms([army.name, listName], terms),
   );
 };

@@ -29,6 +29,7 @@ if (!spearmen) {
 
 const saved: SavedArmy = {
   id: 'saved-1',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: armyList.id,
   dataVersion: fixtureSelection().dataVersion,
@@ -66,7 +67,7 @@ describe('ListViewActions', () => {
 
     expect(screen.getByRole('link', { name: 'Edit' })).toHaveAttribute(
       'href',
-      `/armies/${armyList.id}/build?list=saved-1`,
+      `/triumph/build?list=saved-1`,
     );
   });
 

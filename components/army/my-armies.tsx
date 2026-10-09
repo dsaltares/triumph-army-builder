@@ -18,6 +18,7 @@ import {
 } from '@/components/army/use-saved-armies';
 import { useSavedArmyEntries } from '@/components/army/use-saved-army-entries';
 import { useSavedArmyTableState } from '@/components/army/use-saved-army-table-state';
+import { ChipGroup } from '@/components/chip-group';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
 import { useSheetExport } from '@/components/export/use-sheet-export';
 import { LoadFailure } from '@/components/load-failure';
@@ -31,13 +32,14 @@ import { useSession } from '@/lib/auth/client';
 import { isSignedIn } from '@/lib/auth/session';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import { searchSavedArmies } from '@/lib/domain/army/saved-army-index';
+import { games } from '@/lib/domain/game';
 import { describeError } from '@/lib/errors';
 import { routes } from '@/lib/navigation';
 
 const noArmies: readonly SavedArmy[] = [];
 
-const sheetList = ({ armyListId, name, selection }: SavedArmy) => ({
-  armyListId,
+const sheetList = ({ game, name, selection }: SavedArmy) => ({
+  game,
   name,
   selection,
 });
@@ -47,11 +49,19 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
   const { data: session } = useSession();
   const armies = useSavedArmies();
   const dataVersion = useCurrentDataVersion();
-  const { search, setSearch, sorting, setSorting } = useSavedArmyTableState();
+  const g = useTranslations('games');
+  const {
+    search,
+    setSearch,
+    games: chosenGames,
+    setGames,
+    sorting,
+    setSorting,
+  } = useSavedArmyTableState();
   const { entries, pricing } = useSavedArmyEntries(armies.data ?? noArmies);
   const matches = useMemo(
-    () => searchSavedArmies(entries, search),
-    [entries, search],
+    () => searchSavedArmies(entries, search, chosenGames),
+    [entries, search, chosenGames],
   );
   const rename = useUpdateArmy();
   const duplicate = useDuplicateArmy();
@@ -67,7 +77,7 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
     (army: SavedArmy) => ({
       onPreviewPdf: () => exportSheet(sheetList(army), 'inline'),
       onDownloadPdf: () => exportSheet(sheetList(army), 'attachment'),
-      onShare: () => shareArmy({ name: army.name, selection: army.selection }),
+      onShare: () => shareArmy(sheetList(army)),
       onRename: () => setRenaming(army),
       onDuplicate: () =>
         duplicateArmy(
@@ -119,6 +129,20 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
         onChange={setSearch}
       />
 
+      <ChipGroup
+        label={t('gameFilter')}
+        options={games}
+        selected={chosenGames}
+        onToggle={(game) =>
+          setGames(
+            chosenGames.includes(game)
+              ? chosenGames.filter((chosen) => chosen !== game)
+              : [...chosenGames, game],
+          )
+        }
+        labelFor={(game) => g(game)}
+      />
+
       {matches.length === 0 ? (
         <EmptyState
           title={t('noListMatches')}
@@ -126,13 +150,22 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
             <Button
               variant="outline"
               size="touch"
-              onClick={() => setSearch('')}
+              onClick={() => {
+                setSearch('');
+                setGames([]);
+              }}
             >
-              {t('clearSearch')}
+              {chosenGames.length > 0
+                ? t('clearSearchAndFilters')
+                : t('clearSearch')}
             </Button>
           }
         >
-          <EmptyStateText>{t('noSavedMatchesBody')}</EmptyStateText>
+          <EmptyStateText>
+            {chosenGames.length > 0
+              ? t('noSavedFilterMatchesBody')
+              : t('noSavedMatchesBody')}
+          </EmptyStateText>
         </EmptyState>
       ) : (
         <SavedArmiesTable

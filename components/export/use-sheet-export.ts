@@ -4,11 +4,12 @@ import { useLocale } from 'next-intl';
 import { useCallback } from 'react';
 import { useShareId } from '@/components/share/use-share-link';
 import type { ArmySelection } from '@/lib/domain/army/selection';
-import { encodeSelection } from '@/lib/domain/army/share-codec';
-import { armySheetUrl, type SheetDisposition } from '@/lib/navigation';
+import { encodeShareCode } from '@/lib/domain/army/share-codec';
+import type { Game } from '@/lib/domain/game';
+import { listSheetUrl, type SheetDisposition } from '@/lib/navigation';
 
 export type SheetList = {
-  armyListId: string;
+  game: Game;
   name: string;
   selection: ArmySelection;
 };
@@ -35,7 +36,7 @@ export const useSheetExport = () => {
 
   return useCallback(
     async (
-      { armyListId, name, selection }: SheetList,
+      { game, name, selection }: SheetList,
       disposition: SheetDisposition,
     ) => {
       const reservedTab =
@@ -43,11 +44,10 @@ export const useSheetExport = () => {
       deliverSheet(
         disposition,
         reservedTab,
-        armySheetUrl({
-          armyListId,
-          code: encodeSelection(selection),
+        listSheetUrl({
+          code: encodeShareCode({ game, selection }),
           name,
-          share: await shareId({ name, selection }),
+          share: await shareId({ name, game, selection }),
           lang: locale,
           disposition,
         }),

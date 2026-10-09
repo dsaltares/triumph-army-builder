@@ -57,6 +57,7 @@ const selection = withArmyBattleCard(
 
 const shared = (overrides: Partial<SharedList> = {}): SharedList => ({
   id: 'AbCdEfGhIjKl',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: armyList.id,
   dataVersion,
@@ -67,6 +68,7 @@ const shared = (overrides: Partial<SharedList> = {}): SharedList => ({
 
 const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
   id: 'saved-1',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: armyList.id,
   dataVersion,
@@ -322,7 +324,7 @@ describe('SharedListView of your own list', () => {
 
     expect(
       screen.getByRole('link', { name: 'Edit it in the builder' }),
-    ).toHaveAttribute('href', `/armies/${armyList.id}/build?list=saved-1`);
+    ).toHaveAttribute('href', `/triumph/build?list=saved-1`);
     expect(
       screen.queryByRole('link', { name: 'Open it as a PDF' }),
     ).not.toBeInTheDocument();

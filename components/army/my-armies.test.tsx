@@ -214,7 +214,7 @@ describe('MyArmies', () => {
     await waitFor(() => expect(listNames()).toEqual(['Cannae']));
     expect(screen.getByRole('link', { name: 'Cannae' })).toHaveAttribute(
       'href',
-      '/armies/army-1/build?list=saved-1',
+      '/triumph/build?list=saved-1',
     );
     expect(screen.getByRole('link', { name: 'View Cannae' })).toHaveAttribute(
       'href',
@@ -240,6 +240,42 @@ describe('MyArmies', () => {
     await user.click(screen.getByRole('button', { name: 'Clear search' }));
 
     await waitFor(() => expect(listNames()).toEqual(['Cannae', 'Zama']));
+  });
+
+  it('names the game each list is played under', async () => {
+    await save('Cannae', 10);
+    open();
+
+    await waitFor(() => expect(listNames()).toEqual(['Cannae']));
+    const [, row] = screen.getAllByRole('row');
+    expect(within(row as HTMLElement).getByText('Triumph!')).toBeVisible();
+  });
+
+  it('narrows the lists to a game, keeps it in the url, and clears it with the search', async () => {
+    await save('Zama', 10);
+    await save('Cannae', 20);
+    const onUrlUpdate = vi.fn();
+    const { user } = open({ onUrlUpdate });
+    await waitFor(() => expect(listNames()).toEqual(['Cannae', 'Zama']));
+
+    const triumph = screen.getByRole('button', { name: 'Triumph!' });
+    await user.click(triumph);
+
+    expect(triumph).toHaveAttribute('aria-pressed', 'true');
+    expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toContain(
+      'game=triumph',
+    );
+    await waitFor(() => expect(listNames()).toEqual(['Cannae', 'Zama']));
+
+    await user.type(screen.getByLabelText('Search your lists'), 'trebia');
+    expect(await screen.findByText('No list matches')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Clear search and filters' }),
+    );
+
+    await waitFor(() => expect(listNames()).toEqual(['Cannae', 'Zama']));
+    expect(triumph).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('re-reads the army names when the player changes language', async () => {

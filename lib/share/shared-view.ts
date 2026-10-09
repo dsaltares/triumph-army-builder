@@ -1,18 +1,20 @@
 import type { Kysely } from 'kysely';
 import type { ArmyBundle } from '../data/bundle-source.ts';
+import {
+  readArmyListReference,
+  readGameReference,
+} from '../data/game-reference.ts';
 import { findArmy } from '../db/armies.ts';
 import { listCollectionEntries } from '../db/collection.ts';
 import { listArmyPins } from '../db/collection-pins.ts';
 import type { Database } from '../db/schema.ts';
 import { findShare, touchShare } from '../db/shares.ts';
-import { buildArmyList } from '../domain/army/army-list.ts';
 import { decodeSelection } from '../domain/army/share-codec.ts';
 import { shareIdPattern } from '../domain/army/shared-list.ts';
 import {
   type DraftView,
   draftView,
   type ListView,
-  type ListViewData,
   type SavedView,
   type SharedView,
   savedView,
@@ -51,21 +53,6 @@ export type SavedViewRequest = {
   isAnonymous: boolean;
 };
 
-export const readViewData = async (
-  bundle: ArmyBundle,
-  armyListId: string,
-): Promise<ListViewData | null> => {
-  const detail = await bundle.readArmyDetail(armyListId);
-  if (!detail) {
-    return null;
-  }
-  const [troopTypes, battleCards] = await Promise.all([
-    bundle.readTroopTypes(),
-    bundle.readBattleCards(),
-  ]);
-  return { armyList: buildArmyList(detail), troopTypes, battleCards };
-};
-
 export const loadSharedView = async ({
   db,
   bundle,
@@ -80,7 +67,7 @@ export const loadSharedView = async ({
     return null;
   }
   await markSeen(db, id, now);
-  const data = await readViewData(bundle, shared.armyListId);
+  const data = await readGameReference(bundle, shared);
   return data && sharedView({ shared, ...data });
 };
 
@@ -96,7 +83,7 @@ export const loadSavedView = async ({
     return null;
   }
   const [data, collection, pins] = await Promise.all([
-    readViewData(bundle, saved.armyListId),
+    readGameReference(bundle, saved),
     isAnonymous ? null : listCollectionEntries(db, userId),
     isAnonymous ? [] : listArmyPins(db, { armyId: id, userId }),
   ]);
@@ -122,7 +109,7 @@ export const loadDraftView = async ({
   }
   const { selection } = decoded;
   const [data, collection] = await Promise.all([
-    readViewData(bundle, selection.army),
+    readArmyListReference(bundle, selection.army),
     userId === null ? null : listCollectionEntries(db, userId),
   ]);
   return data && draftView({ selection, collection, ...data });

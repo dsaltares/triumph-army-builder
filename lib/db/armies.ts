@@ -1,5 +1,5 @@
 import type { Kysely } from 'kysely';
-import type { SavedGameList } from '../domain/army/saved-army.ts';
+import type { SavedArmy } from '../domain/army/saved-army.ts';
 import type {
   SavedSelection,
   SelectionInput,
@@ -21,7 +21,7 @@ export type ArmyChanges = {
   list?: SavedSelection | undefined;
 };
 
-export const toSavedArmy = (row: Army): SavedGameList => ({
+export const toSavedArmy = (row: Army): SavedArmy => ({
   id: row.id,
   name: row.name,
   ...storedList(row),

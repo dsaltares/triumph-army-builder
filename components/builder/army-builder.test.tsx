@@ -13,7 +13,12 @@ import { autosaveQuietMs } from '@/components/builder/use-autosave';
 import { bundlePaths } from '@/lib/data/bundle';
 import { insertArmy, listArmies } from '@/lib/db/armies';
 import { buildArmyList } from '@/lib/domain/army/army-list';
-import { emptySelection, withStands } from '@/lib/domain/army/selection';
+import {
+  type ArmySelection,
+  emptySelection,
+  withStands,
+} from '@/lib/domain/army/selection';
+import { encodeSelection } from '@/lib/domain/army/share-codec';
 import { serveApi } from '@/test/api';
 import { asSignedIn } from '@/test/auth-client';
 import { builderArmyDetail, fixtureDataVersion } from '@/test/fixtures/army';
@@ -23,7 +28,7 @@ import {
   sampleSnapshotBattleCards,
   sampleTroopTypes,
 } from '@/test/sample.ts';
-import { renderUi } from '@/test/ui';
+import { renderUi, type UiOptions } from '@/test/ui';
 
 const detail = builderArmyDetail();
 
@@ -50,18 +55,27 @@ const api = serveApi({
   },
 });
 
-const builderPage = () => (
+const builderPage = (draft: ArmySelection | null = null) => (
   <BuilderStateProvider>
     <ListTitle armyName={detail.name} />
     <BuilderActions />
-    <ArmyBuilder armyId={detail.id} />
+    <ArmyBuilder armyId={detail.id} draft={draft} />
   </BuilderStateProvider>
 );
 
-const openBuilder = async (searchParams = '') => {
-  const rendered = renderUi(builderPage(), {
+const openBuilder = async (
+  searchParams = '',
+  {
+    draft = null,
+    onUrlUpdate,
+  }: Pick<UiOptions, 'onUrlUpdate'> & {
+    draft?: ArmySelection | null;
+  } = {},
+) => {
+  const rendered = renderUi(builderPage(draft), {
     wrap: api.wrap,
     searchParams,
+    ...(onUrlUpdate ? { onUrlUpdate } : {}),
   });
   await screen.findByRole('heading', { name: 'Required Troops', level: 2 });
   return rendered;
@@ -340,6 +354,38 @@ describe('a list the builder saves', () => {
   });
 });
 
+describe('an unsaved list the builder opens', () => {
+  it('opens on everything the list holds, and saves nothing until asked', async () => {
+    await openBuilder(`s=${encodeSelection(savedSelection)}`, {
+      draft: savedSelection,
+    });
+
+    expect(screen.getByRole('slider', { name: 'Year' })).toHaveValue('-2900');
+    expect(screen.getByRole('button', { name: 'Kish' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByText(/^3 of 2–5 stands/)).toBeInTheDocument();
+    expect(await storedList()).toBeUndefined();
+  });
+
+  it('keeps it once saved, and leaves its code behind in the url', async () => {
+    const onUrlUpdate = vi.fn();
+    const { user } = await openBuilder(`s=${encodeSelection(savedSelection)}`, {
+      draft: savedSelection,
+      onUrlUpdate,
+    });
+
+    await user.click(saveButton('Save'));
+
+    await settlesTo('Saved');
+    expect((await storedList())?.selection).toEqual(savedSelection);
+    const search = onUrlUpdate.mock.calls.at(-1)?.[0].searchParams;
+    expect(search?.get('list')).toBeTruthy();
+    expect(search?.has('s')).toBe(false);
+  });
+});
+
 describe('a link the builder shares', () => {
   it('makes one short link for the list on the screen, and copies it', async () => {
     const { user } = await openBuilder();
@@ -370,7 +416,7 @@ describe('a link the builder shares', () => {
       String(assign.mock.calls[0]?.[0]),
       window.location.origin,
     );
-    expect(sheet.pathname).toBe('/api/armies/army-builder/sheet');
+    expect(sheet.pathname).toBe('/api/lists/sheet');
     expect(sheet.searchParams.get('s')).toBeTruthy();
     expect(sheet.searchParams.get('share')).toMatch(/^[\w-]{12}$/);
   });

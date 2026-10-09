@@ -9,7 +9,8 @@ import {
   type ListCoverage,
   listCoverage,
 } from '../collection/list-coverage.ts';
-import { triumph } from '../games/triumph.ts';
+import type { Game } from '../game.ts';
+import { gameModule } from '../games/registry.ts';
 import type {
   TroopTypeCost,
   TroopTypeFactor,
@@ -25,6 +26,7 @@ import type { ValidationReport } from './validation-report.ts';
 
 export type ViewedList = {
   name: string;
+  game: Game;
   dataVersion: string;
   selection: ArmySelection;
 };
@@ -70,11 +72,14 @@ export type ListViewData = {
 export const listReading = (
   list: ViewedList,
   data: ListViewData,
-): ListReading => ({
-  sheet: triumph.sheetData(list, data),
-  report: triumph.validate(list.selection, data),
-  meter: triumph.points(list.selection, data),
-});
+): ListReading => {
+  const module = gameModule(list.game);
+  return {
+    sheet: module.sheetData(list, data),
+    report: module.validate(list.selection, data),
+    meter: module.points(list.selection, data),
+  };
+};
 
 export const sharedView = ({
   shared,
@@ -138,6 +143,7 @@ export const draftView = ({
 }): DraftView => {
   const list: DraftList = {
     name: data.armyList.name,
+    game: 'triumph',
     dataVersion: selection.dataVersion,
     selection,
     armyListId: data.armyList.id,

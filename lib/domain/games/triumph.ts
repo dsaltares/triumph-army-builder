@@ -51,5 +51,6 @@ export const triumph = {
       movement: troopTypeMovements(reference.troopTypes),
       cardNames: battleCardNames(reference.battleCards),
     }),
+  subjectName: ({ armyList }) => armyList.name,
   listTitle: ({ armyList }, at) => defaultListName(armyList.name, at),
 } satisfies GameModule<ArmySelection, TriumphReference, ArmySheet>;

@@ -65,9 +65,7 @@ describe('DraftViewActions', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }));
 
     await waitFor(() =>
-      expect(router.push).toHaveBeenCalledWith(
-        `/armies/${armyList.id}/build?list=army-1`,
-      ),
+      expect(router.push).toHaveBeenCalledWith(`/triumph/build?list=army-1`),
     );
     const [created, ...others] = await listArmies(api.database(), owner);
     expect(others).toEqual([]);

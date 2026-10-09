@@ -238,3 +238,32 @@ test('the builder of an army the data bundle does not hold is a 404', async ({
     page.getByRole('heading', { name: 'Page not found', level: 1 }),
   ).toBeVisible();
 });
+
+test('a saved list opens the same from the old army builder link and the new game builder link', async ({
+  page,
+  request,
+}) => {
+  const army = await armyId(request, 'Iron Crown Knights');
+  await page.goto(`/armies/${army}`);
+  await page.getByRole('button', { name: 'New list' }).click();
+
+  await expect(page).toHaveURL(/\/triumph\/build\?list=/);
+  const listId = new URL(page.url()).searchParams.get('list');
+  const listName = page.getByRole('textbox', { name: 'List name' });
+  await listName.fill('Both ways');
+  const saveStatus = page.getByRole('status', { name: 'Save status' });
+  await expect(saveStatus).toContainText('Saving');
+  await expect(saveStatus).toContainText('Saved');
+
+  for (const link of [
+    `/armies/${army}/build?list=${listId}`,
+    `/triumph/build?list=${listId}`,
+  ]) {
+    await page.goto(link);
+    await expect(page).toHaveTitle(
+      'Build Iron Crown Knights · Triumph! Army Builder',
+    );
+    await expect(listName).toHaveValue('Both ways');
+    await expect(saveStatus).toContainText('Saved');
+  }
+});

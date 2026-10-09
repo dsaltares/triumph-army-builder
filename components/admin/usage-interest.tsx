@@ -18,6 +18,7 @@ const filterLabelKeys = {
   'armies.manoeuvre': 'filterArmiesManoeuvre',
   'collection.troopType': 'filterCollectionTroopType',
   'collection.status': 'filterCollectionStatus',
+  'myArmies.game': 'filterMyArmiesGame',
 } as const satisfies Record<FilterKey, string>;
 
 const isFilterKey = (key: string): key is FilterKey => key in filterLabelKeys;

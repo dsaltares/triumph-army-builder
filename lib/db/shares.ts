@@ -5,10 +5,7 @@ import {
   withGame,
 } from '../domain/army/selection-schema.ts';
 import { encodeShareCode } from '../domain/army/share-codec.ts';
-import {
-  type SharedGameList,
-  shareIdLength,
-} from '../domain/army/shared-list.ts';
+import { type SharedList, shareIdLength } from '../domain/army/shared-list.ts';
 import { listColumns, storedList } from './list-columns.ts';
 import type { Database, Share } from './schema.ts';
 
@@ -27,7 +24,7 @@ export const shareId = ({ name, ...list }: ShareContent) =>
     .digest('base64url')
     .slice(0, shareIdLength);
 
-export const toSharedList = (row: Share): SharedGameList => ({
+export const toSharedList = (row: Share): SharedList => ({
   id: row.id,
   name: row.name,
   ...storedList(row),
@@ -60,7 +57,7 @@ export const countShares = async (db: Kysely<Database>, userId: string) =>
 export const insertShare = async (
   db: Kysely<Database>,
   { userId, at, ...content }: NewShareRecord,
-): Promise<SharedGameList> => {
+): Promise<SharedList> => {
   const id = shareId(content);
   const { name, ...list } = content;
   await db

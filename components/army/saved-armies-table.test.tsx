@@ -14,6 +14,7 @@ const anHourAgo = () => new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
 const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
   id: 'army-1',
+  game: 'triumph',
   name: 'Cannae',
   armyListId: 'list-carthage',
   dataVersion: fixtureDataVersion,
@@ -100,7 +101,7 @@ describe('SavedArmiesTable', () => {
 
     expect(screen.getByRole('link', { name: 'Cannae' })).toHaveAttribute(
       'href',
-      '/armies/list-carthage/build?list=army-1',
+      '/triumph/build?list=army-1',
     );
     expect(screen.getByRole('link', { name: 'View Cannae' })).toHaveAttribute(
       'href',

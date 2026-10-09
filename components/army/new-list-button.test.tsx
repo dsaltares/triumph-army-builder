@@ -43,9 +43,7 @@ describe('NewListButton', () => {
     await user.click(newListButton());
 
     await waitFor(() =>
-      expect(router.push).toHaveBeenCalledWith(
-        `/armies/${detail.id}/build?list=army-1`,
-      ),
+      expect(router.push).toHaveBeenCalledWith(`/triumph/build?list=army-1`),
     );
 
     const saved = await listArmies(api.database(), owner);

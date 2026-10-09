@@ -225,3 +225,38 @@ describe('refusing a request it cannot render', () => {
     expect(response.status).toBe(404);
   });
 });
+
+const fetchListSheet = (search: string) =>
+  armySheetResponse({
+    request: new Request(`${siteUrl}/api/lists/sheet${search}`),
+    bundle,
+    locale: 'en',
+    siteUrl,
+    generatedAt,
+  });
+
+describe('the sheet of any list, by its code alone', () => {
+  it('renders the army list the code names', async () => {
+    const response = await fetchListSheet(query(filled));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('application/pdf');
+    expect(response.headers.get('content-disposition')).toContain(
+      encodeURIComponent(`${armyList.name}.pdf`),
+    );
+  });
+
+  it('renders a code minted before the code named its game', async () => {
+    const legacy = `1.${Buffer.from(JSON.stringify(filled)).toString('base64url')}`;
+    const response = await fetchListSheet(`?s=${legacy}`);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('application/pdf');
+  });
+
+  it('has no sheet for an army the bundle does not carry', async () => {
+    const response = await fetchListSheet(query({ ...filled, army: 'army-2' }));
+
+    expect(response.status).toBe(404);
+  });
+});

@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import { armySheet } from '@/lib/domain/army/sheet';
+import { triumph } from '@/lib/domain/games/triumph';
 import { listViewUrl } from '@/lib/navigation';
 
 export type SavedListView = {
@@ -91,6 +92,7 @@ export function BuilderMenu({
     <>
       <ListActionsMenu
         sheet={sheet}
+        game={triumph.game}
         selection={selection}
         onCanIBuildIt={() => setCoverageOpen(true)}
       >

@@ -1,3 +1,5 @@
+import type { Game } from './domain/game.ts';
+
 export const routes = {
   home: '/',
   armies: '/armies',
@@ -22,8 +24,13 @@ export const armyUrl = (id: string) => `${routes.armies}/${id}`;
 
 export const buildArmyUrl = (id: string) => `${armyUrl(id)}/build`;
 
-export const savedListUrl = (armyListId: string, listId: string) =>
-  `${buildArmyUrl(armyListId)}?list=${encodeURIComponent(listId)}`;
+export const gameBuilderUrl = (game: Game) => `/${game}/build`;
+
+export const savedListUrl = ({ game, id }: { game: Game; id: string }) =>
+  `${gameBuilderUrl(game)}?${new URLSearchParams({ list: id })}`;
+
+export const draftListUrl = ({ game, code }: { game: Game; code: string }) =>
+  `${gameBuilderUrl(game)}?${new URLSearchParams({ s: code })}`;
 
 export const listViewUrl = (listId: string) =>
   `${routes.myArmies}/${encodeURIComponent(listId)}`;
@@ -38,15 +45,13 @@ export const sheetDispositions = ['attachment', 'inline'] as const;
 
 export type SheetDisposition = (typeof sheetDispositions)[number];
 
-export const armySheetUrl = ({
-  armyListId,
+export const listSheetUrl = ({
   code,
   name,
   share,
   lang,
   disposition = 'attachment',
 }: {
-  armyListId: string;
   code: string;
   name?: string | undefined;
   share?: string | null | undefined;
@@ -68,7 +73,7 @@ export const armySheetUrl = ({
   if (disposition !== 'attachment') {
     params.set('disposition', disposition);
   }
-  return `/api/armies/${encodeURIComponent(armyListId)}/sheet?${params}`;
+  return `/api/lists/sheet?${params}`;
 };
 
 export const sharedListUrl = (id: string) => `/s/${encodeURIComponent(id)}`;

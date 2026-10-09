@@ -142,12 +142,17 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
   `lib/domain/army/sheet.ts` decides what goes on the sheet and returns plain data; the
   `@react-pdf/renderer` component under `components/export/` only draws it, and `list-text.ts`
   writes the same sheet out as plain text, Markdown or BBCode (#48) — a new field on the sheet
-  belongs in both or in neither. The PDF route at `app/api/armies/[id]/sheet` is one of two API
-  surfaces outside `lib/trpc/` — tRPC returns JSON envelopes, and a download wants bytes and a
+  belongs in both or in neither. The PDF route at `app/api/lists/sheet` — `app/api/armies/[id]/sheet` stays as an alias
+  for links already minted — is one of two API surfaces outside `lib/trpc/` — tRPC returns JSON envelopes, and a download wants bytes and a
   `Content-Disposition`. The collection's photo routes under `app/api/collection/photos` are the
   other, for the same reason in both directions (ADR 0031). It takes a share code and nothing else: no database, no session, so no
   ownership to get wrong (ADR 0020). `armySheetResponse` takes its bundle source as a parameter, so
-  a test drives it over `memoryBundleSource` from `test/bundle-source.ts`. Sheet colours are hex in `pdf-theme.ts` because react-pdf
+  a test drives it over `memoryBundleSource` from `test/bundle-source.ts`. It takes the game from
+  the code and asks the registry in `lib/domain/games/` for the sheet, through
+  `readGameReference` in `lib/data/game-reference.ts`, as the share page, the saved view and the
+  saved-lists table do (ADR 0039): none of them branches on the game. Each game's builder lives
+  at `/<game>/build`, opened on `?list=<id>` or `?s=<code>`; `/armies/<id>/build` stays as the
+  Triumph! entry from an army page and for every link already minted. Sheet colours are hex in `pdf-theme.ts` because react-pdf
   cannot read `oklch()`, Tailwind or CSS variables.
 - `lib/qr/` is the only module that encodes a QR code. `encodeQr` returns a version, a module
   count and an SVG path with the quiet zone baked in; the two components that draw it —

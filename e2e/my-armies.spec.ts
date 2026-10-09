@@ -151,7 +151,6 @@ test('My Armies offers an anonymous player the way to keep their lists', async (
 
 test('a new list starts from the My Armies empty state, by searching for an army', async ({
   page,
-  request,
 }) => {
   await page.goto('/my-armies');
 
@@ -172,10 +171,6 @@ test('a new list starts from the My Armies empty state, by searching for an army
   await expect(page).toHaveTitle(
     'Build Sunspire Dominion · Triumph! Army Builder',
   );
-  await expect(page).toHaveURL(
-    new RegExp(
-      `/armies/${await armyId(request, 'Sunspire Dominion')}/build\\?list=`,
-    ),
-  );
+  await expect(page).toHaveURL(/\/triumph\/build\?list=/);
   await expect(saveStatus(page)).toContainText('Saved');
 });

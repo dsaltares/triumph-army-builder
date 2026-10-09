@@ -27,7 +27,7 @@ export function ListViewActions({
   return (
     <div className="ml-auto flex shrink-0 items-center gap-2">
       <Link
-        href={savedListUrl(list.armyListId, list.id)}
+        href={savedListUrl(list)}
         className={buttonVariants({
           size: 'touch',
           className: ['shrink-0', iconOnlyBelowMd],
@@ -38,6 +38,7 @@ export function ListViewActions({
       </Link>
       <ListActionsMenu
         sheet={sheet}
+        game={list.game}
         selection={list.selection}
         onCanIBuildIt={() => setCoverageOpen(true)}
       />

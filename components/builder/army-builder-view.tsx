@@ -36,6 +36,7 @@ import { generalChoice } from '@/lib/domain/army/general-selection';
 import { armyPoints, type PointCosts } from '@/lib/domain/army/points';
 import { defaultListName, type SavedArmy } from '@/lib/domain/army/saved-army';
 import {
+  type ArmySelection,
   withAllyTroopOption,
   withArmyBattleCard,
   withContingentGroup,
@@ -65,6 +66,7 @@ export type BuilderData = {
 
 export type ArmyBuilderViewProps = BuilderData & {
   saved?: SavedArmy | null;
+  draft?: ArmySelection | null;
 };
 
 export function ArmyBuilderView({
@@ -76,13 +78,12 @@ export function ArmyBuilderView({
   movement,
   profiles,
   saved = null,
+  draft: unsaved = null,
 }: ArmyBuilderViewProps) {
-  const { gating, setYear, setVariant } = useBuilderGating(
-    armyList,
-    saved?.selection ?? null,
-  );
+  const opened = saved?.selection ?? unsaved;
+  const { gating, setYear, setVariant } = useBuilderGating(armyList, opened);
   const [draft, setDraft] = useState(
-    () => saved?.selection ?? startBuilding(armyList, dataVersion),
+    () => opened ?? startBuilding(armyList, dataVersion),
   );
   const [listName, rename] = useState(
     () => saved?.name ?? defaultListName(armyList.name, new Date()),

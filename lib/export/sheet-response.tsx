@@ -2,22 +2,15 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import { z } from 'zod';
 import { ArmySheetDocument } from '@/components/export/army-sheet';
 import type { ArmyBundle } from '@/lib/data/bundle-source';
+import { readGameReference } from '@/lib/data/game-reference';
 import { summarisedIssues } from '@/lib/data/zod-issues';
-import { buildArmyList } from '@/lib/domain/army/army-list';
-import { pointCosts } from '@/lib/domain/army/points';
 import { armyNameSchema } from '@/lib/domain/army/saved-army';
 import {
-  decodeSelection,
+  decodeShareCode,
   shareCodeMaxChars,
 } from '@/lib/domain/army/share-codec';
 import { shareIdPattern } from '@/lib/domain/army/shared-list';
-import { armySheet } from '@/lib/domain/army/sheet';
-import { battleCardNames } from '@/lib/domain/battle-cards/listing';
-import {
-  troopTypeFactors,
-  troopTypeMovements,
-  troopTypeNames,
-} from '@/lib/domain/troop-types';
+import { gameModule } from '@/lib/domain/games/registry';
 import { describeError } from '@/lib/errors';
 import { registerSheetFonts } from '@/lib/export/pdf-theme';
 import type { Locale } from '@/lib/i18n/locales';
@@ -35,7 +28,7 @@ export type SheetBundle = ArmyBundle;
 
 export type ArmySheetRequest = {
   request: Request;
-  armyId: string;
+  armyId?: string | undefined;
   bundle: SheetBundle;
   siteUrl: string;
   generatedAt: Date;
@@ -87,7 +80,7 @@ export const armySheetResponse = async ({
     );
   }
 
-  const decoded = decodeSelection(parsed.data.s);
+  const decoded = decodeShareCode(parsed.data.s);
   if (!decoded.ok) {
     return plainText(
       decoded.reason === 'unsupportedVersion'
@@ -96,21 +89,18 @@ export const armySheetResponse = async ({
       400,
     );
   }
-  if (decoded.selection.army !== armyId) {
+  const { list } = decoded;
+  const module = gameModule(list.game);
+  if (armyId !== undefined && module.armyListId(list.selection) !== armyId) {
     return plainText(w('wrongArmy'), 400);
   }
 
-  const detail = await bundle.readArmyDetail(armyId);
-  if (!detail) {
+  const reference = await readGameReference(bundle, list);
+  if (!reference) {
     return plainText(w('noSuchArmy'), 404);
   }
 
-  const [troopTypes, cards] = await Promise.all([
-    bundle.readTroopTypes(),
-    bundle.readBattleCards(),
-  ]);
-  const armyList = buildArmyList(detail);
-  const listName = parsed.data.name ?? armyList.name;
+  const listName = parsed.data.name ?? module.subjectName(reference);
   const shareUrl = parsed.data.share
     ? `${siteUrl}${sharedListUrl(parsed.data.share)}`
     : null;
@@ -121,16 +111,10 @@ export const armySheetResponse = async ({
     const body = await renderToBuffer(
       <ArmySheetDocument
         locale={locale}
-        sheet={armySheet({
-          listName,
-          armyList,
-          selection: decoded.selection,
-          costs: pointCosts(troopTypes, cards),
-          names: troopTypeNames(troopTypes),
-          factors: troopTypeFactors(troopTypes),
-          movement: troopTypeMovements(troopTypes),
-          cardNames: battleCardNames(cards),
-        })}
+        sheet={module.sheetData(
+          { name: listName, selection: list.selection },
+          reference,
+        )}
         generatedAt={generatedAt}
         siteUrl={siteUrl}
         shareUrl={shareUrl}
@@ -147,7 +131,10 @@ export const armySheetResponse = async ({
       },
     });
   } catch (thrown: unknown) {
-    log.error({ err: thrown, army: armyId }, 'army sheet PDF failed to render');
+    log.error(
+      { err: thrown, game: list.game, army: module.armyListId(list.selection) },
+      'army sheet PDF failed to render',
+    );
     return plainText(describeError(thrown), 500);
   }
 };

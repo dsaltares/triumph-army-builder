@@ -38,6 +38,7 @@ import { cn } from '@/lib/utils';
 type SavedArmyTableMeta = {
   locale: Locale;
   t: ReturnType<typeof useTranslations<'armies'>>;
+  g: ReturnType<typeof useTranslations<'games'>>;
   pricing: boolean;
   dataVersion: string;
   actionsFor: (army: SavedArmy) => SavedArmyActions;
@@ -75,12 +76,15 @@ const columns = [
       const { army, listName } = row.original;
       return (
         <>
-          <Link
-            href={savedListUrl(army.armyListId, army.id)}
-            className="font-medium underline-offset-4 hover:underline"
-          >
-            {army.name}
-          </Link>
+          <span className="flex flex-wrap items-center gap-2">
+            <Link
+              href={savedListUrl(army)}
+              className="font-medium underline-offset-4 hover:underline"
+            >
+              {army.name}
+            </Link>
+            <Badge variant="outline">{table.options.meta?.g(army.game)}</Badge>
+          </span>
           <span className="block text-xs text-muted-foreground sm:hidden">
             {listName ?? table.options.meta?.t('armyMissing')}
           </span>
@@ -260,6 +264,7 @@ export function SavedArmiesTable({
   actionsFor,
 }: SavedArmiesTableProps) {
   const t = useTranslations('armies');
+  const g = useTranslations('games');
   const locale = useLocale();
   const table = useTable({
     features,
@@ -268,7 +273,7 @@ export function SavedArmiesTable({
     state: { sorting },
     onSortingChange,
     enableSortingRemoval: false,
-    meta: { locale, t, pricing, dataVersion, actionsFor },
+    meta: { locale, t, g, pricing, dataVersion, actionsFor },
   });
 
   return (

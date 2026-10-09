@@ -41,7 +41,7 @@ export function SaveSharedCopy({
             name: chosen,
             selection,
           });
-          router.push(savedListUrl(created.armyListId, created.id));
+          router.push(savedListUrl(created));
         }}
       />
     </>

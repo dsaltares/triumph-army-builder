@@ -26,14 +26,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import type { ArmySheet } from '@/lib/domain/army/sheet';
+import type { Game } from '@/lib/domain/game';
 
-const useListExport = (sheet: ArmySheet, selection: ArmySelection) => {
+const useListExport = (
+  sheet: ArmySheet,
+  game: Game,
+  selection: ArmySelection,
+) => {
   const t = useTranslations('builder');
   const { share, dialog } = useShareLink();
   const exportSheet = useSheetExport();
   const [copying, setCopying] = useState(false);
-  const list = { name: sheet.listName, selection };
-  const sheetList = { armyListId: sheet.armyId, ...list };
+  const list = { name: sheet.listName, game, selection };
 
   const sharing = (
     <>
@@ -50,11 +54,11 @@ const useListExport = (sheet: ArmySheet, selection: ArmySelection) => {
 
   const sheetItems = (
     <>
-      <DropdownMenuItem onClick={() => exportSheet(sheetList, 'inline')}>
+      <DropdownMenuItem onClick={() => exportSheet(list, 'inline')}>
         <IconEye />
         {t('previewPdf')}
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => exportSheet(sheetList, 'attachment')}>
+      <DropdownMenuItem onClick={() => exportSheet(list, 'attachment')}>
         <IconDownload />
         {t('downloadPdf')}
       </DropdownMenuItem>
@@ -80,11 +84,13 @@ const useListExport = (sheet: ArmySheet, selection: ArmySelection) => {
 
 export function ListActionsMenu({
   sheet,
+  game,
   selection,
   onCanIBuildIt,
   children,
 }: {
   sheet: ArmySheet;
+  game: Game;
   selection: ArmySelection;
   onCanIBuildIt: () => void;
   children?: ReactNode;
@@ -95,7 +101,7 @@ export function ListActionsMenu({
     sharing,
     sheet: sheetItems,
     dialogs,
-  } = useListExport(sheet, selection);
+  } = useListExport(sheet, game, selection);
 
   return (
     <>

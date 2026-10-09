@@ -39,6 +39,7 @@ export function DraftViewActions({
       </Button>
       <ListActionsMenu
         sheet={sheet}
+        game={list.game}
         selection={list.selection}
         onCanIBuildIt={() => setCoverageOpen(true)}
       />
