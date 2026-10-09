@@ -81,6 +81,7 @@ export function ArmyBuilder({ armyId, draft = null }: ArmyBuilderProps) {
   const [listId] = useSavedListId();
   const saved = useSavedArmy(listId);
   const state = useBuilderData(armyId);
+  const triumphList = saved.data?.game === 'triumph' ? saved.data : null;
 
   if (state.status === 'failed') {
     return <LoadFailure title={t('armyLoadFailed')} message={state.message} />;
@@ -99,9 +100,9 @@ export function ArmyBuilder({ armyId, draft = null }: ArmyBuilderProps) {
     <BuilderSkeleton />
   ) : (
     <ArmyBuilderView
-      key={saved.data?.id ?? 'unsaved'}
+      key={triumphList?.id ?? 'unsaved'}
       {...state.data}
-      saved={saved.data ?? null}
+      saved={triumphList}
       draft={draft}
     />
   );

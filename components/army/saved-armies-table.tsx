@@ -26,6 +26,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import type { SavedArmyEntry } from '@/lib/domain/army/saved-army-index';
+import { isViewableList } from '@/lib/domain/army/selection-schema';
 import {
   compareDataVersions,
   type DataVersionComparison,
@@ -99,7 +100,10 @@ const columns = [
     meta: { className: 'hidden sm:table-cell' },
     cell: ({ row, table }) => {
       const { army, listName } = row.original;
-      return listName ? (
+      if (listName && army.armyListId === null) {
+        return listName;
+      }
+      return listName && army.armyListId !== null ? (
         <Link
           href={armyUrl(army.armyListId)}
           className="underline-offset-4 hover:underline"
@@ -206,15 +210,20 @@ const columns = [
       const actions = table.options.meta?.actionsFor(army);
       return (
         <span className="flex items-center justify-end">
-          <Link
-            href={listViewUrl(army.id)}
-            className={buttonVariants({ variant: 'ghost', size: 'icon-touch' })}
-          >
-            <IconListDetails className="size-4" />
-            <span className="sr-only">
-              {table.options.meta?.t('viewList', { name: army.name })}
-            </span>
-          </Link>
+          {isViewableList(army) && (
+            <Link
+              href={listViewUrl(army.id)}
+              className={buttonVariants({
+                variant: 'ghost',
+                size: 'icon-touch',
+              })}
+            >
+              <IconListDetails className="size-4" />
+              <span className="sr-only">
+                {table.options.meta?.t('viewList', { name: army.name })}
+              </span>
+            </Link>
+          )}
           {actions && <SavedArmyActionsMenu name={army.name} {...actions} />}
         </span>
       );

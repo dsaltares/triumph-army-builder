@@ -5,6 +5,7 @@ import type { ArmyBundle } from '@/lib/data/bundle-source';
 import { readGameReference } from '@/lib/data/game-reference';
 import { summarisedIssues } from '@/lib/data/zod-issues';
 import { armyNameSchema } from '@/lib/domain/army/saved-army';
+import { isViewableList } from '@/lib/domain/army/selection-schema';
 import {
   decodeShareCode,
   shareCodeMaxChars,
@@ -90,6 +91,9 @@ export const armySheetResponse = async ({
     );
   }
   const { list } = decoded;
+  if (!isViewableList(list)) {
+    return plainText(w('unreadableCode'), 400);
+  }
   const module = gameModule(list.game);
   if (armyId !== undefined && module.armyListId(list.selection) !== armyId) {
     return plainText(w('wrongArmy'), 400);

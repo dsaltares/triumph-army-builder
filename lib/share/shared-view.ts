@@ -10,6 +10,7 @@ import { listCollectionEntries } from '../db/collection.ts';
 import { listArmyPins } from '../db/collection-pins.ts';
 import type { Database } from '../db/schema.ts';
 import { findShare, touchShare } from '../db/shares.ts';
+import { isViewableList } from '../domain/army/selection-schema.ts';
 import { decodeSelection } from '../domain/army/share-codec.ts';
 import { shareIdPattern } from '../domain/army/shared-list.ts';
 import {
@@ -81,7 +82,7 @@ export const loadSavedView = async ({
   isAnonymous,
 }: SavedViewRequest): Promise<SavedView | null> => {
   const found = await findArmy(db, { id, userId });
-  if (!found) {
+  if (!found || !isViewableList(found)) {
     return null;
   }
   const saved = await (await currentListDataVersions(db))(found);

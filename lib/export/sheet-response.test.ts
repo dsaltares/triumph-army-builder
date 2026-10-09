@@ -4,6 +4,7 @@ import { startBuilding } from '@/lib/domain/army/builder';
 import { type ArmySelection, withStands } from '@/lib/domain/army/selection';
 import {
   encodeSelection,
+  encodeShareCode,
   shareCodeMaxChars,
 } from '@/lib/domain/army/share-codec';
 import {
@@ -13,6 +14,7 @@ import {
 import { armyUrl, externalLinks, sharedListUrl } from '@/lib/navigation';
 import { sampleBundleHolding } from '@/test/bundle-source.ts';
 import { armyDetail } from '@/test/fixtures/army.ts';
+import { fantasySelection } from '@/test/fixtures/fantasy.ts';
 
 const siteUrl = 'https://triumph.example';
 const generatedAt = new Date('2026-09-20T00:00:00Z');
@@ -258,5 +260,16 @@ describe('the sheet of any list, by its code alone', () => {
     const response = await fetchListSheet(query({ ...filled, army: 'army-2' }));
 
     expect(response.status).toBe(404);
+  });
+
+  it('has no sheet yet for a Fantasy Triumph list', async () => {
+    const code = encodeShareCode({
+      game: 'fantasy',
+      selection: fantasySelection(),
+    });
+
+    const response = await fetchListSheet(`?s=${code}`);
+
+    expect(response.status).toBe(400);
   });
 });

@@ -9,10 +9,16 @@ import { startAnonymousSession, useSession } from '@/lib/auth/client';
 import {
   copyName,
   type SavedArmy,
+  storedSavedList,
   withArmyRemoved,
   withArmyUpserted,
 } from '@/lib/domain/army/saved-army';
-import type { ArmySelection } from '@/lib/domain/army/selection';
+import {
+  changedList,
+  type SavedSelection,
+  savedSelectionOf,
+  withGame,
+} from '@/lib/domain/army/selection-schema';
 import { recordListSaved } from '@/lib/install';
 import { routes } from '@/lib/navigation';
 import { useTRPC, useTRPCClient } from '@/lib/trpc/client';
@@ -24,20 +30,18 @@ type Rollback = { previous: SavedArmy[] | undefined };
 const pending = ({
   id,
   name,
-  selection,
+  list,
   at,
 }: {
   id: string;
   name: string;
-  selection: ArmySelection;
+  list: SavedSelection;
   at: string;
 }): SavedArmy => ({
   id,
   name,
-  game: 'triumph',
-  armyListId: selection.army,
-  dataVersion: selection.dataVersion,
-  selection,
+  ...storedSavedList(list),
+  dataVersion: list.selection.dataVersion,
   createdAt: at,
   updatedAt: at,
 });
@@ -90,14 +94,14 @@ export const useCreateArmy = () => {
   const auth = useTranslations('auth');
   const { data: session } = useSession();
   const options = trpc.army.create.mutationOptions({
-    onMutate: ({ name, selection }) =>
+    onMutate: (input) =>
       cache.apply((armies) =>
         withArmyUpserted(
           armies,
           pending({
             id: uuid(),
-            name,
-            selection,
+            name: input.name,
+            list: withGame(input),
             at: new Date().toISOString(),
           }),
         ),
@@ -136,19 +140,19 @@ export const useUpdateArmy = () => {
   const cache = useArmyListCache();
   return useMutation(
     trpc.army.update.mutationOptions({
-      onMutate: ({ id, name, selection }) =>
+      onMutate: (input) =>
         cache.apply((armies) => {
-          const army = armies.find((candidate) => candidate.id === id);
+          const army = armies.find((candidate) => candidate.id === input.id);
+          const list = changedList(input);
           return army
             ? withArmyUpserted(armies, {
                 ...army,
-                ...(name === undefined ? {} : { name }),
-                ...(selection === undefined
+                ...(input.name === undefined ? {} : { name: input.name }),
+                ...(list === undefined
                   ? {}
                   : {
-                      selection,
-                      armyListId: selection.army,
-                      dataVersion: selection.dataVersion,
+                      ...storedSavedList(list),
+                      dataVersion: list.selection.dataVersion,
                     }),
                 updatedAt: new Date().toISOString(),
               })
@@ -175,7 +179,7 @@ export const useDuplicateArmy = () => {
                 pending({
                   id: uuid(),
                   name: copyName(army.name),
-                  selection: army.selection,
+                  list: savedSelectionOf(army),
                   at: new Date().toISOString(),
                 }),
               )

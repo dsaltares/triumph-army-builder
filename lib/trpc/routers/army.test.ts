@@ -28,7 +28,9 @@ import {
   armyDetail,
   fixtureDataVersion,
   fixtureSelection,
+  triumphList,
 } from '@/test/fixtures/army.ts';
+import { fantasySelection, fantasyUnit } from '@/test/fixtures/fantasy.ts';
 import { absentPhotoStore } from '@/test/photo-store.ts';
 import { seedDataVersion } from '@/test/reference.ts';
 
@@ -83,8 +85,8 @@ afterEach(async () => {
   await db.destroy();
 });
 
-const create = (name: string, selection = fixtureSelection()) =>
-  signedIn().army.create({ name, selection });
+const create = async (name: string, selection = fixtureSelection()) =>
+  triumphList(await signedIn().army.create({ name, selection }));
 
 const names = (armies: readonly { name: string }[]) =>
   armies.map(({ name }) => name);
@@ -152,6 +154,37 @@ describe('army.create', () => {
           ...fixtureSelection(),
           dataVersion: 'yesterday',
         },
+      }),
+    ).rejects.toThrow();
+  });
+
+  it('saves a Fantasy Triumph list, which has no army list', async () => {
+    const selection = fantasySelection({
+      units: [fantasyUnit('wargs', 'JCV', { name: 'Warg riders', stands: 4 })],
+      general: 'wargs',
+    });
+
+    const army = await signedIn().army.create({
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection,
+    });
+
+    expect(army).toMatchObject({
+      name: 'Goblin raid',
+      game: 'fantasy',
+      armyListId: null,
+      dataVersion: selection.dataVersion,
+      selection,
+    });
+    expect(await signedIn().army.byId({ id: army.id })).toEqual(army);
+  });
+
+  it('refuses a Fantasy Triumph selection filed under Triumph!', async () => {
+    await expect(
+      signedIn().army.create({
+        name: 'Goblin raid',
+        selection: fantasySelection() as never,
       }),
     ).rejects.toThrow();
   });
@@ -244,6 +277,39 @@ describe('army.update', () => {
 
     expect(updated.selection).toEqual(selection);
     expect(updated.dataVersion).toBe('2026-09-19.beefcafe');
+  });
+
+  it('replaces a Fantasy Triumph selection, and renames the list without one', async () => {
+    const { id } = await signedIn().army.create({
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection: fantasySelection(),
+    });
+    const selection = fantasySelection({
+      units: [fantasyUnit('wargs', 'JCV', { stands: 4 })],
+    });
+
+    await signedIn().army.update({ id, game: 'fantasy', selection });
+    const renamed = await signedIn().army.update({ id, name: 'Warg raid' });
+
+    expect(renamed).toMatchObject({
+      name: 'Warg raid',
+      game: 'fantasy',
+      selection,
+    });
+  });
+
+  it('never turns a Triumph! list into a Fantasy Triumph one', async () => {
+    const { id } = await create('Cannae');
+
+    await expect(
+      signedIn().army.update({
+        id,
+        game: 'fantasy',
+        selection: fantasySelection(),
+      }),
+    ).rejects.toThrow('notYourList');
+    expect((await signedIn().army.byId({ id })).game).toBe('triumph');
   });
 
   it('moves the list to the top by bumping its updated time', async () => {
@@ -358,6 +424,23 @@ describe('army.duplicate', () => {
       'Cannae (copy)',
       'Cannae',
     ]);
+  });
+
+  it('copies a Fantasy Triumph list as a Fantasy Triumph list', async () => {
+    const original = await signedIn().army.create({
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection: fantasySelection(),
+    });
+
+    const copy = await signedIn().army.duplicate({ id: original.id });
+
+    expect(copy).toMatchObject({
+      name: 'Goblin raid (copy)',
+      game: 'fantasy',
+      armyListId: null,
+      selection: original.selection,
+    });
   });
 
   it('refuses to copy a list owned by somebody else', async () => {
@@ -774,7 +857,7 @@ describe('a list saved against older data its army has not changed in', () => {
 
   it('moves to the current version once it is saved as read', async () => {
     const { id } = await create('Cannae');
-    const { selection } = await signedIn().army.byId({ id });
+    const { selection } = triumphList(await signedIn().army.byId({ id }));
 
     await signedIn().army.update({ id, selection });
 

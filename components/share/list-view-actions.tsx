@@ -8,7 +8,7 @@ import { ListActionsMenu } from '@/components/builder/list-actions-menu';
 import { CollectionCoverage } from '@/components/collection/collection-coverage';
 import { HeaderActionLabel, iconOnlyBelowMd } from '@/components/header-action';
 import { buttonVariants } from '@/components/ui/button';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { ViewableSavedArmy } from '@/lib/domain/army/saved-army';
 import type { CollectionReading } from '@/lib/domain/army/shared-view';
 import type { ArmySheet } from '@/lib/domain/army/sheet';
 import { savedListUrl } from '@/lib/navigation';
@@ -18,7 +18,7 @@ export function ListViewActions({
   sheet,
   collection,
 }: {
-  list: SavedArmy;
+  list: ViewableSavedArmy;
   sheet: ArmySheet;
   collection: CollectionReading;
 }) {

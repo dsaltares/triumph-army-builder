@@ -10,7 +10,7 @@ import {
 } from 'react';
 import type { ArmyList } from '@/lib/domain/army/army-list';
 import type { PointCosts } from '@/lib/domain/army/points';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import type {
   TroopTypeFactors,
@@ -29,7 +29,7 @@ export type BuilderSnapshot = {
   names: TroopTypeNames;
   factors: TroopTypeFactors;
   movement: TroopTypeMovements;
-  saved: SavedArmy | null;
+  saved: TriumphSavedArmy | null;
 };
 
 type BuilderStateStore = {

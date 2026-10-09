@@ -34,7 +34,10 @@ import {
 } from '@/lib/domain/army/contingent-selection';
 import { generalChoice } from '@/lib/domain/army/general-selection';
 import { armyPoints, type PointCosts } from '@/lib/domain/army/points';
-import { defaultListName, type SavedArmy } from '@/lib/domain/army/saved-army';
+import {
+  defaultListName,
+  type TriumphSavedArmy,
+} from '@/lib/domain/army/saved-army';
 import {
   type ArmySelection,
   withAllyTroopOption,
@@ -65,7 +68,7 @@ export type BuilderData = {
 };
 
 export type ArmyBuilderViewProps = BuilderData & {
-  saved?: SavedArmy | null;
+  saved?: TriumphSavedArmy | null;
   draft?: ArmySelection | null;
 };
 

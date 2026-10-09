@@ -524,3 +524,12 @@ export const builderArmyDetail = (
     ],
     ...overrides,
   });
+
+export const triumphList = <List extends { game: string }>(
+  list: List,
+): Extract<List, { game: 'triumph' }> => {
+  if (list.game !== 'triumph') {
+    throw new Error(`expected a Triumph! list, got a ${list.game} one`);
+  }
+  return list as Extract<List, { game: 'triumph' }>;
+};

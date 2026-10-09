@@ -7,11 +7,14 @@ import {
   copyName,
   defaultListName,
   type SavedArmy,
+  type TriumphSavedArmy,
   withArmyRemoved,
   withArmyUpserted,
 } from './saved-army';
 
-const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
+const saved = (
+  overrides: Partial<TriumphSavedArmy> = {},
+): TriumphSavedArmy => ({
   id: 'army-1',
   game: 'triumph',
   name: 'Cannae',

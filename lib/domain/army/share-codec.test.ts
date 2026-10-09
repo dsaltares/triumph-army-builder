@@ -2,6 +2,11 @@ import { deflateSync, inflateSync } from 'fflate';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { type BattleCardCode, battleCardCodes } from '@/lib/data/schema.ts';
 import { armyDetail } from '@/test/fixtures/army.ts';
+import {
+  cards,
+  fantasySelection,
+  fantasyUnit,
+} from '@/test/fixtures/fantasy.ts';
 import { randomSequence } from '@/test/random.ts';
 import { sampleArmyLists } from '@/test/sample.ts';
 import {
@@ -329,6 +334,31 @@ describe('a code naming its game', () => {
     expect(
       decodeShareCode(encodeShareCode({ game: 'triumph', selection: full })),
     ).toEqual({ ok: true, list: { game: 'triumph', selection: full } });
+  });
+
+  it('round trips a Fantasy Triumph list with its game', () => {
+    const selection = fantasySelection({
+      units: [
+        fantasyUnit('wargs', 'JCV', {
+          name: 'Warg riders',
+          stands: 4,
+          cards: cards('fierce'),
+        }),
+      ],
+      general: 'wargs',
+    });
+
+    expect(
+      decodeShareCode(encodeShareCode({ game: 'fantasy', selection })),
+    ).toEqual({ ok: true, list: { game: 'fantasy', selection } });
+  });
+
+  it('leaves a Fantasy Triumph code to readers of that game', () => {
+    expect(
+      decodeSelection(
+        encodeShareCode({ game: 'fantasy', selection: fantasySelection() }),
+      ),
+    ).toEqual({ ok: false, reason: 'malformed' });
   });
 
   it('encodes a Triumph! list the same whether or not its game is named', () => {

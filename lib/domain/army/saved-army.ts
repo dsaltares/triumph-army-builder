@@ -1,6 +1,10 @@
 import { z } from 'zod';
-import type { SavableGame } from '../game.ts';
-import type { ArmySelection } from './selection.ts';
+import type { ViewableGame } from '../game.ts';
+import type {
+  FantasySavedSelection,
+  SavedSelection,
+  TriumphSavedSelection,
+} from './selection-schema.ts';
 
 export const armyNameMaxLength = 80;
 
@@ -16,16 +20,28 @@ export const armyNameFormSchema = z.object({ name: armyNameSchema });
 
 export type ArmyNameForm = z.infer<typeof armyNameFormSchema>;
 
-export type SavedArmy = {
+export type StoredSavedList =
+  | (TriumphSavedSelection & { armyListId: string })
+  | (FantasySavedSelection & { armyListId: null });
+
+export type SavedArmy = StoredSavedList & {
   id: string;
   name: string;
-  game: SavableGame;
-  armyListId: string;
   dataVersion: string;
-  selection: ArmySelection;
   createdAt: string;
   updatedAt: string;
 };
+
+export const storedSavedList = (list: SavedSelection): StoredSavedList =>
+  list.game === 'triumph'
+    ? { ...list, armyListId: list.selection.army }
+    : { ...list, armyListId: null };
+
+export type TriumphSavedArmy = Extract<SavedArmy, { game: 'triumph' }>;
+
+export type ViewableSavedArmy = Extract<SavedArmy, { game: ViewableGame }>;
+
+export type FantasySavedArmy = Extract<SavedArmy, { game: 'fantasy' }>;
 
 const copySuffix = ' (copy)';
 

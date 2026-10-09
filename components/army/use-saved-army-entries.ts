@@ -2,6 +2,7 @@
 
 import { skipToken, useQueries, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { useFantasyReference } from '@/components/fantasy/use-fantasy-reference';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
 import { buildArmyList } from '@/lib/domain/army/army-list';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
@@ -22,9 +23,21 @@ export const useSavedArmyEntries = (
   const trpc = useTRPC();
   const { reference } = useReference();
   const armyListIds = useMemo(
-    () => [...new Set(armies.map(({ armyListId }) => armyListId))].sort(),
+    () =>
+      [
+        ...new Set(
+          armies.flatMap(({ armyListId }) =>
+            armyListId === null ? [] : [armyListId],
+          ),
+        ),
+      ].sort(),
     [armies],
   );
+  const fantasy = useFantasyReference(
+    armies.some(({ game }) => game === 'fantasy'),
+  );
+  const fantasyReference =
+    fantasy.status === 'ready' ? fantasy.reference : null;
   const troopTypes = useQuery(
     trpc.reference.troopTypes.queryOptions(reference ?? skipToken, {
       staleTime: referenceStaleTime,
@@ -55,6 +68,18 @@ export const useSavedArmyEntries = (
   const entries = useMemo(
     () =>
       armies.map((army): SavedArmyEntry => {
+        if (army.game === 'fantasy') {
+          return fantasyReference
+            ? {
+                army,
+                ...savedListReading({
+                  game: army.game,
+                  selection: army.selection,
+                  reference: fantasyReference,
+                }),
+              }
+            : { army, listName: null, standing: null };
+        }
         const armyList = armyLists.get(army.armyListId);
         if (!armyList) {
           return { army, listName: null, standing: null };
@@ -64,20 +89,27 @@ export const useSavedArmyEntries = (
         }
         return {
           army,
-          ...savedListReading(army, {
-            armyList,
-            troopTypes: troopTypes.data,
-            battleCards: battleCards.data,
+          ...savedListReading({
+            game: army.game,
+            selection: army.selection,
+            reference: {
+              armyList,
+              troopTypes: troopTypes.data,
+              battleCards: battleCards.data,
+            },
           }),
         };
       }),
-    [armies, armyLists, troopTypes.data, battleCards.data],
+    [armies, armyLists, troopTypes.data, battleCards.data, fantasyReference],
   );
 
   return {
     entries,
     pricing:
       armies.length > 0 &&
-      (details.pending || troopTypes.isPending || battleCards.isPending),
+      (details.pending ||
+        troopTypes.isPending ||
+        battleCards.isPending ||
+        fantasy.status === 'loading'),
   };
 };

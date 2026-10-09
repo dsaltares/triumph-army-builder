@@ -21,7 +21,11 @@ import {
 import { encodeSelection } from '@/lib/domain/army/share-codec';
 import { serveApi } from '@/test/api';
 import { asSignedIn } from '@/test/auth-client';
-import { builderArmyDetail, fixtureDataVersion } from '@/test/fixtures/army';
+import {
+  builderArmyDetail,
+  fixtureDataVersion,
+  triumphList,
+} from '@/test/fixtures/army';
 import { router } from '@/test/next-navigation';
 import {
   sampleBattleCards,
@@ -123,7 +127,10 @@ const settlesTo = (text: string) =>
     timeout: autosaveQuietMs * 3,
   });
 
-const storedList = async () => (await listArmies(api.database(), owner))[0];
+const storedList = async () => {
+  const [list] = await listArmies(api.database(), owner);
+  return list && triumphList(list);
+};
 
 const listName = () => screen.getByRole('textbox', { name: 'List name' });
 

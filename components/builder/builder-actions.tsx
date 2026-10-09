@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import { armySheet } from '@/lib/domain/army/sheet';
 import { triumph } from '@/lib/domain/games/triumph';
 import { listViewUrl } from '@/lib/navigation';
@@ -125,13 +125,13 @@ function SavedListActions({
   saved,
 }: {
   snapshot: BuilderSnapshot;
-  saved: SavedArmy;
+  saved: TriumphSavedArmy;
 }) {
-  const autosave = useAutosave({
-    saved,
-    listName: snapshot.listName,
-    selection: snapshot.selection,
-  });
+  const list = useMemo(
+    () => ({ game: triumph.game, selection: snapshot.selection }),
+    [snapshot.selection],
+  );
+  const autosave = useAutosave({ saved, listName: snapshot.listName, list });
 
   return (
     <>
