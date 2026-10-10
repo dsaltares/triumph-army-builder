@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { type ReactNode, useId, useMemo, useState } from 'react';
+import { type ReactNode, useId, useMemo, useRef, useState } from 'react';
 import {
   Controller,
   type FieldErrors,
@@ -15,16 +15,21 @@ import { Stepper } from '@/components/builder/stepper';
 import { TagField } from '@/components/collection/tag-field';
 import { Notice } from '@/components/notice';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorMessage } from '@/components/use-error-message';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
-import { type TroopTypeCode, troopTypeCodes } from '@/lib/data/schema';
+import { games, type TroopTypeCode, troopTypeCodes } from '@/lib/data/schema';
+import { toggledValues } from '@/lib/domain/army-index';
 import {
+  type CollectionEntryKind,
   type CollectionStatus,
+  collectionEntryKinds,
   collectionStatuses,
+  defaultGamesOf,
 } from '@/lib/domain/collection/entry';
 import {
   type CollectionEntryForm,
@@ -42,6 +47,11 @@ export const blankEntry: CollectionEntryFormInput = {
   status: 'unpainted',
   notes: '',
 };
+
+export const kindLabels = {
+  stands: 'kindStands',
+  hero: 'hero',
+} as const satisfies Record<CollectionEntryKind, string>;
 
 const firstTagError = (errors: FieldErrors<CollectionEntryFormInput>) =>
   errors.tags?.message ??
@@ -100,6 +110,7 @@ export function EntryForm({
   photos?: ReactNode;
 }) {
   const t = useTranslations('collection');
+  const g = useTranslations('games');
   const describe = useErrorMessage();
   const troopTypeLabel = useTroopTypeLabel();
   const id = useId();
@@ -118,11 +129,34 @@ export function EntryForm({
     mode: 'onTouched',
   });
   const troopType = useWatch({ control, name: 'troopType' });
+  const kind = useWatch({ control, name: 'kind' }) ?? 'stands';
+  const hero = kind === 'hero';
+  const standsFields = useRef<Pick<
+    CollectionEntryFormInput,
+    'troopType' | 'games'
+  > | null>(null);
+  const changeKind = (next: CollectionEntryKind) => {
+    if (next === 'hero') {
+      standsFields.current = {
+        troopType: getValues('troopType'),
+        games: getValues('games'),
+      };
+      setValue('troopType', null);
+      setValue('games', undefined);
+    } else if (standsFields.current) {
+      setValue('troopType', standsFields.current.troopType);
+      setValue('games', standsFields.current.games);
+    } else {
+      setValue('games', undefined);
+    }
+    setValue('kind', next, { shouldValidate: true });
+  };
 
   const nameError = describe(errors.name?.message);
   const countError = describe(errors.count?.message);
   const troopTypeError = describe(errors.troopType?.message);
   const tagsError = describe(firstTagError(errors));
+  const gamesError = describe(errors.games?.message);
   const notesError = describe(errors.notes?.message);
 
   const save = handleSubmit(async (entry) => {
@@ -162,6 +196,25 @@ export function EntryForm({
         {photos}
 
         <div className="flex flex-col gap-2">
+          <span id={`${id}-kind`} className="text-xs font-medium">
+            {t('kind')}
+          </span>
+          <RadioGroup
+            aria-labelledby={`${id}-kind`}
+            className="flex flex-wrap gap-x-4 gap-y-0"
+            value={kind}
+            onValueChange={(next) => changeKind(next as CollectionEntryKind)}
+          >
+            {collectionEntryKinds.map((option) => (
+              <Label key={option} className="h-11 text-sm font-normal">
+                <RadioGroupItem value={option} />
+                {t(kindLabels[option])}
+              </Label>
+            ))}
+          </RadioGroup>
+        </div>
+
+        <div className="flex flex-col gap-2">
           <Label htmlFor={`${id}-count`}>{t('stands')}</Label>
           <Controller
             control={control}
@@ -187,36 +240,91 @@ export function EntryForm({
           <FieldMessage id={`${id}-count-message`} error={countError} />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Controller
-            control={control}
-            name="troopType"
-            render={({ field }) => (
-              <Autocomplete<TroopTypeCode>
-                id={`${id}-troop-type`}
-                label={t('fieldsAs')}
-                options={troopTypeCodes}
-                optionLabel={troopTypeLabel}
-                empty={t('troopTypesEmpty')}
-                value={field.value}
-                invalid={!!troopTypeError}
-                describedBy={describedBy(
-                  `${id}-troop-type-message`,
-                  troopTypeError,
+        {!hero && (
+          <div className="flex flex-col gap-2">
+            <Controller
+              control={control}
+              name="troopType"
+              render={({ field }) => (
+                <Autocomplete<TroopTypeCode>
+                  id={`${id}-troop-type`}
+                  label={t('fieldsAs')}
+                  options={troopTypeCodes}
+                  optionLabel={troopTypeLabel}
+                  empty={t('troopTypesEmpty')}
+                  value={field.value}
+                  invalid={!!troopTypeError}
+                  describedBy={describedBy(
+                    `${id}-troop-type-message`,
+                    troopTypeError,
+                  )}
+                  onValueChange={(code) => {
+                    field.onChange(code);
+                    field.onBlur();
+                  }}
+                  onBlur={field.onBlur}
+                />
+              )}
+            />
+            <FieldMessage
+              id={`${id}-troop-type-message`}
+              error={troopTypeError}
+            />
+          </div>
+        )}
+
+        <Controller
+          control={control}
+          name="games"
+          render={({ field }) => {
+            const chosen = field.value ?? defaultGamesOf(kind);
+            return (
+              <fieldset
+                className="flex min-w-0 flex-col gap-2"
+                aria-describedby={describedBy(
+                  `${id}-games-message`,
+                  gamesError ?? (hero ? t('heroGamesHint') : undefined),
                 )}
-                onValueChange={(code) => {
-                  field.onChange(code);
-                  field.onBlur();
-                }}
-                onBlur={field.onBlur}
-              />
-            )}
-          />
-          <FieldMessage
-            id={`${id}-troop-type-message`}
-            error={troopTypeError}
-          />
-        </div>
+              >
+                <legend className="mb-2 text-xs font-medium">
+                  {t('games')}
+                </legend>
+                <div className="flex flex-wrap gap-x-4 gap-y-0">
+                  {games.map((game) => (
+                    <Label
+                      key={game}
+                      htmlFor={`${id}-game-${game}`}
+                      className="h-11 text-sm font-normal"
+                    >
+                      <Checkbox
+                        id={`${id}-game-${game}`}
+                        checked={chosen.includes(game)}
+                        disabled={hero}
+                        onCheckedChange={() => {
+                          field.onChange(toggledValues(chosen, game));
+                          field.onBlur();
+                        }}
+                      />
+                      {g(game)}
+                    </Label>
+                  ))}
+                </div>
+                {gamesError ? (
+                  <FieldMessage id={`${id}-games-message`} error={gamesError} />
+                ) : (
+                  hero && (
+                    <p
+                      id={`${id}-games-message`}
+                      className="text-xs text-muted-foreground"
+                    >
+                      {t('heroGamesHint')}
+                    </p>
+                  )
+                )}
+              </fieldset>
+            );
+          }}
+        />
 
         <Controller
           control={control}

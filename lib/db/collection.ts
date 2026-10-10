@@ -1,18 +1,34 @@
 import type { Kysely } from 'kysely';
 import { z } from 'zod';
-import { troopTypeCodes } from '../data/schema.ts';
+import {
+  type Game,
+  games,
+  type TroopTypeCode,
+  troopTypeCodes,
+} from '../data/schema.ts';
 import {
   type CollectionEntry,
+  type CollectionEntryKind,
+  type CollectionStatus,
+  collectionEntryKinds,
   collectionStatuses,
+  defaultGamesOf,
+  heroGames,
 } from '../domain/collection/entry.ts';
 import type { CollectionEntryRow, Database } from './schema.ts';
 
 export type CollectionEntryOwner = { id: string; userId: string };
 
-export type CollectionEntryContent = Omit<
-  CollectionEntry,
-  'id' | 'createdAt' | 'updatedAt'
->;
+export type CollectionEntryContent = {
+  kind?: CollectionEntryKind | undefined;
+  name: string;
+  count: number;
+  troopType: TroopTypeCode | null;
+  tags: string[];
+  games?: Game[] | undefined;
+  status: CollectionStatus;
+  notes: string;
+};
 
 export type NewCollectionEntryRecord = CollectionEntryContent & {
   id: string;
@@ -26,37 +42,68 @@ export type CollectionEntryChanges = {
     | undefined;
 };
 
+const storedKindSchema = z.enum(collectionEntryKinds);
+
 const storedTroopTypeSchema = z.enum(troopTypeCodes);
 
 const storedTagsSchema = z.array(z.string());
 
 const storedStatusSchema = z.enum(collectionStatuses);
 
-export const toCollectionEntry = (
-  row: CollectionEntryRow,
-): CollectionEntry => ({
-  id: row.id,
-  name: row.name,
-  count: row.count,
-  troopType: storedTroopTypeSchema.parse(row.troop_type),
-  tags: storedTagsSchema.parse(JSON.parse(row.tags)),
-  status: storedStatusSchema.parse(row.status),
-  notes: row.notes,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-});
+const storedGamesSchema = z.array(z.enum(games)).min(1);
+
+export const toCollectionEntry = (row: CollectionEntryRow): CollectionEntry => {
+  const fields = {
+    id: row.id,
+    name: row.name,
+    count: row.count,
+    tags: storedTagsSchema.parse(JSON.parse(row.tags)),
+    games: storedGamesSchema.parse(JSON.parse(row.games)),
+    status: storedStatusSchema.parse(row.status),
+    notes: row.notes,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+  return storedKindSchema.parse(row.kind) === 'hero'
+    ? { ...fields, kind: 'hero' }
+    : {
+        ...fields,
+        kind: 'stands',
+        troopType: storedTroopTypeSchema.parse(row.troop_type),
+      };
+};
 
 const definedOnly = <Value extends object>(value: Value) =>
   Object.fromEntries(
     Object.entries(value).filter(([, field]) => field !== undefined),
   ) as Partial<Value>;
 
-const toColumns = ({ troopType, tags, ...rest }: CollectionEntryChanges) =>
-  definedOnly({
+const kindOf = ({ kind, troopType }: CollectionEntryChanges) =>
+  kind ?? (troopType ? 'stands' : undefined);
+
+const troopTypeOf = (changes: CollectionEntryChanges) =>
+  kindOf(changes) === 'hero' ? null : changes.troopType;
+
+const gamesOf = (changes: CollectionEntryChanges) =>
+  changes.games ?? (kindOf(changes) === 'hero' ? heroGames : undefined);
+
+const toColumns = (changes: CollectionEntryChanges) => {
+  const {
+    kind: _kind,
+    troopType: _troopType,
+    tags,
+    games: _games,
+    ...rest
+  } = changes;
+  const games = gamesOf(changes);
+  return definedOnly({
     ...rest,
-    troop_type: troopType,
+    kind: kindOf(changes),
+    troop_type: troopTypeOf(changes),
     tags: tags && JSON.stringify(tags),
+    games: games && JSON.stringify(games),
   });
+};
 
 export const listCollectionEntries = async (
   db: Kysely<Database>,
@@ -97,8 +144,10 @@ export const insertCollectionEntry = async (
         user_id: userId,
         name: content.name,
         count: content.count,
-        troop_type: content.troopType,
+        kind: content.kind ?? 'stands',
+        troop_type: troopTypeOf(content),
         tags: JSON.stringify(content.tags),
+        games: JSON.stringify(content.games ?? defaultGamesOf(content.kind)),
         status: content.status,
         notes: content.notes,
         created_at: at,

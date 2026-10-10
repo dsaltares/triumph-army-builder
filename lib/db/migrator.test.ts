@@ -173,7 +173,9 @@ describe('migrations', () => {
     expect(await columnNames('collection_entries')).toEqual([
       'count',
       'created_at',
+      'games',
       'id',
+      'kind',
       'name',
       'notes',
       'status',
@@ -282,6 +284,7 @@ describe('migrations', () => {
       '010-reference-data',
       '011-activity-events',
       '012-list-game',
+      '013-entry-kind-and-games',
     ]);
     expect(await migrateToLatest(db)).toEqual([]);
   });
@@ -289,6 +292,8 @@ describe('migrations', () => {
   it('rolls back one migration at a time', async () => {
     await migrateToLatest(db);
 
+    expect(await migrateDown(db)).toEqual(['013-entry-kind-and-games']);
+    expect(await columnNames('collection_entries')).not.toContain('kind');
     expect(await migrateDown(db)).toEqual(['012-list-game']);
     expect(await columnNames('armies')).not.toContain('game');
     expect(await migrateDown(db)).toEqual(['011-activity-events']);
@@ -323,6 +328,7 @@ describe('migrations', () => {
     await migrateDown(db);
     await migrateDown(db);
     await migrateDown(db);
+    await migrateDown(db);
 
     expect(await migrateToLatest(db)).toEqual([
       '001-initial-schema',
@@ -337,6 +343,7 @@ describe('migrations', () => {
       '010-reference-data',
       '011-activity-events',
       '012-list-game',
+      '013-entry-kind-and-games',
     ]);
     expect(await tableNames()).toHaveLength(13);
   });
@@ -384,6 +391,7 @@ describe('migrations', () => {
         '010-reference-data',
         '011-activity-events',
         '012-list-game',
+        '013-entry-kind-and-games',
       ]);
 
       expect(await troopTypeColumns()).toEqual([{ troop_type: 'HFT' }]);
@@ -591,6 +599,7 @@ describe('migrations', () => {
         await seedFromBeforeListGame();
         await migrateToLatest(db);
         await insertList(table, 'fantasy');
+        await migrateDownThrough('013-entry-kind-and-games');
 
         await expect(migrateDown(db)).rejects.toThrow(
           'restore the backup taken before the deploy',
@@ -598,6 +607,161 @@ describe('migrations', () => {
         expect(await columnNames(table)).toContain('game');
       },
     );
+  });
+
+  describe('letting an entry be a hero', () => {
+    const seedFromBeforeHeroEntries = async () => {
+      await migrateToLatest(db);
+      await migrateDownThrough('013-entry-kind-and-games');
+      await sql`insert into users (id, name, email) values ('user-1', 'Hannibal', 'hannibal@carthage.example')`.execute(
+        db,
+      );
+      await sql`insert into collection_entries (id, user_id, name, count, troop_type, tags, status, notes) values ('entry-1', 'user-1', 'Hoplites', 8, 'SPR', '[]', 'painted', '')`.execute(
+        db,
+      );
+    };
+
+    const insertEntry = (
+      kind: string,
+      troopType: string | null,
+      games = kind === 'hero' ? '["fantasy"]' : '["triumph"]',
+    ) =>
+      sql`insert into collection_entries (id, user_id, name, count, kind, troop_type, games, tags, status, notes) values ('entry-2', 'user-1', 'Hamilcar', 1, ${kind}, ${troopType}, ${games}, '[]', 'painted', '')`.execute(
+        db,
+      );
+
+    it('makes every entry from before it stands', async () => {
+      await seedFromBeforeHeroEntries();
+
+      expect(await migrateToLatest(db)).toEqual(['013-entry-kind-and-games']);
+
+      expect(
+        await db
+          .selectFrom('collection_entries')
+          .select(['kind', 'troop_type'])
+          .execute(),
+      ).toEqual([{ kind: 'stands', troop_type: 'SPR' }]);
+    });
+
+    it('still refuses stands without a troop type', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      await expect(insertEntry('stands', null)).rejects.toThrow(
+        'collection entry needs a troop type',
+      );
+      await expect(
+        db
+          .updateTable('collection_entries')
+          .set({ troop_type: null })
+          .execute(),
+      ).rejects.toThrow('collection entry needs a troop type');
+    });
+
+    it('takes a hero without a troop type, and never one with', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      await expect(insertEntry('hero', 'LH')).rejects.toThrow(
+        'a hero has no troop type',
+      );
+      await expect(
+        db.updateTable('collection_entries').set({ kind: 'hero' }).execute(),
+      ).rejects.toThrow('a hero has no troop type');
+      await expect(insertEntry('hero', null)).resolves.toBeDefined();
+      await expect(
+        db
+          .updateTable('collection_entries')
+          .set({ troop_type: 'LH' })
+          .where('id', '=', 'entry-2')
+          .execute(),
+      ).rejects.toThrow('a hero has no troop type');
+    });
+
+    it('gives every entry from before it Triumph! alone', async () => {
+      await seedFromBeforeHeroEntries();
+
+      await migrateToLatest(db);
+
+      expect(
+        await db.selectFrom('collection_entries').select('games').execute(),
+      ).toEqual([{ games: '["triumph"]' }]);
+    });
+
+    it('refuses an entry of no game, or of a game it does not know', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      for (const games of ['[]', '["warhammer"]', 'triumph']) {
+        await expect(insertEntry('stands', 'SPR', games)).rejects.toThrow(
+          'collection entry belongs to at least one game',
+        );
+      }
+      await expect(
+        insertEntry('stands', 'SPR', '["triumph","fantasy"]'),
+      ).resolves.toBeDefined();
+    });
+
+    it('keeps a hero to Fantasy Triumph alone', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      await expect(
+        insertEntry('hero', null, '["triumph","fantasy"]'),
+      ).rejects.toThrow('a hero belongs to Fantasy Triumph alone');
+      await insertEntry('hero', null);
+      await expect(
+        db
+          .updateTable('collection_entries')
+          .set({ games: '["triumph"]' })
+          .where('id', '=', 'entry-2')
+          .execute(),
+      ).rejects.toThrow('a hero belongs to Fantasy Triumph alone');
+    });
+
+    it('refuses to roll back once a stand belongs to another game', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+      await insertEntry('stands', 'SPR', '["fantasy"]');
+
+      await expect(migrateDown(db)).rejects.toThrow(
+        'restore the backup taken before the deploy',
+      );
+    });
+
+    it('refuses a kind it does not know', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      await expect(insertEntry('regiment', 'SPR')).rejects.toThrow(
+        'collection entry is stands or a hero',
+      );
+    });
+
+    it('restores the troop type as mandatory on the way down', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+
+      await migrateDown(db);
+
+      expect(await columnNames('collection_entries')).not.toContain('kind');
+      await expect(
+        sql`insert into collection_entries (id, user_id, name, count, troop_type, tags, status, notes) values ('entry-2', 'user-1', 'Hamilcar', 1, null, '[]', 'painted', '')`.execute(
+          db,
+        ),
+      ).rejects.toThrow('collection entry needs a troop type');
+    });
+
+    it('refuses to roll back once the collection holds a hero', async () => {
+      await seedFromBeforeHeroEntries();
+      await migrateToLatest(db);
+      await insertEntry('hero', null);
+
+      await expect(migrateDown(db)).rejects.toThrow(
+        'restore the backup taken before the deploy',
+      );
+      expect(await columnNames('collection_entries')).toContain('kind');
+    });
   });
 
   it('adds the indexes the query plans justify', async () => {

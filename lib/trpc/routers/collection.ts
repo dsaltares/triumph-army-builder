@@ -23,7 +23,10 @@ import {
   buildableListLimit,
   buildableLists,
 } from '../../domain/collection/buildable.ts';
-import { collectionEntryFormSchema } from '../../domain/collection/entry-schema.ts';
+import {
+  collectionEntryChangesSchema,
+  collectionEntryFormSchema,
+} from '../../domain/collection/entry-schema.ts';
 import { triumphRules } from '../../domain/games/triumph-rules.ts';
 import { locales } from '../../i18n/locales.ts';
 import { writeEvent } from '../events.ts';
@@ -125,7 +128,7 @@ export const collectionRouter = router({
     }),
 
   update: accountProcedure
-    .input(entryIdSchema.extend(collectionEntryFormSchema.partial().shape))
+    .input(collectionEntryChangesSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...changes } = input;
       const at = ctx.now();

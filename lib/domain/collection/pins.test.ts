@@ -50,6 +50,26 @@ describe('stalePins', () => {
     ).toEqual([levyOnSpear]);
   });
 
+  it('finds a pin to an entry that has become a hero', () => {
+    expect(
+      stalePins(
+        selection({ [spear]: { SPR: 2 } }),
+        [levyOnSpear],
+        [{ id: 'levy', kind: 'hero' }],
+      ),
+    ).toEqual([levyOnSpear]);
+  });
+
+  it('finds a pin to stands no longer kept for Triumph!', () => {
+    expect(
+      stalePins(
+        selection({ [spear]: { SPR: 2 } }),
+        [levyOnSpear],
+        [{ ...levy, games: ['fantasy'] }],
+      ),
+    ).toEqual([levyOnSpear]);
+  });
+
   it('finds a pin to an entry that no longer fields as that troop type', () => {
     expect(
       stalePins(

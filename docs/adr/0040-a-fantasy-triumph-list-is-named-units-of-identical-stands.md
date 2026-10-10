@@ -48,8 +48,12 @@ validator reports the total against the format, the stand minimum (one per six p
 cap (three heroes, eight points), card eligibility by troop type, order, movement and other cards,
 per-army card caps and the general's own exclusions, all as findings (ADR 0002).
 
-The collection learns about heroes: a collection entry is either **stands** of one troop type, as
-today, or a **hero**, with a count of figures and no troop type. Coverage of a Fantasy Triumph list
+The collection learns about heroes and games. A collection entry is either **stands** of one troop
+type, as today, or a **hero**: a stand of a figure with no troop type, added and counted like any
+other stand and told apart by a kind chosen on the same form. Every entry also belongs to a set of
+**games**; an entry from before this decision belongs to Triumph! alone, new stands default to
+Triumph! and may be kept for either game or both, and a hero belongs to Fantasy Triumph alone.
+Triumph! coverage, buildable armies and pins read only the stands that belong to Triumph!. Coverage of a Fantasy Triumph list
 raises one demand per unit, matched to stand entries of its troop type whose tags appear in the
 unit's name or tags, and one demand per hero, matched to hero entries whose tags appear in the
 hero's name or tags. Pins, statuses and the to-buy and to-paint totals work the same for both.
@@ -77,9 +81,13 @@ rules text is data in the game's pack section.
 - Mixed abilities mean two units, and the builder offers *split* rather than per-stand toggles.
 - A unit name and its tags travel in the share code and the sheet, so the share budget (ADR 0010)
   has to allow for a few hundred characters of names; the short link is unaffected.
-- The collection entry gains a kind: `collection_entries.troop_type` becomes nullable for hero
-  entries and the trigger from migration 009 only guards stand entries. The collection page gets
-  a hero entry form without a troop type picker. Buildable armies ignore hero entries.
+- The collection entry gains a kind and a list of games: `collection_entries.troop_type` becomes
+  nullable for hero entries, the trigger from migration 009 only guards stand entries, and new
+  triggers keep every entry in at least one game and a hero in Fantasy Triumph alone. The entry
+  form offers Stands or Hero and hides the troop type picker for a hero. Buildable armies ignore
+  hero entries and stands kept only for Fantasy Triumph.
+- Rolling the migration back would lose a hero or a game, so it refuses once any entry is
+  anything but Triumph! stands.
 - The sheet prints a stand's cost with its cards and the army-card lines separately, because
   victory counts the former and the total counts both.
 - Changing the points total re-prices nothing but moves the stand minimum, the hero cap stays

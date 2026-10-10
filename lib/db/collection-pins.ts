@@ -1,4 +1,4 @@
-import type { Kysely } from 'kysely';
+import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 import { troopTypeCodes } from '../data/schema.ts';
 import { troopOptionIdSchema } from '../domain/army/selection-schema.ts';
@@ -59,7 +59,11 @@ export const pinEntry = async (
         .where('armies.id', '=', armyId)
         .where('armies.user_id', '=', userId)
         .where('collection_entries.id', '=', entry)
-        .where('collection_entries.user_id', '=', userId),
+        .where('collection_entries.user_id', '=', userId)
+        .where('collection_entries.kind', '=', 'stands')
+        .where(
+          sql<boolean>`exists (select 1 from json_each(collection_entries.games) where value = 'triumph')`,
+        ),
     )
     .onConflict((conflict) =>
       conflict

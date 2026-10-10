@@ -16,8 +16,8 @@ import type { ArmyList } from '@/lib/domain/army/army-list';
 import type { PointCosts } from '@/lib/domain/army/points';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import {
+  type CollectedEntry,
   collectionReading,
-  type NamedCollectionEntry,
 } from '@/lib/domain/army/shared-view';
 import { armySheet } from '@/lib/domain/army/sheet';
 import type {
@@ -45,7 +45,7 @@ function DraftCoverage({
   names,
   factors,
   movement,
-}: CoverageSheetProps & { entries: readonly NamedCollectionEntry[] | null }) {
+}: CoverageSheetProps & { entries: readonly CollectedEntry[] | null }) {
   const collection = useMemo(
     () =>
       collectionReading(

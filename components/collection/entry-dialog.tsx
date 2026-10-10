@@ -18,6 +18,7 @@ import {
   useCreateEntry,
   useUpdateEntry,
 } from '@/components/collection/use-collection-entries';
+import type { NewEntry } from '@/components/collection/use-new-entry-param';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -26,23 +27,34 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { TroopTypeCode } from '@/lib/data/schema';
 import type { CollectionEntry } from '@/lib/domain/collection/entry';
+import type { CollectionEntryFormInput } from '@/lib/domain/collection/entry-schema';
 import { useTRPC } from '@/lib/trpc/client';
 
 export type EntryEditing =
   | { entry: CollectionEntry; failure?: unknown }
-  | { entry: null; troopType: TroopTypeCode | null }
+  | ({ entry: null } & NewEntry)
   | null;
 
-const formValues = ({
-  name,
-  count,
-  troopType,
-  tags,
-  status,
-  notes,
-}: CollectionEntry) => ({ name, count, troopType, tags, status, notes });
+const formValues = (entry: CollectionEntry): CollectionEntryFormInput => {
+  const { name, count, tags, games, status, notes } = entry;
+  return {
+    ...(entry.kind === 'hero'
+      ? { kind: 'hero', troopType: null }
+      : { troopType: entry.troopType }),
+    name,
+    count,
+    tags,
+    games,
+    status,
+    notes,
+  };
+};
+
+const newEntryValues = (draft: NewEntry): CollectionEntryFormInput =>
+  draft.kind === 'hero'
+    ? { ...blankEntry, kind: 'hero' }
+    : { ...blankEntry, troopType: draft.troopType };
 
 function Cancel() {
   const t = useTranslations('collection');
@@ -56,11 +68,11 @@ function Cancel() {
 }
 
 function AddEntry({
-  troopType,
+  draft,
   onDone,
   onUploadFailed,
 }: {
-  troopType: TroopTypeCode | null;
+  draft: NewEntry;
   onDone: () => void;
   onUploadFailed: (entry: CollectionEntry, failure: unknown) => void;
 }) {
@@ -93,7 +105,7 @@ function AddEntry({
 
   return (
     <EntryForm
-      values={{ ...blankEntry, troopType }}
+      values={newEntryValues(draft)}
       photos={
         <PendingPhotos
           photos={photos}
@@ -190,7 +202,6 @@ export function EntryDialog({
 }) {
   const t = useTranslations('collection');
   const entry = editing?.entry ?? null;
-  const troopType = editing && !editing.entry ? editing.troopType : null;
   return (
     <Dialog
       open={editing !== null}
@@ -207,17 +218,17 @@ export function EntryDialog({
           </DialogTitle>
         </DialogHeader>
         {editing &&
-          (entry ? (
+          (editing.entry ? (
             <EditEntry
-              key={entry.id}
-              entry={entry}
+              key={editing.entry.id}
+              entry={editing.entry}
               failure={'failure' in editing ? editing.failure : undefined}
               onDone={onClose}
               onDelete={onDelete}
             />
           ) : (
             <AddEntry
-              troopType={troopType}
+              draft={editing}
               onDone={onClose}
               onUploadFailed={(created, failure) =>
                 onEdit({ entry: created, failure })

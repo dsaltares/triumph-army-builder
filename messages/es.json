@@ -522,6 +522,7 @@
     "nameYourEntry": "Ponle nombre a la entrada para poder encontrarla después",
     "countAtLeastOne": "Una entrada tiene al menos una peana",
     "pickATroopType": "Elige el tipo de tropa como el que forman estas peanas",
+    "heroHasNoTroopType": "Un héroe no forma como ningún tipo de tropa · añádelo como peanas",
     "tagTooLong": "No pases de {max} caracteres en cada etiqueta",
     "tooManyTags": "No pases de {max} etiquetas · cuantas menos, mejor encajan",
     "notesTooLong": "No pases de {max} caracteres en las notas",
@@ -534,7 +535,9 @@
     "photoTooLarge": "Esa foto es demasiado grande · prueba con una de menos de 10 MB",
     "notFound": "Aquí no hay nada",
     "photoUploadFailed": "La foto no nos ha llegado · revisa la conexión y vuelve a intentarlo",
-    "pointsTotalPositive": "Dale a la lista un total de puntos mayor que cero"
+    "pointsTotalPositive": "Dale a la lista un total de puntos mayor que cero",
+    "heroIsFantasyOnly": "Un héroe solo pertenece a Fantasy Triumph",
+    "pickAGame": "Elige al menos un juego para estas peanas"
   },
   "share": {
     "copyFailed": "Este navegador no ha querido copiar el enlace. Selecciónalo tú.",
@@ -615,6 +618,11 @@
     "loadFailed": "Tu colección no se ha cargado",
     "totals": "{owned, plural, one {# peana} other {# peanas}} · {painted} pintadas · {toPaint} por pintar",
     "troopType": "Tipo de tropa",
+    "kind": "Clase",
+    "kindStands": "Peanas",
+    "hero": "Héroe",
+    "games": "Juegos",
+    "heroGamesHint": "Un héroe solo pertenece a Fantasy Triumph",
     "status": "Estado",
     "clearFilters": "Quitar los filtros",
     "noMatchesTitle": "Ninguna entrada coincide con esta búsqueda",
@@ -699,7 +707,7 @@
     "buildableShowEvery": "Mostrar todos los ejércitos",
     "buildableBattleCards": "{points} puntos en cartas de batalla",
     "filters": "Filtros",
-    "filtersDescription": "Acota tu colección por tipo de tropa, estado de pintura y etiqueta.",
+    "filtersDescription": "Acota tu colección por juego, clase, tipo de tropa, estado de pintura y etiqueta.",
     "showEntries": "{count, plural, one {Mostrar # entrada} other {Mostrar # entradas}}",
     "searchCollection": "Buscar en tu colección",
     "searchCollectionPlaceholder": "Busca por nombre, etiqueta o tipo de tropa",
@@ -913,6 +921,8 @@
     "filterArmiesInvasion": "Índice de invasión del ejército",
     "filterArmiesManoeuvre": "Índice de maniobra del ejército",
     "filterCollectionTroopType": "Tipo de tropa de la colección",
+    "filterCollectionKind": "Clase de la colección",
+    "filterCollectionGame": "Juego de la colección",
     "filterCollectionStatus": "Estado de la colección",
     "filterMyArmiesGame": "Juego de una lista guardada"
   },

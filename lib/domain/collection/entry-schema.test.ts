@@ -75,6 +75,55 @@ describe('collectionEntryFormSchema', () => {
     ).toBe(true);
   });
 
+  it('takes stands when the kind is left out', () => {
+    expect(
+      collectionEntryFormSchema.parse({ ...phalangites, kind: 'stands' }),
+    ).toEqual({ ...phalangites, kind: 'stands' });
+    expect(refusal({ kind: 'stands', troopType: null })).toEqual([
+      'pickATroopType',
+    ]);
+  });
+
+  it('accepts a hero with no troop type', () => {
+    const hero = { ...phalangites, kind: 'hero', troopType: null };
+
+    expect(collectionEntryFormSchema.parse(hero)).toEqual(hero);
+  });
+
+  it('refuses a hero that fields as a troop type', () => {
+    expect(refusal({ kind: 'hero' })).toEqual(['heroHasNoTroopType']);
+  });
+
+  it('keeps the games in their own order, once each', () => {
+    expect(
+      collectionEntryFormSchema.parse({
+        ...phalangites,
+        games: ['fantasy', 'triumph', 'fantasy'],
+      }).games,
+    ).toEqual(['triumph', 'fantasy']);
+  });
+
+  it('refuses stands of no game', () => {
+    expect(refusal({ games: [] })).toEqual(['pickAGame']);
+  });
+
+  it('refuses a hero of any game but Fantasy Triumph', () => {
+    expect(
+      refusal({ kind: 'hero', troopType: null, games: ['triumph', 'fantasy'] }),
+    ).toEqual(['heroIsFantasyOnly']);
+  });
+
+  it('says what else is missing beside the troop type', () => {
+    expect(refusal({ name: '', troopType: null })).toEqual([
+      'nameYourEntry',
+      'pickATroopType',
+    ]);
+  });
+
+  it('refuses a kind it does not know', () => {
+    expect(refusal({ kind: 'regiment' })).toHaveLength(1);
+  });
+
   it('refuses a troop type code the game does not have', () => {
     expect(
       collectionEntryFormSchema
