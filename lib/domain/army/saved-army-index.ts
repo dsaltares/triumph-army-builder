@@ -22,11 +22,6 @@ export type SavedArmyEntry = {
   standing: SavedArmyStanding | null;
 };
 
-export type SavedListReading = {
-  listName: string;
-  standing: SavedArmyStanding;
-};
-
 export type ReadableList =
   | { game: 'triumph'; selection: ArmySelection; reference: TriumphReference }
   | {
@@ -41,32 +36,28 @@ type ReadingModule<Selection, Reference> = {
     selection: Selection,
     reference: Reference,
   ) => FindingReport<SeverityFinding>;
-  subjectName: (reference: Reference) => string;
 };
 
-const reading = <Selection, Reference>(
+const standing = <Selection, Reference>(
   module: ReadingModule<Selection, Reference>,
   selection: Selection,
   reference: Reference,
-): SavedListReading => {
+): SavedArmyStanding => {
   const { legal, errors, warnings } = module.validate(selection, reference);
   return {
-    listName: module.subjectName(reference),
-    standing: {
-      meter: module.points(selection, reference),
-      legal,
-      errors,
-      warnings,
-    },
+    meter: module.points(selection, reference),
+    legal,
+    errors,
+    warnings,
   };
 };
 
-export const savedListReading = (list: ReadableList): SavedListReading => {
+export const savedListStanding = (list: ReadableList): SavedArmyStanding => {
   switch (list.game) {
     case 'triumph':
-      return reading(triumph, list.selection, list.reference);
+      return standing(triumph, list.selection, list.reference);
     case 'fantasy':
-      return reading(fantasy, list.selection, list.reference);
+      return standing(fantasy, list.selection, list.reference);
   }
 };
 
