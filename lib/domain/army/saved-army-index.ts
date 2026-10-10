@@ -1,5 +1,4 @@
 import type { FindingReport, SeverityFinding } from '../findings.ts';
-import type { Game } from '../game.ts';
 import { fantasy } from '../games/fantasy.ts';
 import type { GameData } from '../games/registry.ts';
 import { triumph } from '../games/triumph.ts';
@@ -56,12 +55,9 @@ export const savedListStanding = (list: ReadableList): SavedArmyStanding => {
 export const searchSavedArmies = (
   entries: readonly SavedArmyEntry[],
   search: string,
-  games: readonly Game[] = [],
 ): SavedArmyEntry[] => {
   const terms = searchTerms(search);
-  return entries.filter(
-    ({ army, listName }) =>
-      (games.length === 0 || games.includes(army.game)) &&
-      matchesAllTerms([army.name, listName], terms),
+  return entries.filter(({ listName, army }) =>
+    matchesAllTerms([army.name, listName], terms),
   );
 };

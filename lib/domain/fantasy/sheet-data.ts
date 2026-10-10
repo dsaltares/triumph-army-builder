@@ -5,6 +5,7 @@ import type {
 } from '../../data/schema.ts';
 import type { NamedSelection } from '../game.ts';
 import { sum } from '../numbers.ts';
+import type { CombatFactors } from '../troop-types.ts';
 import {
   fantasyCardName,
   fantasyTroopTypeNames,
@@ -41,6 +42,8 @@ export type FantasySheetUnit = {
   transports: number;
   pointsPerStand: number;
   points: number;
+  movement: number | null;
+  factors: CombatFactors | null;
 };
 
 export type FantasySheetHero = {
@@ -181,6 +184,7 @@ export const fantasySheet = (
     },
     units: selection.units.map((unit, index) => {
       const priced = points.units[index];
+      const troopType = catalogue.troopTypes.get(unit.troopType);
       return {
         id: unit.id,
         name: unitName(unit, names),
@@ -195,6 +199,8 @@ export const fantasySheet = (
         transports: Math.min(unit.marks.transports, unit.stands),
         pointsPerStand: priced?.pointsPerStand ?? 0,
         points: priced?.points ?? 0,
+        movement: troopType?.movement ?? null,
+        factors: troopType?.combatFactors ?? null,
       };
     }),
     heroes: selection.heroes.map((hero, index) => {

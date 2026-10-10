@@ -18,7 +18,6 @@ import {
 } from '@/components/army/use-saved-armies';
 import { useSavedArmyEntries } from '@/components/army/use-saved-army-entries';
 import { useSavedArmyTableState } from '@/components/army/use-saved-army-table-state';
-import { ChipGroup } from '@/components/chip-group';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
 import { useSheetExport } from '@/components/export/use-sheet-export';
 import { LoadFailure } from '@/components/load-failure';
@@ -33,7 +32,6 @@ import { isSignedIn } from '@/lib/auth/session';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import { searchSavedArmies } from '@/lib/domain/army/saved-army-index';
 import { savedSelectionOf } from '@/lib/domain/army/selection-schema';
-import { savableGames } from '@/lib/domain/game';
 import { describeError } from '@/lib/errors';
 import { routes } from '@/lib/navigation';
 
@@ -49,19 +47,11 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
   const { data: session } = useSession();
   const armies = useSavedArmies();
   const dataVersion = useCurrentDataVersion();
-  const g = useTranslations('games');
-  const {
-    search,
-    setSearch,
-    games: chosenGames,
-    setGames,
-    sorting,
-    setSorting,
-  } = useSavedArmyTableState();
+  const { search, setSearch, sorting, setSorting } = useSavedArmyTableState();
   const { entries, pricing } = useSavedArmyEntries(armies.data ?? noArmies);
   const matches = useMemo(
-    () => searchSavedArmies(entries, search, chosenGames),
-    [entries, search, chosenGames],
+    () => searchSavedArmies(entries, search),
+    [entries, search],
   );
   const rename = useUpdateArmy();
   const duplicate = useDuplicateArmy();
@@ -129,20 +119,6 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
         onChange={setSearch}
       />
 
-      <ChipGroup
-        label={t('gameFilter')}
-        options={savableGames}
-        selected={chosenGames}
-        onToggle={(game) =>
-          setGames(
-            chosenGames.includes(game)
-              ? chosenGames.filter((chosen) => chosen !== game)
-              : [...chosenGames, game],
-          )
-        }
-        labelFor={(game) => g(game)}
-      />
-
       {matches.length === 0 ? (
         <EmptyState
           title={t('noListMatches')}
@@ -150,22 +126,13 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
             <Button
               variant="outline"
               size="touch"
-              onClick={() => {
-                setSearch('');
-                setGames([]);
-              }}
+              onClick={() => setSearch('')}
             >
-              {chosenGames.length > 0
-                ? t('clearSearchAndFilters')
-                : t('clearSearch')}
+              {t('clearSearch')}
             </Button>
           }
         >
-          <EmptyStateText>
-            {chosenGames.length > 0
-              ? t('noSavedFilterMatchesBody')
-              : t('noSavedMatchesBody')}
-          </EmptyStateText>
+          <EmptyStateText>{t('noSavedMatchesBody')}</EmptyStateText>
         </EmptyState>
       ) : (
         <SavedArmiesTable

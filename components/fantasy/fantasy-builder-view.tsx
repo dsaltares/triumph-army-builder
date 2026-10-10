@@ -10,8 +10,14 @@ import {
 import { ArmyCardsSection } from '@/components/fantasy/army-cards-section';
 import { fantasyAnchors } from '@/components/fantasy/fantasy-anchors';
 import { usePublishFantasySnapshot } from '@/components/fantasy/fantasy-builder-state';
-import { FormatSection } from '@/components/fantasy/format-section';
-import { GeneralSection } from '@/components/fantasy/general-section';
+import {
+  FormatSection,
+  PointsTotalField,
+} from '@/components/fantasy/format-section';
+import {
+  GeneralChip,
+  GeneralSection,
+} from '@/components/fantasy/general-section';
 import { HeroesSection, heroName } from '@/components/fantasy/heroes-section';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
 import { UnitsSection } from '@/components/fantasy/units-section';
@@ -24,6 +30,7 @@ import { fantasyTagWords } from '@/lib/domain/collection/fantasy-coverage';
 import {
   startFantasyList,
   topographyPricedCards,
+  withFormat,
 } from '@/lib/domain/fantasy/builder';
 import {
   fantasyCardName,
@@ -134,12 +141,23 @@ export function FantasyBuilderView({
           victory: formatPoints(points.victoryValue),
           army: formatPoints(points.linePoints),
         })}
-        trailing={
-          <FindingsBadge
-            report={report}
-            anchors={anchors}
-            presenter={presenter}
+        capField={
+          <PointsTotalField
+            pointsTotal={selection.format.pointsTotal}
+            onChange={(pointsTotal) =>
+              onEdit((current) => withFormat(current, { pointsTotal }))
+            }
           />
+        }
+        trailing={
+          <>
+            <GeneralChip selection={selection} names={names} onEdit={onEdit} />
+            <FindingsBadge
+              report={report}
+              anchors={anchors}
+              presenter={presenter}
+            />
+          </>
         }
       />
       <FormatSection

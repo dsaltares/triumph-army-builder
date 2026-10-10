@@ -9,6 +9,7 @@ import {
   cardText,
   type FantasyTextWords,
 } from '../domain/fantasy/text-export.ts';
+import type { CombatFactors } from '../domain/troop-types.ts';
 import {
   formatPoints,
   formatPointsWithUnit,
@@ -18,6 +19,34 @@ import {
 import type { Locale } from '../i18n/locales.ts';
 import { type Words, wordsFor } from '../i18n/translator.ts';
 import { noValue } from './sheet-layout.ts';
+
+const factorOf =
+  (pick: (factors: CombatFactors) => number) => (unit: FantasySheetUnit) =>
+    unit.factors ? pick(unit.factors) : null;
+
+export const fantasyFactorColumns = [
+  { key: 'move', value: (unit: FantasySheetUnit) => unit.movement },
+  { key: 'vFoot', value: factorOf(({ closeCombat }) => closeCombat.vsFoot) },
+  {
+    key: 'vMounted',
+    value: factorOf(({ closeCombat }) => closeCombat.vsMounted),
+  },
+  {
+    key: 'shoot',
+    value: factorOf(({ rangedCombat }) => rangedCombat.shooting),
+  },
+  { key: 'shotAt', value: factorOf(({ rangedCombat }) => rangedCombat.shotAt) },
+] as const;
+
+export type FantasyFactorColumn = (typeof fantasyFactorColumns)[number];
+
+export const factorCell = (
+  { value }: FantasyFactorColumn,
+  unit: FantasySheetUnit,
+) => {
+  const factor = value(unit);
+  return factor === null ? noValue : `${factor}`;
+};
 
 const fantasyFactKeys = [
   'pointsTotal',

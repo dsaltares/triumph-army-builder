@@ -2,19 +2,17 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
+import { Autocomplete } from '@/components/autocomplete';
 import { findingAnchorClass } from '@/components/builder/finding-anchor';
 import { Stepper } from '@/components/builder/stepper';
-import { ChipGroup } from '@/components/chip-group';
 import { formatAnchor } from '@/components/fantasy/fantasy-anchors';
 import { usePointsWords } from '@/components/fantasy/points-words';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
 import { Section } from '@/components/layout/section';
-import { Notice } from '@/components/notice';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useErrorMessage } from '@/components/use-error-message';
-import { fantasyTopographies } from '@/lib/data/schema';
+import { type FantasyTopography, fantasyTopographies } from '@/lib/data/schema';
 import type { FantasyFormat } from '@/lib/domain/fantasy/battle-cards';
 import {
   type FantasyRating,
@@ -30,7 +28,7 @@ const ratingOf = (rating: number): FantasyRating =>
 
 const highestRating = fantasyRatings[fantasyRatings.length - 1] ?? 0;
 
-function PointsTotalField({
+export function PointsTotalField({
   pointsTotal,
   onChange,
 }: {
@@ -51,18 +49,17 @@ function PointsTotalField({
   const valid = Number(typed) > 0 && Number.isFinite(Number(typed));
 
   return (
-    <div className="flex flex-col gap-1">
-      <Label htmlFor={id}>{t('pointsTotal')}</Label>
+    <>
       <Input
-        id={id}
         type="number"
         inputMode="decimal"
         min={1}
         step={1}
         value={typed}
+        aria-label={t('pointsTotal')}
         aria-invalid={!valid}
         aria-describedby={valid ? undefined : `${id}-message`}
-        className="h-11 w-28 tabular-nums sm:h-9"
+        className="h-9 w-16 px-2 text-sm tabular-nums sm:h-7"
         onChange={(event) => {
           setTyped(event.target.value);
           const next = Number(event.target.value);
@@ -73,9 +70,11 @@ function PointsTotalField({
         onBlur={() => setTyped(String(pointsTotal))}
       />
       {!valid && (
-        <Notice id={`${id}-message`}>{describe('pointsTotalPositive')}</Notice>
+        <span id={`${id}-message`} className="sr-only">
+          {describe('pointsTotalPositive')}
+        </span>
       )}
-    </div>
+    </>
   );
 }
 
@@ -127,6 +126,7 @@ export function FormatSection({
   onEdit: SelectionEdit;
 }) {
   const t = useTranslations('fantasyBuilder');
+  const id = useId();
   const change = (next: Partial<FantasyListFormat>) =>
     onEdit((selection) => withFormat(selection, next));
   const dense = packFormat.denseTopographies.includes(format.topography);
@@ -143,16 +143,18 @@ export function FormatSection({
     >
       <Card size="sm">
         <CardContent className="flex flex-col gap-4">
-          <PointsTotalField
-            pointsTotal={format.pointsTotal}
-            onChange={(pointsTotal) => change({ pointsTotal })}
-          />
-          <ChipGroup
-            label={t('homeTopography')}
-            options={fantasyTopographies}
-            selected={[format.topography]}
-            onToggle={(topography) => change({ topography })}
-          />
+          <div className="flex max-w-xs flex-col gap-2">
+            <Autocomplete<FantasyTopography>
+              id={`${id}-topography`}
+              label={t('homeTopography')}
+              options={fantasyTopographies}
+              empty={t('noTopographies')}
+              value={format.topography}
+              onValueChange={(topography) =>
+                topography && change({ topography })
+              }
+            />
+          </div>
           {cards !== '' && (
             <p className="text-xs text-pretty text-muted-foreground">
               {dense

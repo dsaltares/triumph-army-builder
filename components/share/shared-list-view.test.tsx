@@ -460,6 +460,24 @@ describe('SharedListView of a Fantasy Triumph list', () => {
     expect(units.getByText('Delayed entry: 1 stand')).toBeVisible();
   });
 
+  it("gives each unit its troop type's movement and combat factors, after its points", () => {
+    showFantasy();
+
+    const row = section('Units')
+      .getAllByRole('row')
+      .find((candidate) =>
+        within(candidate).queryByRole('rowheader', { name: /Warg riders/ }),
+      );
+    if (!row) {
+      throw new Error('the Warg riders have no row');
+    }
+    expect(
+      within(row)
+        .getAllByRole('cell')
+        .map((cell) => cell.textContent),
+    ).toEqual(['4', '3½', '14', '8', '3', '2', '0', '2']);
+  });
+
   it('numbers a nameless hero, and prints the army cards with who bears them', () => {
     showFantasy();
 

@@ -1,7 +1,9 @@
 'use client';
 
 import { IconPlus } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { SearchField } from '@/components/search-field';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { matchesAllTerms, searchTerms } from '@/lib/domain/text-search';
 
 export type PickerOption<Value extends string> = {
   value: Value;
@@ -21,6 +24,19 @@ export type PickerOption<Value extends string> = {
 export type PickerGroup<Value extends string> = {
   heading: string;
   options: readonly PickerOption<Value>[];
+};
+
+const matchingGroups = <Value extends string>(
+  groups: readonly PickerGroup<Value>[],
+  search: string,
+) => {
+  const terms = searchTerms(search);
+  return groups
+    .map(({ heading, options }) => ({
+      heading,
+      options: options.filter(({ label }) => matchesAllTerms([label], terms)),
+    }))
+    .filter(({ options }) => options.length > 0);
 };
 
 export function PickerDialog<Value extends string>({
@@ -40,11 +56,21 @@ export function PickerDialog<Value extends string>({
   disabled?: boolean;
   onPick: (value: Value) => void;
 }) {
+  const t = useTranslations('fantasyBuilder');
   const [open, setOpen] = useState(false);
-  const shown = groups.filter(({ options }) => options.length > 0);
+  const [search, setSearch] = useState('');
+  const offered = groups.some(({ options }) => options.length > 0);
+  const shown = matchingGroups(groups, search);
+
+  const changeOpen = (next: boolean) => {
+    setOpen(next);
+    if (!next) {
+      setSearch('');
+    }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={changeOpen}>
       <DialogTrigger
         render={
           <Button
@@ -63,8 +89,18 @@ export function PickerDialog<Value extends string>({
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {shown.length === 0 ? (
+        {offered && (
+          <SearchField
+            label={t('searchCards')}
+            placeholder={t('searchCardsPlaceholder')}
+            value={search}
+            onChange={setSearch}
+          />
+        )}
+        {!offered ? (
           <p className="text-sm text-muted-foreground">{empty}</p>
+        ) : shown.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t('noCardMatches')}</p>
         ) : (
           <div className="-mx-2 flex max-h-[60dvh] flex-col gap-3 overflow-y-auto overscroll-contain">
             {shown.map(({ heading, options }) => (
@@ -83,7 +119,7 @@ export function PickerDialog<Value extends string>({
                         type="button"
                         onClick={() => {
                           onPick(value);
-                          setOpen(false);
+                          changeOpen(false);
                         }}
                         className="flex min-h-11 w-full items-baseline justify-between gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                       >

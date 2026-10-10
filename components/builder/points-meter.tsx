@@ -53,10 +53,12 @@ export function PointsMeterBar({
   meter,
   subtotals,
   trailing,
+  capField,
 }: {
   meter: PointsMeter;
   subtotals?: string;
   trailing?: ReactNode;
+  capField?: ReactNode;
 }) {
   const t = useTranslations('builder');
   const { total, cap, status, filled } = meter;
@@ -71,9 +73,15 @@ export function PointsMeterBar({
           <span className="font-heading text-2xl font-semibold tabular-nums">
             {formatPoints(total)}
           </span>
-          <span className="text-sm text-muted-foreground tabular-nums">
-            / {cap}
-          </span>
+          {capField ? (
+            <span className="flex items-baseline gap-1 text-sm text-muted-foreground">
+              /{capField}
+            </span>
+          ) : (
+            <span className="text-sm text-muted-foreground tabular-nums">
+              / {cap}
+            </span>
+          )}
           <span className="text-xs text-muted-foreground">points</span>
         </p>
         <span

@@ -67,7 +67,7 @@ describe('fantasySheet', () => {
     });
   });
 
-  it('prints each unit under its name or its Fantasy troop type name, with the general marked', () => {
+  it('prints each unit under its name or its Fantasy troop type name, with the stats of its troop type and the general marked', () => {
     const { units } = fantasySheet(
       { name: 'Goblin host', selection: goblins },
       reference,
@@ -95,6 +95,11 @@ describe('fantasySheet', () => {
         transports: 0,
         pointsPerStand: 4,
         points: 16,
+        movement: 8,
+        factors: {
+          closeCombat: { vsFoot: 3, vsMounted: 2 },
+          rangedCombat: { shooting: 0, shotAt: 2 },
+        },
       },
       {
         id: 'archers',
@@ -115,6 +120,11 @@ describe('fantasySheet', () => {
         transports: 0,
         pointsPerStand: 5,
         points: 15,
+        movement: 3,
+        factors: {
+          closeCombat: { vsFoot: 2, vsMounted: 4 },
+          rangedCombat: { shooting: 3, shotAt: 3 },
+        },
       },
     ]);
   });

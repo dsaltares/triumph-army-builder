@@ -6,6 +6,13 @@ import {
   FantasyListFindingsBadge,
   FantasyListFindingsPanel,
 } from '@/components/fantasy/fantasy-list-findings';
+import {
+  FrozenTable,
+  FrozenTableCell,
+  FrozenTableGroup,
+  FrozenTableRow,
+  FrozenTableRowHeading,
+} from '@/components/frozen-table';
 import { Section } from '@/components/layout/section';
 import {
   StackedTable,
@@ -25,14 +32,13 @@ import {
   armyLineName,
   armyLinePoints,
   cardsText,
+  factorCell,
+  fantasyFactorColumns,
   fantasyFacts,
   fantasySheetWords,
   unitMarks,
 } from '@/lib/export/fantasy-sheet-layout';
 import { formatPoints } from '@/lib/format';
-
-const unitColumns =
-  'grid gap-x-4 gap-y-1 px-3 py-3 sm:grid-cols-[minmax(10rem,2fr)_4.5rem_4.5rem_4.5rem]';
 
 const pointsColumns =
   'grid gap-x-4 gap-y-1 px-3 py-3 sm:grid-cols-[minmax(10rem,2fr)_4.5rem]';
@@ -51,9 +57,9 @@ function UnitRow({ unit }: { unit: FantasySheetUnit }) {
   const w = useFantasySheetWords();
   const locale = useLocale();
   return (
-    <StackedTableRow>
-      <dl className={unitColumns}>
-        <StackedTableField label={w('unit')}>
+    <FrozenTableGroup>
+      <FrozenTableRow>
+        <FrozenTableRowHeading>
           <span className="flex flex-wrap items-center gap-2">
             <span className={unit.general ? 'font-semibold' : 'font-medium'}>
               {unit.name}
@@ -67,20 +73,17 @@ function UnitRow({ unit }: { unit: FantasySheetUnit }) {
               ...unitMarks(unit, w, locale),
             ]}
           />
-        </StackedTableField>
-        <StackedTableField label={w('stands')}>
-          <span className="tabular-nums">{unit.stands}</span>
-        </StackedTableField>
-        <StackedTableField label={w('pointsPerStand')}>
-          <span className="tabular-nums">
-            {formatPoints(unit.pointsPerStand)}
-          </span>
-        </StackedTableField>
-        <StackedTableField label={w('points')}>
-          <span className="tabular-nums">{formatPoints(unit.points)}</span>
-        </StackedTableField>
-      </dl>
-    </StackedTableRow>
+        </FrozenTableRowHeading>
+        <FrozenTableCell>{unit.stands}</FrozenTableCell>
+        <FrozenTableCell>{formatPoints(unit.pointsPerStand)}</FrozenTableCell>
+        <FrozenTableCell>{formatPoints(unit.points)}</FrozenTableCell>
+        {fantasyFactorColumns.map((column) => (
+          <FrozenTableCell key={column.key}>
+            {factorCell(column, unit)}
+          </FrozenTableCell>
+        ))}
+      </FrozenTableRow>
+    </FrozenTableGroup>
   );
 }
 
@@ -208,15 +211,26 @@ export function FantasyListView({
         </CardContent>
       </Card>
 
-      <SheetSection
-        title={w('units')}
-        rows={sheet.units}
-        empty={w('noUnits')}
-        columns={unitColumns}
-        headings={[w('unit'), w('stands'), w('pointsPerStand'), w('points')]}
-      >
-        {(unit) => <UnitRow key={unit.id} unit={unit} />}
-      </SheetSection>
+      <Section title={w('units')}>
+        {sheet.units.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{w('noUnits')}</p>
+        ) : (
+          <FrozenTable
+            label={w('units')}
+            headings={[
+              w('unit'),
+              w('stands'),
+              w('pointsPerStand'),
+              w('points'),
+              ...fantasyFactorColumns.map(({ key }) => w(key)),
+            ]}
+          >
+            {sheet.units.map((unit) => (
+              <UnitRow key={unit.id} unit={unit} />
+            ))}
+          </FrozenTable>
+        )}
+      </Section>
 
       <SheetSection
         title={w('heroes')}
