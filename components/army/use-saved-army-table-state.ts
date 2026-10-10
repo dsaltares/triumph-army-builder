@@ -13,6 +13,7 @@ import { addedFilterValues } from '@/lib/domain/usage/tracked';
 
 export const savedArmyColumns = [
   'name',
+  'game',
   'army',
   'points',
   'status',

@@ -218,6 +218,26 @@ describe('MyArmies', () => {
     expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toContain('dir=asc');
   });
 
+  it('sorts by game from the url, and keeps a new choice there', async () => {
+    await save('Cannae', 10);
+    const onUrlUpdate = vi.fn();
+    const { user } = open({
+      searchParams: '?sort=game&dir=desc',
+      onUrlUpdate,
+    });
+    await waitFor(() => expect(listNames()).toEqual(['Cannae']));
+    const game = screen.getByRole('columnheader', { name: 'Game' });
+
+    expect(game).toHaveAttribute('aria-sort', 'descending');
+
+    await user.click(within(game).getByRole('button'));
+
+    expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toContain(
+      'sort=game',
+    );
+    expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toContain('dir=asc');
+  });
+
   it('opens a saved list at the builder it was built in, and views it read-only', async () => {
     await save('Cannae', 10);
     open();
