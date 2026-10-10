@@ -806,6 +806,6 @@ unit, and an entry added from a Fantasy Triumph list's coverage is kept for Fant
 entry. ADR 0040 gives an entry a kind: **stands**, as above, or a **hero**, with a count of figures
 and no troop type (#21). A hero in a Fantasy Triumph list is matched to hero entries alone, on the
 hero's name and tags, and never to stand entries, where it would be counted twice against a unit
-or never painted as what it is. Pins, statuses and the to-buy and to-paint totals treat both kinds
-the same; which armies a collection can build ignores hero entries, because no Triumph! army list
-has heroes.
+or never painted as what it is. Statuses and the to-buy and to-paint totals treat both kinds the
+same, and a pin is Triumph! only until #45 gives a Fantasy unit or hero a key to pin against.
+Which armies a collection can build ignores hero entries, because no Triumph! army list has heroes.

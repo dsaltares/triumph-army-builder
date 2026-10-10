@@ -1,6 +1,6 @@
 # 0040 — A Fantasy Triumph list is named units of identical stands, heroes and army cards
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-09
 - **Related:** #13, ADR [0039](0039-a-saved-list-belongs-to-a-game.md), ADR
   [0031](0031-track-a-collection-of-stands.md), ADR [0002](0002-warn-dont-block.md)
@@ -56,7 +56,9 @@ Triumph! and may be kept for either game or both, and a hero belongs to Fantasy 
 Triumph! coverage, buildable armies and pins read only the stands that belong to Triumph!. Coverage of a Fantasy Triumph list
 raises one demand per unit, matched to stand entries of its troop type whose tags appear in the
 unit's name or tags, and one demand per hero, matched to hero entries whose tags appear in the
-hero's name or tags. Pins, statuses and the to-buy and to-paint totals work the same for both.
+hero's name or tags. Statuses and the to-buy and to-paint totals work the same for both. Pins are
+Triumph! only for now: `army_collection_pins` keys a pin on a troop option and a troop type, and a
+hero has neither, so a Fantasy Triumph list's coverage offers no pin until #45 gives it a key.
 
 Card codes, cost-rule kinds and constraint kinds are code; every number, name, eligibility list and
 rules text is data in the game's pack section.

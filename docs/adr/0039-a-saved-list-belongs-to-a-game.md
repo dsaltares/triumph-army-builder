@@ -1,6 +1,6 @@
 # 0039 — A saved list belongs to a game, and each game owns its selection shape
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-09
 - **Related:** #13, #4, #5, #7, ADR [0002](0002-warn-dont-block.md), ADR
   [0003](0003-one-data-version-per-army.md), ADR [0010](0010-share-codes-are-base64url-json.md),
@@ -36,12 +36,14 @@ for every game that has no army list. Existing rows default to `'triumph'` in th
 
 Each game is a module under `lib/domain/<game>/` that owns its selection schema, its points engine,
 its validator, its sheet data and its share canonicalisation, and exposes them through one
-`GameModule` shape that the generic surfaces consume: the saved-lists table, the builder route, the
-sheet route, the text exports, the share page, the saved view and collection coverage ask the
-registry for the module by game and never branch on the game themselves. What is shared lives
-outside the game modules: troop types, findings and their severities, the points meter contract,
-the sheet renderer and the coverage solver, which only needs demands matched by troop type or, for
-a hero, by name.
+`GameModule` shape, collected in a registry under `lib/domain/games/`. A generic surface — the
+saved-lists table, the builder route, the sheet route, the text exports, the share page, the saved
+view and collection coverage — reaches a game's behaviour through one dispatch point that switches
+on the list's `game`: `listSheet`, `listText`, `listSheetDocument`, `readGameData`,
+`SharedListView`. The switches are exhaustive, so a new game fails to compile until every one of
+them handles it; a surface never re-derives a game's rules. What is shared lives outside the game
+modules: troop types, findings and their severities, the points meter contract, the sheet renderer
+and the coverage solver, which only needs demands matched by troop type or, for a hero, by name.
 
 The reference pack gains a per-game section. Troop types stay one shared collection; a game may
 overlay display names on them (Fantasy Triumph calls Archers *Shooters* and Elephants *Behemoths*)
