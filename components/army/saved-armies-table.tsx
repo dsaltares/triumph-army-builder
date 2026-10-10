@@ -59,6 +59,8 @@ const features = tableFeatures({
 
 const columnHelper = createColumnHelper<typeof features, SavedArmyEntry>();
 
+const noArmyList = '—';
+
 const at = (iso: string) => new Date(iso).getTime();
 
 const dataVersionLabels = {
@@ -76,21 +78,27 @@ const columns = [
       const { army, listName } = row.original;
       return (
         <>
-          <span className="flex flex-wrap items-center gap-2">
-            <Link
-              href={savedListUrl(army)}
-              className="font-medium underline-offset-4 hover:underline"
-            >
-              {army.name}
-            </Link>
-            <Badge variant="outline">{table.options.meta?.g(army.game)}</Badge>
-          </span>
+          <Link
+            href={savedListUrl(army)}
+            className="font-medium underline-offset-4 hover:underline"
+          >
+            {army.name}
+          </Link>
           <span className="block text-xs text-muted-foreground sm:hidden">
-            {listName ?? table.options.meta?.t('armyMissing')}
+            {army.armyListId === null
+              ? table.options.meta?.g(army.game)
+              : (listName ?? table.options.meta?.t('armyMissing'))}
           </span>
         </>
       );
     },
+  }),
+  columnHelper.accessor(({ army }): unknown => army.game, {
+    id: 'game',
+    header: 'columnGame',
+    sortFn: 'text',
+    meta: { className: 'hidden sm:table-cell' },
+    cell: ({ row, table }) => table.options.meta?.g(row.original.army.game),
   }),
   columnHelper.accessor(({ listName }): unknown => listName ?? '', {
     id: 'army',
@@ -99,10 +107,10 @@ const columns = [
     meta: { className: 'hidden sm:table-cell' },
     cell: ({ row, table }) => {
       const { army, listName } = row.original;
-      if (listName && army.armyListId === null) {
-        return listName;
+      if (army.armyListId === null) {
+        return <span className="text-muted-foreground">{noArmyList}</span>;
       }
-      return listName && army.armyListId !== null ? (
+      return listName ? (
         <Link
           href={armyUrl(army.armyListId)}
           className="underline-offset-4 hover:underline"

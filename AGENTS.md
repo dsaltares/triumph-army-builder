@@ -181,7 +181,9 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
   (ADR 0025). A read path that writes is the exception, so the stamp is throttled to a day and the
   loader takes a clock.
 - `lib/domain/collection/` decides how much of a list a collection covers (ADR 0031). An entry is
-  a batch of stands that fields as one troop type; the troop type decides whether it may
+  a batch of stands that fields as one troop type, or a hero, which has none, and it belongs to one
+  or more games (ADR 0040); Triumph! coverage, buildable armies and pins read only the Triumph!
+  stands; the troop type decides whether it may
   fill a troop option, and its tags against the option's description decide whether it is a
   *match* or a *stand-in*. Coverage is a min-cost flow over one list at a time, computed and never
   stored, so one entry serves any number of lists and is never reserved. The reverse lookup —

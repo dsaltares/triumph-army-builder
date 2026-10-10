@@ -1,10 +1,11 @@
-import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { IconPencil, IconPhoto, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { photoPath } from '@/components/collection/photo-urls';
 import { SortHeading } from '@/components/sort-heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import type { CollectionPhotoCover } from '@/lib/db/collection-photos';
 import type {
   CollectionColumn,
   CollectionSort,
@@ -36,34 +37,75 @@ const statusBadges = {
   unpainted: 'outline',
 } as const satisfies Record<CollectionStatus, string>;
 
-export type EntryCovers = Readonly<Record<string, string>>;
+export type EntryCovers = Readonly<Record<string, CollectionPhotoCover>>;
+
+const coverSlotClass = 'size-11 shrink-0 overflow-hidden rounded-md bg-muted';
+
+function EntryCover({
+  entry,
+  cover,
+  onView,
+}: {
+  entry: CollectionEntry;
+  cover: CollectionPhotoCover | undefined;
+  onView: (entry: CollectionEntry, cover: CollectionPhotoCover) => void;
+}) {
+  const t = useTranslations('collection');
+  if (!cover) {
+    return (
+      <span
+        aria-hidden="true"
+        className={cn(
+          coverSlotClass,
+          'flex items-center justify-center text-muted-foreground',
+        )}
+      >
+        <IconPhoto className="size-4" />
+      </span>
+    );
+  }
+  return (
+    <button
+      type="button"
+      aria-label={t('viewPhotos', { name: entry.name })}
+      className={cn(
+        coverSlotClass,
+        'focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+      )}
+      onClick={() => onView(entry, cover)}
+    >
+      <Image
+        unoptimized
+        src={photoPath(cover.id, 'thumb')}
+        alt={t('coverAlt', { name: entry.name })}
+        width={coverEdge}
+        height={coverEdge}
+        className="size-full object-cover"
+      />
+    </button>
+  );
+}
 
 function EntryRow({
   entry,
   cover,
+  onView,
   onEdit,
   onDelete,
 }: {
   entry: CollectionEntry;
-  cover: string | undefined;
+  cover: CollectionPhotoCover | undefined;
+  onView: (entry: CollectionEntry, cover: CollectionPhotoCover) => void;
   onEdit: (entry: CollectionEntry) => void;
   onDelete: (entry: CollectionEntry) => void;
 }) {
   const t = useTranslations('collection');
+  const g = useTranslations('games');
   return (
     <tr className="border-b border-border">
       <th scope="row" className={cn(cellClass, 'text-left font-normal')}>
         <span className="flex items-center gap-3">
-          {cover && (
-            <Image
-              unoptimized
-              src={photoPath(cover, 'thumb')}
-              alt={t('coverAlt', { name: entry.name })}
-              width={coverEdge}
-              height={coverEdge}
-              className="size-11 shrink-0 rounded-md bg-muted object-cover"
-            />
-          )}
+          <EntryCover entry={entry} cover={cover} onView={onView} />
           <span className="min-w-0">
             <span className="font-medium">{entry.name}</span>
             {entry.tags.length > 0 && (
@@ -76,7 +118,14 @@ function EntryRow({
       </th>
       <td className={cn(cellClass, 'tabular-nums')}>{entry.count}</td>
       <td className={cellClass}>
-        <Badge variant="secondary">{entry.troopType}</Badge>
+        {entry.kind === 'hero' ? (
+          <Badge variant="outline">{t('hero')}</Badge>
+        ) : (
+          <Badge variant="secondary">{entry.troopType}</Badge>
+        )}
+        <span className="mt-1 block text-xs text-pretty text-muted-foreground">
+          {entry.games.map((game) => g(game)).join(' · ')}
+        </span>
       </td>
       <td className={cellClass}>
         <Badge variant={statusBadges[entry.status]}>{t(entry.status)}</Badge>
@@ -110,6 +159,7 @@ export function CollectionTable({
   covers,
   sort,
   onSort,
+  onView,
   onEdit,
   onDelete,
 }: {
@@ -117,6 +167,7 @@ export function CollectionTable({
   covers: EntryCovers;
   sort: CollectionSort | null;
   onSort: (column: CollectionColumn) => void;
+  onView: (entry: CollectionEntry, cover: CollectionPhotoCover) => void;
   onEdit: (entry: CollectionEntry) => void;
   onDelete: (entry: CollectionEntry) => void;
 }) {
@@ -149,6 +200,7 @@ export function CollectionTable({
               key={entry.id}
               entry={entry}
               cover={covers[entry.id]}
+              onView={onView}
               onEdit={onEdit}
               onDelete={onDelete}
             />

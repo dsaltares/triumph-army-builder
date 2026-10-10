@@ -29,6 +29,20 @@ const cavalry = entry('Thessalians', 3, 'unpainted', 'CAT', [
 
 const collection = [hoplites, peltasts, cavalry];
 
+const hero = (name: string, count: number, status: CollectionStatus) => ({
+  kind: 'hero' as const,
+  name,
+  count,
+  status,
+  tags: ['theban'],
+});
+
+const epaminondas = hero('Epaminondas', 1, 'painted');
+
+const pelopidas = hero('Pelopidas', 2, 'unpainted');
+
+const withHeroes = [epaminondas, hoplites, pelopidas, peltasts];
+
 const names = (entries: readonly { name: string }[]) =>
   entries.map(({ name }) => name);
 
@@ -97,6 +111,64 @@ describe('filterCollection', () => {
   });
 });
 
+describe('filterCollection with heroes', () => {
+  it('keeps the entries of any one of the chosen kinds', () => {
+    const ofKinds = (kinds: ('stands' | 'hero')[]) =>
+      names(filterCollection(withHeroes, { ...noCollectionFilters, kinds }));
+
+    expect(ofKinds(['hero'])).toEqual(['Epaminondas', 'Pelopidas']);
+    expect(ofKinds(['stands'])).toEqual(['Hoplites', 'Peltasts']);
+    expect(ofKinds([])).toEqual(names(withHeroes));
+  });
+
+  it('leaves heroes out once a troop type is chosen', () => {
+    expect(
+      names(
+        filterCollection(withHeroes, {
+          ...noCollectionFilters,
+          troopTypes: ['HFT'],
+        }),
+      ),
+    ).toEqual(['Hoplites']);
+  });
+
+  it('searches a hero by its name and tags', () => {
+    expect(
+      names(
+        filterCollection(withHeroes, {
+          ...noCollectionFilters,
+          search: 'theban',
+        }),
+      ),
+    ).toEqual(['Epaminondas', 'Hoplites', 'Pelopidas']);
+  });
+
+  it('offers no troop type for a hero', () => {
+    expect(collectionTroopTypes(withHeroes)).toEqual(['HFT', 'LFT']);
+  });
+
+  it('keeps the entries of any one of the chosen games, Triumph! when none is said', () => {
+    const wargs = {
+      ...entry('Wargs', 4, 'painted', 'JCV'),
+      games: ['fantasy' as const],
+    };
+    const ofGames = (games: ('triumph' | 'fantasy')[]) =>
+      names(
+        filterCollection([hoplites, wargs], { ...noCollectionFilters, games }),
+      );
+
+    expect(ofGames(['fantasy'])).toEqual(['Wargs']);
+    expect(ofGames(['triumph'])).toEqual(['Hoplites']);
+    expect(ofGames(['triumph', 'fantasy'])).toEqual(['Hoplites', 'Wargs']);
+  });
+
+  it('counts a chosen kind as a filter turned on', () => {
+    expect(
+      activeCollectionFilterCount({ ...noCollectionFilters, kinds: ['hero'] }),
+    ).toBe(1);
+  });
+});
+
 describe('activeCollectionFilterCount', () => {
   it('counts every chip and tag turned on, and not the search', () => {
     expect(activeCollectionFilterCount(noCollectionFilters)).toBe(0);
@@ -150,6 +222,14 @@ describe('collectionTotals', () => {
     });
   });
 
+  it('counts a hero as stands, painted or not', () => {
+    expect(collectionTotals(withHeroes)).toEqual({
+      owned: 15,
+      painted: 9,
+      toPaint: 6,
+    });
+  });
+
   it('is all zeroes for an empty collection', () => {
     expect(collectionTotals([])).toEqual({ owned: 0, painted: 0, toPaint: 0 });
   });
@@ -190,6 +270,23 @@ describe('sortCollection', () => {
       'Peltasts',
       'Thessalians',
     ]);
+  });
+
+  it('puts heroes after the stands when nothing is sorted', () => {
+    expect(names(sortCollection(withHeroes, null))).toEqual([
+      'Hoplites',
+      'Peltasts',
+      'Epaminondas',
+      'Pelopidas',
+    ]);
+  });
+
+  it('puts heroes after every troop type when sorted by it', () => {
+    expect(
+      names(
+        sortCollection(withHeroes, { column: 'troopType', direction: 'asc' }),
+      ),
+    ).toEqual(['Hoplites', 'Peltasts', 'Epaminondas', 'Pelopidas']);
   });
 
   it('keeps the given order between entries that tie', () => {

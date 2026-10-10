@@ -95,6 +95,18 @@ const phalangites = (
 const create = (overrides: Partial<CollectionEntryFormInput> = {}) =>
   signedIn().collection.create(phalangites(overrides));
 
+const hamilcar = (overrides: Partial<CollectionEntryFormInput> = {}) =>
+  signedIn().collection.create({
+    kind: 'hero',
+    name: 'Hamilcar on a war elephant',
+    count: 1,
+    troopType: null,
+    tags: ['carthaginian'],
+    status: 'inProgress',
+    notes: '',
+    ...overrides,
+  });
+
 const names = (entries: readonly { name: string }[]) =>
   entries.map(({ name }) => name);
 
@@ -200,6 +212,24 @@ describe('collection.buildable', () => {
     ]);
   });
 
+  it('builds nothing from heroes alone, and ranks the stands beside them as before', async () => {
+    await hamilcar({ count: 3 });
+
+    expect(await buildable()).toEqual([]);
+
+    await create({ count: 8, troopType: 'PIK' });
+
+    expect(await buildable()).toEqual([
+      { army: 'army-phalanx', name: 'Phalanx', pointsCovered: 24 },
+    ]);
+  });
+
+  it('builds nothing from stands kept for Fantasy Triumph alone', async () => {
+    await create({ count: 8, troopType: 'PIK', games: ['fantasy'] });
+
+    expect(await buildable()).toEqual([]);
+  });
+
   it('stamps every list with the data version the database serves', async () => {
     await create({ count: 8, troopType: 'PIK' });
 
@@ -286,8 +316,10 @@ describe('collection.create', () => {
       id: 'entry-1',
       name: 'Macedonian phalangites',
       count: 8,
+      kind: 'stands',
       troopType: 'PIK',
       tags: ['macedonian', 'pike'],
+      games: ['triumph'],
       status: 'painted',
       notes: 'Victrix, based on 40 mm',
       createdAt: at(1),
@@ -331,6 +363,76 @@ describe('collection.create', () => {
         create(overrides as Partial<CollectionEntryFormInput>),
       ).rejects.toThrow(message);
     }
+    expect(await signedIn().collection.list()).toEqual([]);
+  });
+});
+
+describe('a hero entry', () => {
+  it('is saved with no troop type, and listed beside the stands', async () => {
+    const stands = await create();
+    const hero = await hamilcar();
+
+    expect(hero).toEqual({
+      id: 'entry-2',
+      kind: 'hero',
+      name: 'Hamilcar on a war elephant',
+      count: 1,
+      tags: ['carthaginian'],
+      games: ['fantasy'],
+      status: 'inProgress',
+      notes: '',
+      createdAt: at(2),
+      updatedAt: at(2),
+    });
+    expect(await signedIn().collection.list()).toEqual([hero, stands]);
+  });
+
+  it('refuses a hero that fields as a troop type', async () => {
+    await expect(hamilcar({ troopType: 'ELE' })).rejects.toThrow(
+      'heroHasNoTroopType',
+    );
+    expect(await signedIn().collection.list()).toEqual([]);
+  });
+
+  it('turns stands into a hero, dropping the troop type', async () => {
+    const entry = await create();
+
+    const updated = await signedIn().collection.update({
+      id: entry.id,
+      kind: 'hero',
+      troopType: null,
+    });
+
+    expect(updated).toMatchObject({ kind: 'hero' });
+    expect(updated).not.toHaveProperty('troopType');
+  });
+
+  it('turns a hero into stands once it is given a troop type', async () => {
+    const hero = await hamilcar();
+
+    expect(
+      await signedIn().collection.update({ id: hero.id, troopType: 'ELE' }),
+    ).toMatchObject({ kind: 'stands', troopType: 'ELE' });
+  });
+
+  it('refuses stands without a troop type to field as', async () => {
+    const hero = await hamilcar();
+
+    await expect(
+      signedIn().collection.update({ id: hero.id, kind: 'stands' }),
+    ).rejects.toThrow('pickATroopType');
+    expect(await signedIn().collection.list()).toEqual([hero]);
+  });
+
+  it('edits and deletes like any other entry', async () => {
+    const hero = await hamilcar();
+
+    expect(
+      await signedIn().collection.update({ id: hero.id, status: 'painted' }),
+    ).toMatchObject({ kind: 'hero', status: 'painted' });
+    expect(await signedIn().collection.delete({ id: hero.id })).toEqual({
+      id: hero.id,
+    });
     expect(await signedIn().collection.list()).toEqual([]);
   });
 });
@@ -467,8 +569,8 @@ describe('collection.photos', () => {
         perAccount: 200,
         onAccount: 3,
         covers: {
-          'entry-spearmen': 'photo-a',
-          'entry-cavalry': 'photo-cavalry',
+          'entry-spearmen': { id: 'photo-a', width: 1600, height: 1200 },
+          'entry-cavalry': { id: 'photo-cavalry', width: 1600, height: 1200 },
         },
       });
     });
@@ -480,7 +582,7 @@ describe('collection.photos', () => {
       });
 
       expect((await mine().overview()).covers).toEqual({
-        'entry-spearmen': 'photo-b',
+        'entry-spearmen': { id: 'photo-b', width: 1600, height: 1200 },
       });
     });
 
@@ -753,6 +855,29 @@ describe('pinning an entry to a troop option', () => {
 
     expect(await pinsOf(mine.id)).toEqual([]);
     expect(await pinsOf(theirs.id, other)).toEqual([]);
+  });
+
+  it('refuses to pin a hero to a troop option, and stores nothing', async () => {
+    const army = await saveList(owner);
+    const hero = await hamilcar();
+
+    await expect(
+      signedIn().collection.pin({ ...pinKey(army.id, hero.id), count: 1 }),
+    ).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+      message: 'notYourListOrEntry',
+    });
+    expect(await pinsOf(army.id)).toEqual([]);
+  });
+
+  it('refuses to pin stands kept for Fantasy Triumph alone', async () => {
+    const army = await saveList(owner);
+    const wargs = await create({ troopType: 'SPR', games: ['fantasy'] });
+
+    await expect(
+      signedIn().collection.pin({ ...pinKey(army.id, wargs.id), count: 1 }),
+    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    expect(await pinsOf(army.id)).toEqual([]);
   });
 
   it('refuses a troop option the army list model does not mint', async () => {

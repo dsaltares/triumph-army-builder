@@ -6,6 +6,7 @@ import {
   type CollectionPin,
   coverage,
 } from '../collection/coverage.ts';
+import { type HeroKind, triumphStands } from '../collection/entry.ts';
 import {
   type ListCoverage,
   listCoverage,
@@ -64,6 +65,8 @@ export type SavedView = ListReading & {
 };
 
 export type NamedCollectionEntry = CollectionEntry & { name: string };
+
+export type CollectedEntry = NamedCollectionEntry | HeroKind;
 
 export type DraftList = {
   name: string;
@@ -139,19 +142,23 @@ export const collectionReading = (
   selection: ArmySelection,
   armyList: ArmyList,
   sheet: ArmySheet,
-  entries: readonly NamedCollectionEntry[] | null,
+  collection: readonly CollectedEntry[] | null,
   pins: readonly CollectionPin[],
-): CollectionReading =>
-  entries
-    ? {
-        kind: 'coverage',
-        ...listCoverage(
-          sheet,
-          coverage(selection, armyList, entries, pins),
-          entries,
-        ),
-      }
-    : { kind: 'needsAccount' };
+): CollectionReading => {
+  if (!collection) {
+    return { kind: 'needsAccount' };
+  }
+  const entries = triumphStands(collection);
+  return {
+    kind: 'coverage',
+    ...listCoverage(
+      sheet,
+      coverage(selection, armyList, entries, pins),
+      entries,
+    ),
+    entries: collection.length,
+  };
+};
 
 export const savedView = ({
   saved,
@@ -161,7 +168,7 @@ export const savedView = ({
 }: {
   saved: SavedArmy;
   data: GameData;
-  collection: readonly NamedCollectionEntry[] | null;
+  collection: readonly CollectedEntry[] | null;
   pins?: readonly CollectionPin[];
 }): SavedView => {
   switch (data.game) {
@@ -200,7 +207,7 @@ export const draftView = ({
   ...data
 }: ListViewData & {
   selection: ArmySelection;
-  collection: readonly NamedCollectionEntry[] | null;
+  collection: readonly CollectedEntry[] | null;
 }): DraftView => {
   const list: DraftList = {
     name: data.armyList.name,

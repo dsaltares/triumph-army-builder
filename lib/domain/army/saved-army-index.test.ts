@@ -10,7 +10,7 @@ import { buildArmyList } from './army-list';
 import type { TriumphSavedArmy } from './saved-army';
 import {
   type SavedArmyEntry,
-  savedListReading,
+  savedListStanding,
   searchSavedArmies,
 } from './saved-army-index';
 import { type ArmySelection, withStands } from './selection';
@@ -24,7 +24,7 @@ const reference = {
 };
 
 const standingOf = (selection: ArmySelection) =>
-  savedListReading({ game: 'triumph', selection, reference }).standing;
+  savedListStanding({ game: 'triumph', selection, reference });
 
 const saved = (
   overrides: Partial<TriumphSavedArmy> = {},
@@ -52,19 +52,9 @@ const entry = (
 const found = (entries: readonly SavedArmyEntry[]) =>
   entries.map(({ army }) => army.name);
 
-describe('savedListReading', () => {
-  it('names a saved list after the army list it was built from', () => {
-    expect(
-      savedListReading({
-        game: 'triumph',
-        selection: fixtureSelection(),
-        reference,
-      }).listName,
-    ).toBe(list.name);
-  });
-
+describe('savedListStanding', () => {
   it('reads a Fantasy Triumph list against the Fantasy Triumph pack', async () => {
-    const reading = savedListReading({
+    const standing = savedListStanding({
       game: 'fantasy',
       selection: fantasySelection({
         units: [fantasyUnit('wargs', 'JCV', { stands: 4 })],
@@ -73,10 +63,9 @@ describe('savedListReading', () => {
       reference: await sampleFantasyReference(),
     });
 
-    expect(reading.listName).toBe('Fantasy Triumph');
-    expect(reading.standing.meter.cap).toBe(51);
-    expect(reading.standing.meter.total).toBeGreaterThan(0);
-    expect(reading.standing.legal).toBe(false);
+    expect(standing.meter.cap).toBe(51);
+    expect(standing.meter.total).toBeGreaterThan(0);
+    expect(standing.legal).toBe(false);
   });
 
   it('prices a saved selection and says whether it is legal', () => {

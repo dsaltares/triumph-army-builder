@@ -54,6 +54,17 @@ const entry = (overrides: Partial<SavedArmyEntry> = {}): SavedArmyEntry => ({
   ...overrides,
 });
 
+const fantasyEntry = (id: string, name: string): SavedArmyEntry =>
+  entry({
+    army: {
+      ...saved({ id, name }),
+      game: 'fantasy',
+      armyListId: null,
+      selection: fantasySelection(),
+    },
+    listName: null,
+  });
+
 const actions = {
   onPreviewPdf: vi.fn(),
   onDownloadPdf: vi.fn(),
@@ -96,6 +107,11 @@ const listNames = () =>
     .slice(1)
     .map((row) => within(row).getAllByRole('link')[0]?.textContent);
 
+const cells = (name: string) =>
+  within(
+    screen.getByRole('link', { name }).closest('tr') as HTMLElement,
+  ).getAllByRole('cell');
+
 const header = (name: string) => screen.getByRole('columnheader', { name });
 
 describe('SavedArmiesTable', () => {
@@ -116,17 +132,7 @@ describe('SavedArmiesTable', () => {
   });
 
   it('leads a Fantasy Triumph list to its own builder and its own view, with no army', () => {
-    show([
-      entry({
-        army: {
-          ...saved({ id: 'army-2', name: 'Goblin raid' }),
-          game: 'fantasy',
-          armyListId: null,
-          selection: fantasySelection(),
-        },
-        listName: 'Fantasy Triumph',
-      }),
-    ]);
+    show([fantasyEntry('army-2', 'Goblin raid')]);
 
     expect(screen.getByRole('link', { name: 'Goblin raid' })).toHaveAttribute(
       'href',
@@ -138,6 +144,50 @@ describe('SavedArmiesTable', () => {
     expect(
       screen.queryByRole('link', { name: 'Fantasy Triumph' }),
     ).not.toBeInTheDocument();
+  });
+
+  it('names the game in its own column, and the army list beside it', () => {
+    show([entry(), fantasyEntry('army-2', 'Goblin raid')]);
+
+    const [, triumphGame, triumphArmy] = cells('Cannae');
+    expect(triumphGame).toHaveTextContent(/^Triumph!$/);
+    expect(triumphArmy).toHaveTextContent(/^Tidewrack Corsairs$/);
+
+    const [name, fantasyGame, fantasyArmy] = cells('Goblin raid');
+    expect(fantasyGame).toHaveTextContent(/^Fantasy Triumph$/);
+    expect(fantasyArmy).toHaveTextContent(/^—$/);
+    expect(
+      within(name as HTMLElement).getByText('Fantasy Triumph'),
+    ).toHaveClass('sm:hidden');
+  });
+
+  it('sorts by game, grouping the lists of each', async () => {
+    const { user } = show([
+      entry({ army: saved({ id: 'a', name: 'Zama' }) }),
+      fantasyEntry('b', 'Goblin raid'),
+      entry({ army: saved({ id: 'c', name: 'Cannae' }) }),
+      fantasyEntry('d', 'Troll host'),
+    ]);
+
+    await user.click(within(header('Game')).getByRole('button'));
+
+    expect(listNames()).toEqual([
+      'Goblin raid',
+      'Troll host',
+      'Zama',
+      'Cannae',
+    ]);
+    expect(header('Game')).toHaveAttribute('aria-sort', 'ascending');
+
+    await user.click(within(header('Game')).getByRole('button'));
+
+    expect(listNames()).toEqual([
+      'Zama',
+      'Cannae',
+      'Goblin raid',
+      'Troll host',
+    ]);
+    expect(header('Game')).toHaveAttribute('aria-sort', 'descending');
   });
 
   it('shows the points against the cap, and the verdict', () => {

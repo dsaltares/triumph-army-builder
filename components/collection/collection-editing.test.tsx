@@ -42,6 +42,20 @@ const ownHoplites = () =>
     at: new Date(Date.UTC(2026, 8, 18, 10)).toISOString(),
   });
 
+const ownHamilcar = () =>
+  insertCollectionEntry(api.database(), {
+    id: 'entry-hamilcar',
+    userId: owner,
+    kind: 'hero',
+    name: 'Hamilcar',
+    count: 1,
+    status: 'unpainted',
+    troopType: null,
+    tags: ['carthaginian'],
+    notes: '',
+    at: new Date(Date.UTC(2026, 8, 19, 10)).toISOString(),
+  });
+
 const open = (options: UiOptions = {}) =>
   renderUi(<Collection />, {
     ...options,
@@ -176,6 +190,152 @@ describe('Collection entries', () => {
     ]);
   });
 
+  it('adds a hero from the stands form, with no troop type and Fantasy Triumph alone', async () => {
+    await ownHoplites();
+    const { user } = open();
+
+    await user.click(await screen.findByRole('button', { name: 'Add stands' }));
+    await user.type(
+      dialog().getByRole('textbox', { name: 'Name' }),
+      'Hamilcar',
+    );
+    await pickTroopType(user, 'ELE');
+    await user.click(dialog().getByRole('radio', { name: 'Hero' }));
+
+    expect(
+      dialog().queryByRole('combobox', { name: 'Fields as' }),
+    ).not.toBeInTheDocument();
+    const games = within(dialog().getByRole('group', { name: 'Games' }));
+    expect(
+      games.getByRole('checkbox', { name: 'Fantasy Triumph' }),
+    ).toBeChecked();
+    expect(games.getByRole('checkbox', { name: 'Triumph!' })).not.toBeChecked();
+    expect(
+      dialog().getByRole('group', { name: 'Games' }),
+    ).toHaveAccessibleDescription('A hero belongs to Fantasy Triumph alone');
+    await user.click(
+      dialog().getByRole('button', { name: 'Add to collection' }),
+    );
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(await screen.findByText('Hamilcar')).toBeInTheDocument();
+    expect(
+      screen.getByText('7 stands · 0 painted · 7 to paint'),
+    ).toBeInTheDocument();
+    const rows = screen.getAllByRole('row').slice(1);
+    expect(
+      rows.map((row) => within(row).getByRole('rowheader').textContent),
+    ).toEqual(['Hoplitesgreek', 'Hamilcar']);
+    expect(
+      within(rows[1] as HTMLElement).getByText('Hero'),
+    ).toBeInTheDocument();
+    expect(
+      within(rows[1] as HTMLElement).getByText('Fantasy Triumph'),
+    ).toBeInTheDocument();
+    expect(await stored()).toEqual([
+      expect.objectContaining({
+        kind: 'hero',
+        name: 'Hamilcar',
+        games: ['fantasy'],
+      }),
+      expect.objectContaining({ kind: 'stands', name: 'Hoplites' }),
+    ]);
+  });
+
+  it('gives back the troop type picked when the player turns a hero back into stands', async () => {
+    const { user } = open();
+
+    await user.click(await screen.findByRole('button', { name: 'Add stands' }));
+    await pickTroopType(user, 'ELE');
+    await user.click(dialog().getByRole('radio', { name: 'Hero' }));
+    await user.click(dialog().getByRole('radio', { name: 'Stands' }));
+
+    expect(troopTypeInput()).toHaveValue('ELE');
+    expect(dialog().getByRole('checkbox', { name: 'Triumph!' })).toBeChecked();
+  });
+
+  it('keeps stands for the games the player picks', async () => {
+    const { user } = open();
+
+    await user.click(await screen.findByRole('button', { name: 'Add stands' }));
+    await user.type(dialog().getByRole('textbox', { name: 'Name' }), 'Wargs');
+    await pickTroopType(user, 'JCV');
+    await user.click(
+      dialog().getByRole('checkbox', { name: 'Fantasy Triumph' }),
+    );
+    await user.click(dialog().getByRole('checkbox', { name: 'Triumph!' }));
+    await user.click(
+      dialog().getByRole('button', { name: 'Add to collection' }),
+    );
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(await stored()).toEqual([
+      expect.objectContaining({ name: 'Wargs', games: ['fantasy'] }),
+    ]);
+  });
+
+  it('says a stand needs a game', async () => {
+    const { user } = open();
+
+    await user.click(await screen.findByRole('button', { name: 'Add stands' }));
+    await user.click(dialog().getByRole('checkbox', { name: 'Triumph!' }));
+
+    expect(
+      await dialog().findByText('Pick at least one game these stands are for'),
+    ).toBeInTheDocument();
+  });
+
+  it('opens the hero form from a link', async () => {
+    await ownHoplites();
+    open({ searchParams: '?new=hero' });
+
+    await screen.findByRole('dialog');
+    expect(dialog().getByRole('radio', { name: 'Hero' })).toBeChecked();
+    expect(
+      dialog().queryByRole('combobox', { name: 'Fields as' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('edits a hero, keeping it a hero', async () => {
+    await ownHamilcar();
+    const { user } = open();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Edit Hamilcar' }),
+    );
+
+    expect(dialog().getByRole('textbox', { name: 'Name' })).toHaveValue(
+      'Hamilcar',
+    );
+    expect(
+      dialog().queryByRole('combobox', { name: 'Fields as' }),
+    ).not.toBeInTheDocument();
+    await user.click(dialog().getByRole('radio', { name: 'Painted' }));
+    await user.click(dialog().getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(await stored()).toEqual([
+      expect.objectContaining({
+        id: 'entry-hamilcar',
+        kind: 'hero',
+        status: 'painted',
+      }),
+    ]);
+  });
+
+  it('deletes a hero straight from its row', async () => {
+    await ownHamilcar();
+    const { user } = open();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Delete Hamilcar' }),
+    );
+
+    expect(await screen.findByText('Hamilcar deleted')).toBeInTheDocument();
+    toast.dismiss();
+    await waitFor(async () => expect(await stored()).toEqual([]));
+  });
+
   it('keeps the dialog open and says why when the save fails', async () => {
     await ownHoplites();
     const { user } = open();
@@ -269,6 +429,43 @@ describe('Collection entries', () => {
     expect(
       await screen.findByRole('img', { name: 'Photo of Hoplites' }),
     ).toHaveAttribute('src', '/api/collection/photos/photo-1/thumb');
+  });
+
+  it('opens an entry’s photos larger from its thumbnail, and pages through them', async () => {
+    await ownHoplites();
+    for (const [position, id, width] of [
+      [0, 'photo-front', 1200],
+      [1, 'photo-back', 900],
+    ] as const) {
+      await insertCollectionPhoto(api.database(), {
+        id,
+        entryId: 'entry-hoplites',
+        userId: owner,
+        position,
+        width,
+        height: 1000,
+        bytes: 1000,
+        at: new Date(Date.UTC(2026, 8, 18, 11)).toISOString(),
+      });
+    }
+    const { user } = open();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'View photos of Hoplites' }),
+    );
+
+    expect(dialog().getByRole('heading', { name: 'Hoplites' })).toBeVisible();
+    expect(
+      dialog().getByRole('img', { name: 'Hoplites · photo 1 of 2' }),
+    ).toHaveAttribute('src', '/api/collection/photos/photo-front/display');
+    expect(
+      await dialog().findByRole('button', { name: 'Previous photo' }),
+    ).toBeDisabled();
+    await user.click(dialog().getByRole('button', { name: 'Next photo' }));
+    expect(
+      dialog().getByRole('img', { name: 'Hoplites · photo 2 of 2' }),
+    ).toHaveAttribute('src', '/api/collection/photos/photo-back/display');
+    expect(dialog().getByRole('button', { name: 'Next photo' })).toBeDisabled();
   });
 
   it('adds an entry with the photos picked on the form, in the order they were picked', async () => {

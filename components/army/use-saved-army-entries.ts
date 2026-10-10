@@ -8,7 +8,7 @@ import { buildArmyList } from '@/lib/domain/army/army-list';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import {
   type SavedArmyEntry,
-  savedListReading,
+  savedListStanding,
 } from '@/lib/domain/army/saved-army-index';
 import { useTRPC } from '@/lib/trpc/client';
 
@@ -69,16 +69,17 @@ export const useSavedArmyEntries = (
     () =>
       armies.map((army): SavedArmyEntry => {
         if (army.game === 'fantasy') {
-          return fantasyReference
-            ? {
-                army,
-                ...savedListReading({
+          return {
+            army,
+            listName: null,
+            standing: fantasyReference
+              ? savedListStanding({
                   game: army.game,
                   selection: army.selection,
                   reference: fantasyReference,
-                }),
-              }
-            : { army, listName: null, standing: null };
+                })
+              : null,
+          };
         }
         const armyList = armyLists.get(army.armyListId);
         if (!armyList) {
@@ -89,7 +90,8 @@ export const useSavedArmyEntries = (
         }
         return {
           army,
-          ...savedListReading({
+          listName: armyList.name,
+          standing: savedListStanding({
             game: army.game,
             selection: army.selection,
             reference: {
