@@ -267,6 +267,65 @@ describe('Collection', () => {
     ).toBeInTheDocument();
   });
 
+  it('filters by kind, keeping the heroes or the stands apart', async () => {
+    await own('Hoplites', 6, 'inProgress', 'SPR');
+    await insertCollectionEntry(api.database(), {
+      id: 'entry-hamilcar',
+      userId: owner,
+      kind: 'hero',
+      name: 'Hamilcar',
+      count: 1,
+      status: 'painted',
+      troopType: null,
+      tags: [],
+      notes: '',
+      at: new Date(Date.UTC(2026, 8, 19, 10)).toISOString(),
+    });
+    const onUrlUpdate = vi.fn();
+    const { user } = open({ onUrlUpdate });
+    await screen.findByText('Hamilcar');
+
+    await openFilters(user);
+    expect(
+      within(screen.getByRole('group', { name: 'Troop type' }))
+        .getAllByRole('button')
+        .map((button) => button.textContent),
+    ).toEqual(['SPR']);
+    await user.click(chip('Kind', 'Hero'));
+    await apply(user, 'Show 1 entry');
+
+    expect(screen.getByText('Hamilcar')).toBeInTheDocument();
+    expect(screen.queryByText('Hoplites')).toBeNull();
+    expect(onUrlUpdate.mock.lastCall?.[0].queryString).toBe('?kind=hero');
+  });
+
+  it('filters by game', async () => {
+    await own('Hoplites', 6, 'inProgress', 'SPR');
+    await insertCollectionEntry(api.database(), {
+      id: 'entry-wargs',
+      userId: owner,
+      name: 'Wargs',
+      count: 4,
+      status: 'painted',
+      troopType: 'JCV',
+      games: ['fantasy'],
+      tags: [],
+      notes: '',
+      at: new Date(Date.UTC(2026, 8, 19, 10)).toISOString(),
+    });
+    const onUrlUpdate = vi.fn();
+    const { user } = open({ onUrlUpdate });
+    await screen.findByText('Wargs');
+
+    await openFilters(user);
+    await user.click(chip('Games', 'Fantasy Triumph'));
+    await apply(user, 'Show 1 entry');
+
+    expect(screen.getByText('Wargs')).toBeInTheDocument();
+    expect(screen.queryByText('Hoplites')).toBeNull();
+    expect(onUrlUpdate.mock.lastCall?.[0].queryString).toBe('?game=fantasy');
+  });
+
   it('searches the names, tags and troop types of the entries', async () => {
     await own('Macedonian phalangites', 8, 'painted', 'PIK', [
       'macedonian',

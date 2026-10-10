@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import { topographies, troopTypeCodes } from '../../data/schema.ts';
 import { ratingValues } from '../army-index.ts';
-import { collectionStatuses } from '../collection/entry.ts';
+import {
+  collectionEntryKinds,
+  collectionStatuses,
+} from '../collection/entry.ts';
 import { gameSchema } from '../game.ts';
 
 export const trackedRoutes = [
@@ -72,6 +75,8 @@ export const filterValueSchemas = {
   'armies.topography': z.enum(topographies),
   'armies.invasion': z.enum(ratings),
   'armies.manoeuvre': z.enum(ratings),
+  'collection.kind': z.enum(collectionEntryKinds),
+  'collection.game': gameSchema,
   'collection.troopType': z.enum(troopTypeCodes),
   'collection.status': z.enum(collectionStatuses),
   'myArmies.game': gameSchema,

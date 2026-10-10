@@ -13,6 +13,7 @@ import * as singleTroopType from './migrations/009-single-troop-type.ts';
 import * as referenceData from './migrations/010-reference-data.ts';
 import * as activityEvents from './migrations/011-activity-events.ts';
 import * as listGame from './migrations/012-list-game.ts';
+import * as entryKindAndGames from './migrations/013-entry-kind-and-games.ts';
 import type { Database } from './schema.ts';
 
 const migrations: Record<string, Migration> = {
@@ -28,6 +29,7 @@ const migrations: Record<string, Migration> = {
   '010-reference-data': referenceData,
   '011-activity-events': activityEvents,
   '012-list-game': listGame,
+  '013-entry-kind-and-games': entryKindAndGames,
 };
 
 const createMigrator = (db: Kysely<Database> = getDatabase()) =>

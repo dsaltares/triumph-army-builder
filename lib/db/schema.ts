@@ -5,7 +5,10 @@ import type {
   Selectable,
   Updateable,
 } from 'kysely';
-import type { CollectionStatus } from '../domain/collection/entry.ts';
+import type {
+  CollectionEntryKind,
+  CollectionStatus,
+} from '../domain/collection/entry.ts';
 
 type Timestamp = ColumnType<string, string | undefined, string>;
 
@@ -86,8 +89,10 @@ export type CollectionEntriesTable = {
   user_id: string;
   name: string;
   count: number;
-  troop_type: string;
+  kind: Generated<CollectionEntryKind>;
+  troop_type: string | null;
   tags: string;
+  games: Generated<string>;
   status: CollectionStatus;
   notes: string;
   created_at: Timestamp;

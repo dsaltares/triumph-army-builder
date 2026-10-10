@@ -16,6 +16,7 @@ import {
   withStands,
 } from '@/lib/domain/army/selection';
 import {
+  type CollectedEntry,
   type NamedCollectionEntry,
   savedView,
 } from '@/lib/domain/army/shared-view';
@@ -105,7 +106,7 @@ const saved = (selection: ArmySelection): TriumphSavedArmy => ({
 });
 
 const show = async (
-  collection: readonly NamedCollectionEntry[] | null,
+  collection: readonly CollectedEntry[] | null,
   selection: ArmySelection = lagash,
   pins: readonly CollectionPin[] = [],
 ) => {
@@ -256,6 +257,43 @@ describe('CollectionCoverage', () => {
     expect(
       screen.queryByRole('link', { name: 'Add an entry' }),
     ).not.toBeInTheDocument();
+  });
+
+  it('covers nothing with a hero, and offers it to no troop option', async () => {
+    await show([
+      { kind: 'hero', id: 'ur-nanshe', name: 'Ur-Nanshe' },
+      entry('Lagash spearmen', 4, 'SPR', { tags: ['spearmen'] }),
+    ]);
+
+    expect(
+      screen.getByText(
+        `${4 * costs.SPR} of ${listPoints} points covered · 4 to buy`,
+      ),
+    ).toBeVisible();
+    expect(screen.queryByText(/Ur-Nanshe/)).not.toBeInTheDocument();
+  });
+
+  it('covers nothing with stands kept for Fantasy Triumph alone', async () => {
+    await show([
+      entry('Lagash spearmen', 4, 'SPR', { tags: ['spearmen'] }),
+      { ...entry('Goblin spears', 2, 'SPR'), games: ['fantasy'] },
+    ] as CollectedEntry[]);
+
+    expect(
+      screen.getByText(
+        `${4 * costs.SPR} of ${listPoints} points covered · 4 to buy`,
+      ),
+    ).toBeVisible();
+    expect(screen.queryByText(/Goblin spears/)).not.toBeInTheDocument();
+  });
+
+  it('checks a list against a collection of heroes alone', async () => {
+    await show([{ kind: 'hero', id: 'ur-nanshe', name: 'Ur-Nanshe' }]);
+
+    expect(screen.queryByText('Your collection is empty')).toBeNull();
+    expect(
+      screen.getByText(`0 of ${listPoints} points covered · 8 to buy`),
+    ).toBeVisible();
   });
 
   it('shows each troop option’s need, what covers it and what is left to buy', async () => {

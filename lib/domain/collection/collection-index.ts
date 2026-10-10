@@ -1,13 +1,22 @@
-import { type TroopTypeCode, troopTypeCodes } from '../../data/schema.ts';
+import {
+  type Game,
+  type TroopTypeCode,
+  troopTypeCodes,
+} from '../../data/schema.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
 import {
+  belongsTo,
   type CollectionEntry,
+  type CollectionEntryKind,
   type CollectionStatus,
+  collectionEntryKinds,
   collectionStatuses,
 } from './entry.ts';
 
 export type CollectionFilters = {
   search: string;
+  kinds: CollectionEntryKind[];
+  games: Game[];
   troopTypes: TroopTypeCode[];
   statuses: CollectionStatus[];
   tags: string[];
@@ -19,28 +28,52 @@ export type CollectionTotals = {
   toPaint: number;
 };
 
-type IndexedEntry = Pick<CollectionEntry, 'count' | 'status' | 'troopType'>;
+type IndexedEntry = Pick<CollectionEntry, 'count' | 'status'> & {
+  kind?: CollectionEntryKind;
+  troopType?: TroopTypeCode;
+  games?: readonly Game[];
+};
 
 type SearchableEntry = IndexedEntry & Pick<CollectionEntry, 'name' | 'tags'>;
 
 export const noCollectionFilters: CollectionFilters = {
   search: '',
+  kinds: [],
+  games: [],
   troopTypes: [],
   statuses: [],
   tags: [],
 };
 
 export const activeCollectionFilterCount = ({
+  kinds = [],
+  games = [],
   troopTypes,
   statuses,
   tags,
-}: Omit<CollectionFilters, 'search'>) =>
-  troopTypes.length + statuses.length + tags.length;
+}: Omit<CollectionFilters, 'search' | 'kinds' | 'games'> &
+  Partial<Pick<CollectionFilters, 'kinds' | 'games'>>) =>
+  kinds.length +
+  games.length +
+  troopTypes.length +
+  statuses.length +
+  tags.length;
+
+const playedInAnyOf = (entry: IndexedEntry, games: readonly Game[]) =>
+  games.length === 0 || games.some((game) => belongsTo(entry, game));
+
+const kindOf = ({ kind }: IndexedEntry): CollectionEntryKind =>
+  kind ?? 'stands';
+
+const isKindOf = (entry: IndexedEntry, kinds: readonly CollectionEntryKind[]) =>
+  kinds.length === 0 || kinds.includes(kindOf(entry));
 
 const fieldsAsAnyOf = (
-  entry: IndexedEntry,
+  { troopType }: IndexedEntry,
   troopTypes: readonly TroopTypeCode[],
-) => troopTypes.length === 0 || troopTypes.includes(entry.troopType);
+) =>
+  troopTypes.length === 0 ||
+  (troopType !== undefined && troopTypes.includes(troopType));
 
 const hasAnyOf = (entry: IndexedEntry, statuses: readonly CollectionStatus[]) =>
   statuses.length === 0 || statuses.includes(entry.status);
@@ -50,16 +83,21 @@ const taggedAnyOf = (entry: SearchableEntry, tags: readonly string[]) =>
 
 const matchesSearch = (entry: SearchableEntry, terms: readonly string[]) =>
   terms.length === 0 ||
-  matchesAllTerms([entry.name, entry.troopType, ...entry.tags], terms);
+  matchesAllTerms(
+    [entry.name, ...(entry.troopType ? [entry.troopType] : []), ...entry.tags],
+    terms,
+  );
 
 export const filterCollection = <Entry extends SearchableEntry>(
   entries: readonly Entry[],
-  { search, troopTypes, statuses, tags }: CollectionFilters,
+  { search, kinds, games, troopTypes, statuses, tags }: CollectionFilters,
 ) => {
   const terms = searchTerms(search);
   return entries.filter(
     (entry) =>
       matchesSearch(entry, terms) &&
+      isKindOf(entry, kinds) &&
+      playedInAnyOf(entry, games) &&
       fieldsAsAnyOf(entry, troopTypes) &&
       hasAnyOf(entry, statuses) &&
       taggedAnyOf(entry, tags),
@@ -71,7 +109,7 @@ export const collectionTroopTypes = (
   chosen: readonly TroopTypeCode[] = [],
 ): TroopTypeCode[] => {
   const fielded = new Set([
-    ...entries.map(({ troopType }) => troopType),
+    ...entries.flatMap(({ troopType }) => (troopType ? [troopType] : [])),
     ...chosen,
   ]);
   return troopTypeCodes.filter((code) => fielded.has(code));
@@ -131,13 +169,19 @@ export const nextCollectionSort = (
 
 type SortableEntry = SearchableEntry;
 
+const byKind = (left: IndexedEntry, right: IndexedEntry) =>
+  collectionEntryKinds.indexOf(kindOf(left)) -
+  collectionEntryKinds.indexOf(kindOf(right));
+
 const ascending: Record<
   CollectionColumn,
   (left: SortableEntry, right: SortableEntry) => number
 > = {
   name: (left, right) => left.name.localeCompare(right.name),
   stands: (left, right) => left.count - right.count,
-  troopType: (left, right) => left.troopType.localeCompare(right.troopType),
+  troopType: (left, right) =>
+    byKind(left, right) ||
+    (left.troopType ?? '').localeCompare(right.troopType ?? ''),
   status: (left, right) =>
     collectionStatuses.indexOf(left.status) -
     collectionStatuses.indexOf(right.status),
@@ -148,7 +192,7 @@ export const sortCollection = <Entry extends SortableEntry>(
   sort: CollectionSort | null,
 ): readonly Entry[] => {
   if (!sort) {
-    return entries;
+    return entries.toSorted(byKind);
   }
   const compare = ascending[sort.column];
   const sign = sort.direction === 'asc' ? 1 : -1;

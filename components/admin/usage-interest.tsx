@@ -16,6 +16,8 @@ const filterLabelKeys = {
   'armies.topography': 'filterArmiesTopography',
   'armies.invasion': 'filterArmiesInvasion',
   'armies.manoeuvre': 'filterArmiesManoeuvre',
+  'collection.kind': 'filterCollectionKind',
+  'collection.game': 'filterCollectionGame',
   'collection.troopType': 'filterCollectionTroopType',
   'collection.status': 'filterCollectionStatus',
   'myArmies.game': 'filterMyArmiesGame',

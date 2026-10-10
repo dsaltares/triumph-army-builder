@@ -172,8 +172,8 @@ function AccountCollection() {
   const [editing, setEditing] = useState<EntryEditing>(null);
   const [newEntry, setNewEntry] = useNewEntryParam();
   const adding: EntryEditing =
-    newEntry === undefined ? null : { entry: null, troopType: newEntry };
-  const add = () => setNewEntry(null);
+    newEntry === undefined ? null : { entry: null, ...newEntry };
+  const add = () => setNewEntry({ kind: 'stands', troopType: null });
   const close = () => {
     setEditing(null);
     setNewEntry(undefined);

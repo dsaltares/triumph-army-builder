@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 import { Autocomplete } from '@/components/autocomplete';
 import { ChipGroup } from '@/components/chip-group';
+import { kindLabels } from '@/components/collection/entry-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import type { TroopTypeCode } from '@/lib/data/schema';
+import { type Game, games, type TroopTypeCode } from '@/lib/data/schema';
 import { toggledValues } from '@/lib/domain/army-index';
 import {
   activeCollectionFilterCount,
@@ -25,7 +26,9 @@ import {
   noCollectionFilters,
 } from '@/lib/domain/collection/collection-index';
 import {
+  type CollectionEntryKind,
   type CollectionStatus,
+  collectionEntryKinds,
   collectionStatuses,
 } from '@/lib/domain/collection/entry';
 
@@ -43,6 +46,7 @@ export function CollectionFiltersSheet({
   onChange: (filters: CollectionFilters) => void;
 }) {
   const t = useTranslations('collection');
+  const g = useTranslations('games');
   const tagsId = useId();
   const active = activeCollectionFilterCount(filters);
   return (
@@ -64,6 +68,30 @@ export function CollectionFiltersSheet({
         </SheetHeader>
 
         <div className="flex flex-col gap-6 overflow-y-auto px-6 pb-2">
+          <ChipGroup<Game>
+            label={t('games')}
+            options={games}
+            selected={filters.games}
+            labelFor={(game) => g(game)}
+            onToggle={(game) =>
+              onChange({
+                ...filters,
+                games: toggledValues(filters.games, game),
+              })
+            }
+          />
+          <ChipGroup<CollectionEntryKind>
+            label={t('kind')}
+            options={collectionEntryKinds}
+            selected={filters.kinds}
+            labelFor={(kind) => t(kindLabels[kind])}
+            onToggle={(kind) =>
+              onChange({
+                ...filters,
+                kinds: toggledValues(filters.kinds, kind),
+              })
+            }
+          />
           <ChipGroup<TroopTypeCode>
             label={t('troopType')}
             options={troopTypes}

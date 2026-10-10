@@ -32,6 +32,7 @@ import { matchesAllTerms, searchTerms } from '../text-search.ts';
 import type { TroopTypeNames } from '../troop-types.ts';
 import { type CollectionEntry, coverage } from './coverage.ts';
 import { type TagMatcher, tagMatcher } from './description-words.ts';
+import { type HeroKind, triumphStands } from './entry.ts';
 import {
   addNode,
   connect,
@@ -914,12 +915,13 @@ const namedLike = (
 
 export const buildableLists = (
   armyLists: readonly ArmyList[],
-  entries: readonly CollectionEntry[],
+  collection: readonly (CollectionEntry | HeroKind)[],
   costs: PointCosts,
   dataVersion: string,
   rules: ValidationRules = triumphRules,
   options: Partial<BuildableOptions> = withStandIns,
 ): readonly BuildableList[] => {
+  const entries = triumphStands(collection);
   const search: Search = {
     entries,
     owned: new Set(

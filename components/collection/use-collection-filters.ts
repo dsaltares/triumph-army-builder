@@ -8,7 +8,7 @@ import {
 } from 'nuqs';
 import { useMemo } from 'react';
 import { sendFilterUses } from '@/components/usage/send-filter-uses';
-import { troopTypeCodes } from '@/lib/data/schema';
+import { games, troopTypeCodes } from '@/lib/data/schema';
 import {
   type CollectionColumn,
   type CollectionFilters,
@@ -17,11 +17,18 @@ import {
   nextCollectionSort,
   sortDirections,
 } from '@/lib/domain/collection/collection-index';
-import { collectionStatuses } from '@/lib/domain/collection/entry';
+import {
+  collectionEntryKinds,
+  collectionStatuses,
+} from '@/lib/domain/collection/entry';
 import { addedFilterValues, type FilterKey } from '@/lib/domain/usage/tracked';
 
 export const collectionFilterParsers = {
   search: parseAsString.withDefault(''),
+  kinds: parseAsArrayOf(parseAsStringLiteral(collectionEntryKinds)).withDefault(
+    [],
+  ),
+  games: parseAsArrayOf(parseAsStringLiteral(games)).withDefault([]),
   troopTypes: parseAsArrayOf(parseAsStringLiteral(troopTypeCodes)).withDefault(
     [],
   ),
@@ -33,12 +40,16 @@ export const collectionFilterParsers = {
 
 export const collectionFilterUrlKeys = {
   search: 'q',
+  kinds: 'kind',
+  games: 'game',
   troopTypes: 'type',
   statuses: 'status',
   tags: 'tag',
 };
 
 const collectionFilterUsageKeys = {
+  kinds: 'collection.kind',
+  games: 'collection.game',
   troopTypes: 'collection.troopType',
   statuses: 'collection.status',
 } satisfies Partial<Record<keyof CollectionFilters, FilterKey>>;

@@ -50,6 +50,7 @@ function EntryRow({
   onDelete: (entry: CollectionEntry) => void;
 }) {
   const t = useTranslations('collection');
+  const g = useTranslations('games');
   return (
     <tr className="border-b border-border">
       <th scope="row" className={cn(cellClass, 'text-left font-normal')}>
@@ -76,7 +77,14 @@ function EntryRow({
       </th>
       <td className={cn(cellClass, 'tabular-nums')}>{entry.count}</td>
       <td className={cellClass}>
-        <Badge variant="secondary">{entry.troopType}</Badge>
+        {entry.kind === 'hero' ? (
+          <Badge variant="outline">{t('hero')}</Badge>
+        ) : (
+          <Badge variant="secondary">{entry.troopType}</Badge>
+        )}
+        <span className="mt-1 block text-xs text-pretty text-muted-foreground">
+          {entry.games.map((game) => g(game)).join(' · ')}
+        </span>
       </td>
       <td className={cellClass}>
         <Badge variant={statusBadges[entry.status]}>{t(entry.status)}</Badge>
