@@ -5,6 +5,11 @@ the traps in it, and what the domain layer does about each one.
 
 Read this before touching the domain layer. Several fields are misleadingly named.
 
+The app builds lists for two games. §1–§9 are **Triumph!**, the historical game, whose lists are
+drawn from Meshwesh army lists. §10 is what a game is to the app, §11 is **Fantasy Triumph**, which
+keeps Triumph!'s troop types and builds an army freely from them, and §12 is the collection, which
+covers a list of either game.
+
 The examples are the sample pack's invented armies (`test/fixtures/reference/`), which is built so
 that each trap below has one army that shows it. Nothing here quotes the rulebook or a real army
 list: a rule is described in our own words, with its section number where that helps. Where this
@@ -193,13 +198,8 @@ of them build to 48 points without it (§9).
 - Every army has **one camp** (16.1).
 - Optional Contingent troops are treated exactly like Required Troops once selected.
 - Selecting an Optional Contingent or Ally Option **does not** change Required Troops min/max.
-- **A saved list, a share and a share code name their game** (ADR 0039). Triumph! is the only one
-  today. The `game` column on `armies` and `shares` says which branch of `SavedSelection` the
-  stored JSON is, so the JSON itself carries no game and nothing written before games existed is
-  rewritten; `army_list_id` is mandatory for a Triumph! list and empty for a game without army
-  lists. A version 2 share code puts `game` ahead of the selection and deflates it (ADR 0041), and
-  a version 1 code still decodes, as Triumph!. `lib/domain/games/registry.ts` hands out each game's module, which owns its
-  selection schema, canonical form, points, validation, sheet data and list title.
+- **A saved list, a share and a share code name their game** (ADR 0039, §10). Everything in this
+  section and the next is the Triumph! game's; Fantasy Triumph builds differently (§11).
 
 ### 4.1 What the validator reports
 
@@ -614,3 +614,196 @@ Most of the real ones are the general; a couple are points problems, and a coupl
 no buildable bucket at all. None of it is ours, and none of it changes what the builder does: it
 still shows these armies, still lets them be built, and says what is wrong through the validator
 (§4.1) rather than hiding a year or a variant the data offers.
+
+## 10. Games
+
+A **game** is the ruleset a list is built under: `'triumph' | 'fantasy'`, `games` in
+`lib/data/schema.ts` (ADR [0039](adr/0039-a-saved-list-belongs-to-a-game.md)). A game is not a
+mode of another game. Triumph! builds from an army list, and Fantasy Triumph has none; each has its
+own selection, its own points engine and its own validator, and neither relaxes the other's rules.
+
+- **A saved list, a share and a share code name their game.** The `game` column on `armies` and
+  `shares` says which branch of `SavedSelection` the stored JSON is, so the JSON itself carries no
+  game and nothing written before games existed is rewritten. `army_list_id` is mandatory for a
+  Triumph! list and empty for a Fantasy Triumph one. A version 2 share code puts `game` ahead of
+  the selection and deflates it (ADR [0041](adr/0041-a-share-code-deflates-its-payload.md)); a
+  version 1 code still decodes, as Triumph!.
+- **The registry, not the caller, knows the game.** `gameModule(game)` in
+  `lib/domain/games/registry.ts` hands out a `GameModule` (`lib/domain/game.ts`): the selection
+  schema, its canonical form, the points meter, the validation report, the sheet data, the name of
+  what the list is built from and the default list title. The saved-lists table, the sheet route,
+  the text exports, the share page and the saved view ask the registry and never branch on the
+  game themselves.
+- **Every game's builder is `/<game>/build`**, opened on `?list=<id>` for a saved list or
+  `?s=<code>` for a draft. `/armies/<id>/build` stays as the Triumph! entry from an army page.
+- **What is shared stays outside the modules:** the troop types, findings and their severities,
+  the points meter contract, the sheet renderer and the coverage solver.
+- **A game's reference data is a section of the pack.** Troop types are one collection for every
+  game; Fantasy Triumph overlays display names on two of them and brings its own card catalogue,
+  format and rules text, curated under `data/curation/games/fantasy/` in the data repo. The section
+  is optional: a pack without it imports, and `reference.games` then offers Triumph! alone. The
+  data version a list pins (ADR [0003](adr/0003-one-data-version-per-army.md)) covers the section
+  too.
+- **Saving comes before viewing.** `savableGames` is both games; `viewableGames`, which the share
+  router accepts and the share page, the saved view and the sheet render, is Triumph! alone until
+  the Fantasy Triumph sheet, share and saved view land (#20).
+
+## 11. Fantasy Triumph
+
+A Fantasy Triumph list is an army the player designs, not one drawn from a list (ADR
+[0040](adr/0040-a-fantasy-triumph-list-is-named-units-of-identical-stands.md)). It keeps the 26
+troop types with their costs and factors, calls two of them by other names, and buys from a
+catalogue of its own cards whose prices depend on who carries them, the home topography and a
+choice made at purchase. Every number below — the points total, the stands per point, the hero
+limits, the rating costs — is in the pack's `format`, never a constant under `lib/` (§4.1's
+`triumphRules` is the Triumph! equivalent).
+
+### 11.1 What a list holds
+
+`fantasySelectionSchema` in `lib/domain/fantasy/selection-schema.ts`:
+
+```
+FantasySelection
+├── dataVersion
+├── format        pointsTotal, topography, invasion, maneuver
+├── units[]       id, name, tags[], troopType, stands, cards[], marks
+│   └── marks     delayedEntry, transports, eventCards { code: count }
+├── heroes[]      id, name, tags[], cards[], delayedEntry
+├── armyCards[]   code, count?, variants?
+└── general       a unit id, or null
+```
+
+- **The format** is chosen by the player and paid for. The **points total** is 51 unless the player
+  sets another, because the rulebook names other totals and the stand minimum moves with it. The
+  **home topography** is any of Triumph!'s seven or one of four **dense** ones, which only Fantasy
+  Triumph has and which some cards price differently. The **invasion and manoeuvre ratings** run
+  0–4, start at 2 for nothing, and cost or give back points either side of it.
+- **A unit** is stands of one troop type carrying the same cards — the rulebook's *class*, given a
+  name. The name is what the player calls it at the table (*Warg riders*), and it and the tags are
+  what the collection matches on (§12). Every card on a unit applies to every stand in it, so
+  stands that differ are two units, and the builder offers **split** rather than a toggle per
+  stand. A card is bought for a unit once; a variant is recorded where the card offers a choice,
+  and a short note where the card asks the player to name something.
+- **Marks** are the exception to *every stand*: three army-level effects say *how many* of a unit's
+  stands they touch, never which. `delayedEntry` counts stands arriving late, `transports` counts
+  stands given a transport, and `eventCards` counts the event cards bought for the unit.
+- **A hero** is a single figure with a name, tags and its own cards, and is never a stand: it has
+  no troop type, never counts toward the stand minimum and is never the general.
+- **Army cards** are bought once for the army, with a count where the card is priced per copy and
+  a variant where it offers a choice.
+- **The general** names a unit, and so stands for one of that unit's stands.
+
+`canonicalFantasySelection` in `share.ts` orders cards, tags and army cards and drops empty
+fields, so two lists that mean the same thing encode to the same share code.
+
+### 11.2 Cards
+
+`category` on each card says what it is bought for, and the builder offers it there and nowhere
+else:
+
+| Category | Bought for |
+|---|---|
+| `stand` | a unit, carried by every stand in it |
+| `hero` | a hero |
+| `standOrHero` | either |
+| `event` | a unit, as a count of cards held for its stands |
+| `army` | the army as a whole |
+
+Delayed Entry and Mobile Infantry are army cards the player never buys directly: the builder marks
+stands (and, for Delayed Entry, heroes), and the points engine prices the card from the marks.
+
+A card's **cost** is one of seven rule kinds in `lib/domain/fantasy/battle-cards.ts`, and
+`cardCostPoints` in `card-pricing.ts` evaluates it against the bearer:
+
+| Kind | Price |
+|---|---|
+| `flat` | a fixed number of points, which may be negative |
+| `byTroopType` | a default, overridden for stands matching a selector (troop type, order, category, movement) |
+| `byTopography` | one price in a dense home topography and another elsewhere |
+| `byVariant` | the price of the option chosen at purchase; unpriced until one is chosen |
+| `perCount` | a price per copy, up to a maximum count |
+| `perMarkedCappedAtValue` | a price per marked stand or hero, never more than that bearer's own cost |
+| `byBearer` | one price on a stand and another on a hero |
+
+A card's **constraints** are nine kinds: eligible or ineligible bearers by the same selectors,
+cards it excludes or requires, a cap on how many stands or heroes in the army carry it, once per
+army, never on the general, never on a hero, and on one unit only. Codes, cost kinds and constraint
+kinds are code; every price, selector, name and line of rules text is data in the pack.
+
+### 11.3 Points
+
+`fantasyPoints` in `lib/domain/fantasy/points.ts` returns a breakdown in three parts:
+
+1. **Units.** A stand costs its troop type's cost plus every card on the unit, and never less than
+   the format's minimum stand cost of 1. The unit costs that times its stands. A card whose price
+   is not yet known — a variant not chosen — counts as nothing.
+2. **Heroes.** A hero costs the format's hero cost plus its cards.
+3. **Army lines.** The invasion and manoeuvre ratings, each army card priced from its count or
+   variant, each unit's event cards, Mobile Infantry priced on the stands marked with a transport,
+   and one **Delayed Entry** line per marked unit or hero. Delayed Entry is a refund: a negative
+   line per marked stand or hero, never larger than what that stand or hero costs.
+
+The **victory value** is units plus heroes, the figure victory is reckoned on, which is why a
+Delayed Entry refund is a separate line and not a cheaper stand: a delayed stand is still worth its
+full cost. The **total** is the
+victory value plus the army lines, and it is the total that is held against the format's points
+total. The points meter shows both.
+
+### 11.4 What the validator reports
+
+`validateFantasyList` in `lib/domain/fantasy/validation.ts` follows §4.1: findings only, each with
+a code, a severity and a target — the army, the format, the general, a unit, a hero, or one card on
+a unit, a hero or the army.
+
+| Finding | Severity | Rule |
+|---|---|---|
+| `overPointsTotal` | error | the total is above the format's points total |
+| `underPointsTotal` | warning | points left unspent |
+| `tooFewStands` | error | fewer than one stand per six points of the total |
+| `tooManyHeroes`, `heroPointsAboveMax` | error | more than three heroes, or heroes costing more than eight points together |
+| `generalMissing`, `generalIsHero` | error | no unit is the general, or a hero has been named |
+| `standCostRaisedToMinimum` | info | a unit's cards would take a stand below the minimum stand cost |
+| `marksExceedStands` | warning | more stands marked than the unit holds |
+| `cardNotInPack` | warning | the card is not in this data version's pack |
+| `cardNotForPlacement` | error | the card's category does not allow it where it was bought |
+| `cardMarkedNotBought` | warning | Delayed Entry bought for the army instead of marked |
+| `cardBoughtTwice` | error | the same card twice on one unit, hero or army |
+| `variantNotChosen` | warning | a card offering a choice has none made |
+| `cardCountAboveMax` | error | more copies than the card allows |
+| `cardNotEligible`, `cardsExcludeEachOther`, `cardRequiresCard` | error | the card's own eligibility, exclusions and requirements |
+| `cardAboveArmyMax`, `cardMoreThanOncePerArmy`, `cardOnSeveralUnits` | error | the card's per-army caps |
+| `cardOnGeneral`, `cardOnHero`, `negativeCardOnHero` | error | a card the general's unit or a hero may not carry, or a negative card that would cheapen a hero |
+
+Three readings are ours rather than the rulebook's:
+
+- **"Not on the general" on part of a unit.** The general is one stand of its unit. A card that
+  marks some stands, such as Delayed Entry, is only on the general when every stand in the
+  general's unit is marked, because otherwise the general may be one of the unmarked ones. A stand
+  card such as Unreliable applies to every stand, so on the general's unit it is always on the
+  general.
+- **Illusion's "not on heroes or generals" cannot be checked.** Illusions are a count bought for
+  the army, not marks on stands or heroes, so nothing records where they go. Only the cap on the
+  count applies.
+- **The total is a rule, not a constant.** The format's points total is the player's, the stand
+  minimum scales with it, and the hero limits do not.
+
+## 12. The collection
+
+A collection records what a player owns (ADR [0031](adr/0031-track-a-collection-of-stands.md)), and
+`lib/domain/collection/` works out how much of a list it covers. An **entry** is a batch of stands
+that fields as one troop type, with a name, a count, tags, a painting status and notes. Coverage is
+a min-cost flow over one list at a time, computed and never stored, so one entry serves any number
+of lists.
+
+For a Triumph! list, each troop option is a demand: the troop type decides whether an entry may
+fill it, and the entry's tags against the option's description decide whether it is a *match* or a
+*stand-in*. A Fantasy Triumph list makes each unit a demand matched to stand entries of its troop
+type, with the unit's name and tags playing the description's part (ADR 0040, #22).
+
+**Hero entries.** A hero is a figure, not a stand, and has no troop type, so it cannot be a stand
+entry. ADR 0040 gives an entry a kind: **stands**, as above, or a **hero**, with a count of figures
+and no troop type (#21). A hero in a Fantasy Triumph list is matched to hero entries alone, on the
+hero's name and tags, and never to stand entries, where it would be counted twice against a unit
+or never painted as what it is. Pins, statuses and the to-buy and to-paint totals treat both kinds
+the same; which armies a collection can build ignores hero entries, because no Triumph! army list
+has heroes.

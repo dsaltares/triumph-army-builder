@@ -28,13 +28,13 @@ export async function FantasyBuilderPage({
     notFound();
   }
   const t = await getTranslations('pages');
-  const games = await getTranslations('games');
+  const builder = await getTranslations('fantasyBuilder');
   return (
     <FantasyBuilderStateProvider>
       <PageHeader
         back={{ href: routes.myArmies, label: t('myArmies') }}
         title={<FantasyListTitle />}
-        description={games('fantasy')}
+        description={builder('listExplained')}
         action={
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
             <FantasyBuilderActions />

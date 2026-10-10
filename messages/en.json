@@ -961,6 +961,7 @@
   },
   "fantasyBuilder": {
     "buildList": "Build a Fantasy Triumph list",
+    "listExplained": "Fantasy Triumph · Your own army, not one from a list: units of any troop type, each named as you call it at the table and carrying the same cards on every stand, a few heroes, and cards for the army as a whole, built to a points total you choose.",
     "packLoadFailed": "The Fantasy Triumph pack could not be loaded",
     "savedListFailed": "That saved list could not be opened",
     "subtotals": "Victory value {victory} · Ratings and army cards {army}",
