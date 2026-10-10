@@ -1,6 +1,6 @@
 # Glossary — English to Spanish
 
-The rules vocabulary of *Triumph!*, fixed once so two hundred ad-hoc choices cannot be made across
+The rules vocabulary of *Triumph!* and *Fantasy Triumph*, fixed once so two hundred ad-hoc choices cannot be made across
 a translation run and then be impossible to unpick. Every Spanish string in `messages/es.json` and
 `data/translations/es/` is written against this table, and a term that is not here is not settled.
 
@@ -46,6 +46,40 @@ from. A later `es-419` is a retranslation, not a restructure — see ADR 0027.
 | dismount | desmontar | |
 | mounted | montada | |
 | foot | a pie | |
+
+## Games and Fantasy Triumph
+
+The app builds lists for two games (`docs/DOMAIN.md` §10). The game names are kept: **Triumph!**
+and **Fantasy Triumph** are titles, never *Triunfo* or *Triunfo fantástico*.
+
+| English | Spanish | Note |
+|---|---|---|
+| game | juego | The ruleset a list is built under: Triumph! or Fantasy Triumph. Never *modo*: neither game is a mode of the other. |
+| format | formato | A Fantasy Triumph list's points total, home topography and two ratings, chosen and paid for. |
+| points total | total de puntos | Fantasy Triumph's, set by the player. Triumph! has a *point cap* (*límite de puntos*) instead. |
+| unit | unidad | Named stands of one troop type carrying the same cards. A Triumph! list has troop options, never units. |
+| class | clase | The rulebook's word for what the app calls a unit. Use *unit* in the app; *class* appears only where the rules are explained. |
+| hero | héroe | A single named figure with its own cards. Never a stand and never the general. |
+| hero entry | entrada de héroe | A collection entry holding hero figures, with no troop type. The other kind is a *stand entry* (*entrada de peanas*). |
+| army card | carta de ejército | A card bought once for the whole army. |
+| event card | carta de evento | A card bought for a unit as a count of copies. |
+| stand card | carta de peana | A card bought for a unit and carried by every stand in it. |
+| hero card | carta de héroe | A card bought for a hero. |
+| Delayed Entry | Entrada retrasada | A card name, translated with the rest of the catalogue in `data/translations/es/games/fantasy/`; written here because the builder's marks name it. |
+| dense topography | topografía densa | One of Fantasy Triumph's four home topographies beyond Triumph!'s seven. |
+| victory value | valor de victoria | Units plus heroes, without the ratings and army cards. |
+| split | dividir | Moving some of a unit's stands into a new unit. |
+
+### Fantasy names of troop types
+
+Fantasy Triumph calls two troop types by other names. They are display names over the same troop
+types, so the acronyms (`ARC`, `ELE`) and everything keyed on them stay; a Fantasy Triumph page
+shows the Fantasy name, and every other page the Triumph! one.
+
+| Code | Triumph! | Fantasy Triumph | Spanish |
+|---|---|---|---|
+| ARC | Archers | Shooters | Tiradores |
+| ELE | Elephants | Behemoths | Behemots |
 
 ## Troop types — translated, acronyms kept
 
