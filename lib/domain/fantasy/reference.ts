@@ -5,6 +5,7 @@ import type {
   TroopTypeCode,
   TroopTypeOrder,
 } from '../../data/schema.ts';
+import type { CombatFactors } from '../troop-types.ts';
 import type { FantasyFormat } from './battle-cards.ts';
 
 export type FantasyTroopType = {
@@ -13,6 +14,7 @@ export type FantasyTroopType = {
   cost: number;
   category: TroopTypeCategory;
   order: TroopTypeOrder;
+  combatFactors: CombatFactors;
   movement?: number;
 };
 

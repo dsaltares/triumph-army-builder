@@ -20,6 +20,8 @@ import {
   armyLineName,
   armyLinePoints,
   cardsText,
+  factorCell,
+  fantasyFactorColumns,
   fantasyFacts,
   fantasyHeadline,
   fantasySheetWords,
@@ -37,13 +39,24 @@ const { numeric } = StyleSheet.create({
   numeric: { width: 52, textAlign: 'right', paddingRight: 6 },
 });
 
-function ColumnLabels({ labels }: { labels: readonly [string, ...string[]] }) {
+function ColumnLabels({
+  labels,
+  factorLabels,
+}: {
+  labels: readonly [string, ...string[]];
+  factorLabels: readonly string[];
+}) {
   const [first, ...figures] = labels;
   return (
     <View style={styles.columns}>
       <Text style={[styles.cardName, styles.columnLabel]}>{first}</Text>
       {figures.map((label) => (
         <Text key={label} style={[numeric, styles.columnLabel]}>
+          {label}
+        </Text>
+      ))}
+      {factorLabels.map((label) => (
+        <Text key={label} style={[styles.factor, styles.columnLabel]}>
           {label}
         </Text>
       ))}
@@ -88,6 +101,11 @@ function UnitRow({
       <Text style={numeric}>{unit.stands}</Text>
       <Text style={numeric}>{formatPoints(unit.pointsPerStand)}</Text>
       <Text style={numeric}>{formatPoints(unit.points)}</Text>
+      {fantasyFactorColumns.map((column) => (
+        <Text key={column.key} style={styles.factor}>
+          {factorCell(column, unit)}
+        </Text>
+      ))}
     </View>
   );
 }
@@ -136,12 +154,14 @@ function SheetSection<Row>({
   rows,
   empty,
   labels,
+  factorLabels = [],
   children,
 }: {
   title: string;
   rows: readonly Row[];
   empty: string;
   labels: readonly [string, ...string[]];
+  factorLabels?: readonly string[];
   children: (row: Row, index: number) => ReactNode;
 }) {
   return (
@@ -151,7 +171,7 @@ function SheetSection<Row>({
         <Text style={styles.empty}>{empty}</Text>
       ) : (
         <>
-          <ColumnLabels labels={labels} />
+          <ColumnLabels labels={labels} factorLabels={factorLabels} />
           {rows.map(children)}
         </>
       )}
@@ -214,6 +234,7 @@ export function FantasySheetDocument({
           rows={sheet.units}
           empty={w('noUnits')}
           labels={[w('unit'), w('stands'), w('pointsPerStand'), w('points')]}
+          factorLabels={fantasyFactorColumns.map(({ key }) => w(key))}
         >
           {(unit) => (
             <UnitRow key={unit.id} unit={unit} w={w} locale={locale} />

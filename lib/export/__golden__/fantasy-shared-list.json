@@ -41,7 +41,18 @@
         "delayedStands": 0,
         "transports": 0,
         "pointsPerStand": 4.5,
-        "points": 18
+        "points": 18,
+        "movement": 8,
+        "factors": {
+          "closeCombat": {
+            "vsFoot": 3,
+            "vsMounted": 2
+          },
+          "rangedCombat": {
+            "shooting": 0,
+            "shotAt": 2
+          }
+        }
       },
       {
         "id": "archers",
@@ -61,7 +72,18 @@
         "delayedStands": 2,
         "transports": 0,
         "pointsPerStand": 3.5,
-        "points": 14
+        "points": 14,
+        "movement": 3,
+        "factors": {
+          "closeCombat": {
+            "vsFoot": 2,
+            "vsMounted": 4
+          },
+          "rangedCombat": {
+            "shooting": 3,
+            "shotAt": 3
+          }
+        }
       },
       {
         "id": "trolls",
@@ -87,7 +109,18 @@
         "delayedStands": 0,
         "transports": 0,
         "pointsPerStand": 5,
-        "points": 10
+        "points": 10,
+        "movement": 3,
+        "factors": {
+          "closeCombat": {
+            "vsFoot": 3,
+            "vsMounted": 2
+          },
+          "rangedCombat": {
+            "shooting": 0,
+            "shotAt": 3
+          }
+        }
       }
     ],
     "heroes": [

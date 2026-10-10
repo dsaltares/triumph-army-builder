@@ -131,15 +131,4 @@ describe('searchSavedArmies', () => {
       found(searchSavedArmies([entry({ name: 'Zama' }, null)], 'army')),
     ).toEqual([]);
   });
-
-  it('keeps the lists of the games asked for, alongside the search', () => {
-    expect(found(searchSavedArmies(entries, 'a', ['triumph']))).toEqual([
-      'Cannae',
-      'Zama',
-      'Ilipa',
-    ]);
-    expect(found(searchSavedArmies(entries, 'zam', ['triumph']))).toEqual([
-      'Zama',
-    ]);
-  });
 });

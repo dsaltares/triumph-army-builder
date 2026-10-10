@@ -112,10 +112,13 @@ const addUnit = async (user: User, troopType: string) => {
   await chooseTroopType(user, pendingTroopType(), troopType);
 };
 
-const total = () =>
-  screen
-    .getAllByRole('status')
-    .find((status) => status.textContent?.includes('/ '));
+const pointsTotalField = () =>
+  screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Points total' });
+
+const total = () => {
+  const status = pointsTotalField().closest('[role="status"]');
+  return `${status?.querySelector('span')?.textContent}/ ${pointsTotalField().value}`;
+};
 
 const saveStatus = () => screen.getByRole('status', { name: 'Save status' });
 
@@ -149,13 +152,11 @@ describe('the format', () => {
     expect(screen.getByRole('textbox', { name: 'List name' })).toHaveValue(
       'Fantasy Triumph · 9 October 2026',
     );
+    expect(pointsTotalField()).toHaveValue(51);
+    expect(total()).toContain('0/ 51');
     expect(
-      screen.getByRole('spinbutton', { name: 'Points total' }),
-    ).toHaveValue(51);
-    expect(total()).toHaveTextContent('0/ 51');
-    expect(
-      section('Format').getByRole('button', { name: 'Arable', pressed: true }),
-    ).toBeInTheDocument();
+      section('Format').getByRole('combobox', { name: 'Home topography' }),
+    ).toHaveValue('Arable');
   });
 
   it('prices the ratings as they step, and says what a dense topography costs', async () => {
@@ -171,9 +172,16 @@ describe('the format', () => {
 
     expect(format.getByText('Gives back ½')).toBeInTheDocument();
     expect(format.getByText('Gives back 1')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('-1½');
+    expect(total()).toContain('-1½');
 
-    await user.click(format.getByRole('button', { name: 'Dense Forest' }));
+    const topography = format.getByRole('combobox', {
+      name: 'Home topography',
+    });
+    await user.clear(topography);
+    await user.type(topography, 'dense f');
+    await user.click(
+      await screen.findByRole('option', { name: 'Dense Forest' }),
+    );
 
     expect(
       format.getByText(
@@ -182,14 +190,18 @@ describe('the format', () => {
     ).toBeInTheDocument();
   });
 
-  it('plays at the points total the player types', async () => {
+  it('plays at the points total the player types in the points bar', async () => {
     const { user } = await openBuilder();
-    const field = screen.getByRole('spinbutton', { name: 'Points total' });
+    const field = pointsTotalField();
+
+    expect(
+      section('Format').queryByRole('spinbutton', { name: 'Points total' }),
+    ).not.toBeInTheDocument();
 
     await user.clear(field);
     await user.type(field, '36');
 
-    expect(total()).toHaveTextContent('0/ 36');
+    expect(total()).toContain('0/ 36');
   });
 });
 
@@ -203,7 +215,7 @@ describe('a unit', () => {
     expect(
       unitCard().getByText('Javelin Cavalry · 1 stand at 4 · costs 4'),
     ).toBeInTheDocument();
-    expect(total()).toHaveTextContent('4/ 51');
+    expect(total()).toContain('4/ 51');
     expect(
       section('General').getByRole('radio', { name: 'Javelin Cavalry' }),
     ).toBeChecked();
@@ -222,7 +234,7 @@ describe('a unit', () => {
 
     const troopType = pendingTroopType();
     expect(troopType).toHaveValue('');
-    expect(total()).toHaveTextContent('0/ 51');
+    expect(total()).toContain('0/ 51');
 
     await user.click(troopType);
 
@@ -233,9 +245,37 @@ describe('a unit', () => {
     await chooseTroopType(user, troopType, 'Javelin Cavalry');
 
     expect(unitNames()).toEqual(['Warg riders']);
-    expect(total()).toHaveTextContent('4/ 51');
+    expect(total()).toContain('4/ 51');
     expect(
       section('General').getByRole('radio', { name: 'Warg riders' }),
+    ).toBeChecked();
+  });
+
+  it('names the general from the points bar too', async () => {
+    const { user } = await openBuilder(
+      '',
+      fantasySelection({
+        units: [
+          fantasyUnit('wargs', 'JCV', { name: 'Warg riders' }),
+          fantasyUnit('archers', 'ARC', { name: 'Goblin archers' }),
+        ],
+        general: null,
+      }),
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'No general yet — show general' }),
+    );
+    const picker = within(await screen.findByRole('dialog'));
+    await user.click(picker.getByRole('radio', { name: 'Goblin archers' }));
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'General: Goblin archers — show general',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      section('General').getByRole('radio', { name: 'Goblin archers' }),
     ).toBeChecked();
   });
 
@@ -284,7 +324,7 @@ describe('a unit', () => {
       section('General').getByRole('radio', { name: 'Warg riders' }),
     ).toBeChecked();
     expect(card.getByText('wolf')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('8/ 51');
+    expect(total()).toContain('8/ 51');
   });
 
   it('suggests tags from the names in the list', async () => {
@@ -327,14 +367,43 @@ describe('a unit', () => {
       card.getByRole('button', { name: 'Zoom Flying', pressed: true }),
     ).toBeInTheDocument();
     expect(card.getByText('+2 per stand')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('5/ 51');
+    expect(total()).toContain('5/ 51');
 
     await user.click(
       card.getByRole('button', { name: 'Remove Flying from War Wagons' }),
     );
 
     expect(card.queryByText('Flying')).not.toBeInTheDocument();
-    expect(total()).toHaveTextContent('3/ 51');
+    expect(total()).toContain('3/ 51');
+  });
+
+  it('narrows the offered cards to a search, across every group', async () => {
+    const { user } = await openBuilder();
+    await addUnit(user, 'War Wagons');
+    const card = unitCard();
+
+    await user.click(card.getByRole('button', { name: 'Add card' }));
+    const dialog = within(await screen.findByRole('dialog'));
+    await user.type(dialog.getByLabelText('Search cards'), 'fly');
+
+    expect(dialog.getByRole('button', { name: /^Flying/ })).toBeVisible();
+    expect(
+      dialog.queryByRole('button', { name: /^Armored/ }),
+    ).not.toBeInTheDocument();
+
+    await user.clear(dialog.getByLabelText('Search cards'));
+    await user.type(dialog.getByLabelText('Search cards'), 'zzz');
+
+    expect(
+      dialog.getByText('No card offered here answers to that search.'),
+    ).toBeVisible();
+
+    await user.keyboard('{Escape}');
+    await user.click(card.getByRole('button', { name: 'Add card' }));
+
+    expect(
+      within(await screen.findByRole('dialog')).getByLabelText('Search cards'),
+    ).toHaveValue('');
   });
 
   it('counts event cards and marked stands among its cards', async () => {
@@ -366,7 +435,7 @@ describe('a unit', () => {
 
     expect(card.getByText('2 cards for the unit')).toBeInTheDocument();
     expect(card.getByText('2 of 3 stands')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('9/ 51');
+    expect(total()).toContain('9/ 51');
 
     await user.click(card.getByRole('button', { name: 'Add card' }));
     const dialog = within(await screen.findByRole('dialog'));
@@ -383,7 +452,7 @@ describe('a unit', () => {
     );
 
     expect(card.queryByText('2 of 3 stands')).not.toBeInTheDocument();
-    expect(total()).toHaveTextContent('13/ 51');
+    expect(total()).toContain('13/ 51');
   });
 
   it('asks Terrain Affinity which terrains it favours', async () => {
@@ -404,7 +473,7 @@ describe('a unit', () => {
     expect(
       card.getByRole('textbox', { name: 'Terrain Affinity note' }),
     ).toHaveValue('Hills, woods');
-    expect(total()).toHaveTextContent('3½/ 51');
+    expect(total()).toContain('3½/ 51');
   });
 
   it('splits some of its stands into a new unit with the same cards', async () => {
@@ -452,7 +521,7 @@ describe('a unit', () => {
     );
 
     expect(section('Units').getByText('No units yet')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('0/ 51');
+    expect(total()).toContain('0/ 51');
     expect(
       section('General').getByText('Add a unit to choose the general.'),
     ).toBeInTheDocument();
@@ -475,7 +544,7 @@ describe('heroes', () => {
     expect(
       heroes.getByText('The army has all 3 of its heroes'),
     ).toBeInTheDocument();
-    expect(total()).toHaveTextContent('3/ 51');
+    expect(total()).toContain('3/ 51');
     expect(
       section('General').queryByRole('radio', { name: /Hero/ }),
     ).not.toBeInTheDocument();
@@ -500,7 +569,7 @@ describe('heroes', () => {
     );
 
     expect(heroes.getByText('Costs 2 with its cards')).toBeInTheDocument();
-    expect(total()).toHaveTextContent('0/ 51');
+    expect(total()).toContain('0/ 51');
 
     await user.click(heroes.getByRole('button', { name: 'Remove Shaman' }));
 
@@ -528,7 +597,7 @@ describe('army cards', () => {
     );
     await user.click(army.getByRole('button', { name: 'Any topography' }));
 
-    expect(total()).toHaveTextContent('4/ 51');
+    expect(total()).toContain('4/ 51');
   });
 });
 
@@ -623,7 +692,7 @@ describe('saving', () => {
       'Goblin raid',
     );
     expect(unitNames()).toEqual(['Warg riders']);
-    expect(total()).toHaveTextContent('16/ 51');
+    expect(total()).toContain('16/ 51');
   });
 });
 
