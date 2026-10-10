@@ -798,7 +798,9 @@ of lists.
 For a Triumph! list, each troop option is a demand: the troop type decides whether an entry may
 fill it, and the entry's tags against the option's description decide whether it is a *match* or a
 *stand-in*. A Fantasy Triumph list makes each unit a demand matched to stand entries of its troop
-type, with the unit's name and tags playing the description's part (ADR 0040, #22).
+type, with the unit's name and tags playing the description's part (ADR 0040, #22). Each game
+reads only the entries kept for it: stands kept for Triumph! alone never cover a Fantasy Triumph
+unit, and an entry added from a Fantasy Triumph list's coverage is kept for Fantasy Triumph.
 
 **Hero entries.** A hero is a figure, not a stand, and has no troop type, so it cannot be a stand
 entry. ADR 0040 gives an entry a kind: **stands**, as above, or a **hero**, with a count of figures

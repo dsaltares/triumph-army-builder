@@ -2,7 +2,6 @@ import type { TroopTypeCode } from '../../data/schema.ts';
 import type {
   ArmyList,
   ContingentId,
-  TroopOption,
   TroopOptionId,
 } from '../army/army-list.ts';
 import {
@@ -12,6 +11,7 @@ import {
 } from '../army/selection.ts';
 import { sum } from '../numbers.ts';
 import { type TagMatcher, tagMatcher } from './description-words.ts';
+import { type HeroKind, isHeroEntry } from './entry.ts';
 import { minCostMaxFlow } from './min-cost-flow.ts';
 
 export type CollectionEntryId = string;
@@ -25,6 +25,10 @@ export type CollectionEntry = {
   tags: readonly string[];
   status: PaintStatus;
 };
+
+export type HeroCollectionEntry = Omit<CollectionEntry, 'troopType'> & HeroKind;
+
+export type CoverableEntry = CollectionEntry | HeroCollectionEntry;
 
 export type CollectionPin = {
   option: TroopOptionId;
@@ -62,56 +66,52 @@ export type Coverage = {
   toPaint: number;
 };
 
-type Demand = {
-  contingent: ContingentId;
-  troopOption: TroopOption;
-  troopType: TroopTypeCode;
+export type Fielding = TroopTypeCode | HeroKind;
+
+export type DemandKey = string;
+
+export type Demand = {
+  key: DemandKey;
+  fielding: Fielding;
   stands: number;
+  description: string;
 };
 
-const demandsOf = (
-  armyList: ArmyList,
-  selection: ArmySelection,
-): readonly Demand[] =>
-  selectedContingents(armyList, selection).flatMap((contingent) =>
-    contingent.troopOptions.flatMap((troopOption) =>
-      troopOption.troopEntries
-        .map(({ troopType }) => ({
-          contingent: contingent.id,
-          troopOption,
-          troopType,
-          stands: standCount(selection, troopOption.id, troopType),
-        }))
-        .filter(({ stands }) => stands > 0),
-    ),
-  );
+export type DemandPin = {
+  demand: DemandKey;
+  entry: CollectionEntryId;
+  count: number;
+};
 
-const fieldsAs = (entry: CollectionEntry, { troopType }: Demand) =>
-  entry.troopType === troopType;
+export type DemandCover = {
+  allocations: readonly Allocation[];
+  covered: number;
+  toBuy: number;
+  toPaint: number;
+};
+
+export const fieldsAs = (entry: CoverableEntry, fielding: Fielding) =>
+  typeof fielding === 'string'
+    ? !isHeroEntry(entry) && entry.troopType === fielding
+    : isHeroEntry(entry);
 
 const isPinnedTo = (
-  pins: readonly CollectionPin[],
-  entry: CollectionEntry,
-  { troopOption, troopType }: Demand,
-) =>
-  pins.some(
-    (pin) =>
-      pin.entry === entry.id &&
-      pin.option === troopOption.id &&
-      pin.troopType === troopType,
-  );
+  pins: readonly DemandPin[],
+  entry: CoverableEntry,
+  { key }: Demand,
+) => pins.some((pin) => pin.entry === entry.id && pin.demand === key);
 
-type FitOf = (entry: CollectionEntry, demand: Demand) => Fit;
+type FitOf = (entry: CoverableEntry, demand: Demand) => Fit;
 
 const fitter = (
-  entries: readonly CollectionEntry[],
-  pins: readonly CollectionPin[],
+  entries: readonly CoverableEntry[],
+  pins: readonly DemandPin[],
   tagged: TagMatcher,
 ): FitOf => {
   const indexOf = new Map(entries.map((entry, index) => [entry, index]));
   return (entry, demand) =>
     isPinnedTo(pins, entry, demand) ||
-    tagged(demand.troopOption.description)[indexOf.get(entry) ?? -1]
+    tagged(demand.description)[indexOf.get(entry) ?? -1]
       ? 'match'
       : 'standIn';
 };
@@ -125,20 +125,13 @@ const paintCost: Record<PaintStatus, number> = {
 const worstPaintCost = Math.max(...Object.values(paintCost));
 
 type Stock = {
-  entry: CollectionEntry;
+  entry: CoverableEntry;
   left: number;
-};
-
-type Need = {
-  demand: Demand;
-  left: number;
-  spent: Map<Stock, number>;
-  pinned: Set<Stock>;
 };
 
 const counted = (value: number) => Math.max(0, Math.trunc(value));
 
-const spend = (stock: Stock, need: Need, stands: number) => {
+const spend = (stock: Stock, need: Need<Demand>, stands: number) => {
   stock.left -= stands;
   need.left -= stands;
   need.spent.set(stock, (need.spent.get(stock) ?? 0) + stands);
@@ -146,17 +139,13 @@ const spend = (stock: Stock, need: Need, stands: number) => {
 
 const applyPins = (
   stocks: readonly Stock[],
-  needs: readonly Need[],
-  pins: readonly CollectionPin[],
+  needs: readonly Need<Demand>[],
+  pins: readonly DemandPin[],
 ) => {
   for (const pin of pins) {
     const stock = stocks.find(({ entry }) => entry.id === pin.entry);
-    const need = needs.find(
-      ({ demand }) =>
-        demand.troopOption.id === pin.option &&
-        demand.troopType === pin.troopType,
-    );
-    if (!stock || !need || !fieldsAs(stock.entry, need.demand)) {
+    const need = needs.find(({ demand }) => demand.key === pin.demand);
+    if (!stock || !need || !fieldsAs(stock.entry, need.demand.fielding)) {
       continue;
     }
     need.pinned.add(stock);
@@ -166,14 +155,14 @@ const applyPins = (
 
 const allocateTheRest = (
   stocks: readonly Stock[],
-  needs: readonly Need[],
+  needs: readonly Need<Demand>[],
   fitOf: FitOf,
 ) => {
   const standInCost =
     (worstPaintCost + 1) * (sum(needs.map(({ left }) => left)) + 1);
   const arcs = stocks.flatMap(({ entry }, supply) =>
     needs.flatMap(({ demand }, index) =>
-      fieldsAs(entry, demand)
+      fieldsAs(entry, demand.fielding)
         ? [
             {
               supply,
@@ -201,11 +190,18 @@ const allocateTheRest = (
   });
 };
 
-const demandCoverage = (
+type Need<D extends Demand> = {
+  demand: D;
+  left: number;
+  spent: Map<Stock, number>;
+  pinned: Set<Stock>;
+};
+
+const demandCover = <D extends Demand>(
   stocks: readonly Stock[],
-  { demand, spent, pinned }: Need,
+  { demand, spent, pinned }: Need<D>,
   fitOf: FitOf,
-): DemandCoverage => {
+): D & DemandCover => {
   const allocations = stocks.flatMap((stock) => {
     const stands = spent.get(stock) ?? 0;
     return stands > 0 || pinned.has(stock)
@@ -222,10 +218,7 @@ const demandCoverage = (
   });
   const covered = sum(allocations.map(({ stands }) => stands));
   return {
-    contingent: demand.contingent,
-    option: demand.troopOption.id,
-    troopType: demand.troopType,
-    stands: demand.stands,
+    ...demand,
     allocations,
     covered,
     toBuy: demand.stands - covered,
@@ -237,34 +230,95 @@ const demandCoverage = (
   };
 };
 
-export const coverage = (
-  selection: ArmySelection,
-  armyList: ArmyList,
-  entries: readonly CollectionEntry[],
-  pins: readonly CollectionPin[],
+export const coverDemands = <D extends Demand>(
+  demands: readonly D[],
+  entries: readonly CoverableEntry[],
+  pins: readonly DemandPin[],
   tagged: TagMatcher = tagMatcher(entries.map(({ tags }) => tags)),
-): Coverage => {
+): readonly (D & DemandCover)[] => {
   const stocks = entries.map((entry) => ({
     entry,
     left: counted(entry.count),
   }));
-  const needs = demandsOf(armyList, selection).map((demand) => ({
-    demand,
-    left: demand.stands,
-    spent: new Map<Stock, number>(),
-    pinned: new Set<Stock>(),
-  }));
+  const needs = demands.map(
+    (demand): Need<D> => ({
+      demand,
+      left: demand.stands,
+      spent: new Map<Stock, number>(),
+      pinned: new Set<Stock>(),
+    }),
+  );
   const fitOf = fitter(entries, pins, tagged);
   applyPins(stocks, needs, pins);
   allocateTheRest(stocks, needs, fitOf);
-  const demands = needs.map((need) => demandCoverage(stocks, need, fitOf));
+  return needs.map((need) => demandCover(stocks, need, fitOf));
+};
+
+type TriumphDemand = Demand & {
+  contingent: ContingentId;
+  option: TroopOptionId;
+  troopType: TroopTypeCode;
+};
+
+const triumphDemandKey = (option: TroopOptionId, troopType: TroopTypeCode) =>
+  `${option}|${troopType}`;
+
+const triumphDemands = (
+  armyList: ArmyList,
+  selection: ArmySelection,
+): readonly TriumphDemand[] =>
+  selectedContingents(armyList, selection).flatMap((contingent) =>
+    contingent.troopOptions.flatMap((troopOption) =>
+      troopOption.troopEntries
+        .map(({ troopType }) => ({
+          key: triumphDemandKey(troopOption.id, troopType),
+          fielding: troopType,
+          description: troopOption.description,
+          contingent: contingent.id,
+          option: troopOption.id,
+          troopType,
+          stands: standCount(selection, troopOption.id, troopType),
+        }))
+        .filter(({ stands }) => stands > 0),
+    ),
+  );
+
+const triumphPin = ({ option, troopType, entry, count }: CollectionPin) => ({
+  demand: triumphDemandKey(option, troopType),
+  entry,
+  count,
+});
+
+export const coverageTotals = <
+  Covered extends Pick<
+    DemandCoverage,
+    'stands' | 'covered' | 'toBuy' | 'toPaint'
+  >,
+>(
+  demands: readonly Covered[],
+) => {
   const total = (field: 'stands' | 'covered' | 'toBuy' | 'toPaint') =>
     sum(demands.map((demand) => demand[field]));
   return {
-    demands,
     stands: total('stands'),
     covered: total('covered'),
     toBuy: total('toBuy'),
     toPaint: total('toPaint'),
   };
+};
+
+export const coverage = (
+  selection: ArmySelection,
+  armyList: ArmyList,
+  entries: readonly CollectionEntry[],
+  pins: readonly CollectionPin[],
+  tagged?: TagMatcher,
+): Coverage => {
+  const covered = coverDemands(
+    triumphDemands(armyList, selection),
+    entries,
+    pins.map(triumphPin),
+    tagged,
+  ).map(({ key, fielding, description, ...demand }): DemandCoverage => demand);
+  return { demands: covered, ...coverageTotals(covered) };
 };

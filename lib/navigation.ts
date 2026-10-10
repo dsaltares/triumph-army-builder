@@ -1,3 +1,4 @@
+import type { TroopTypeCode } from './data/schema.ts';
 import type { Game } from './domain/game.ts';
 
 export const routes = {
@@ -40,8 +41,16 @@ export const listViewUrl = (listId: string) =>
 export const unsavedListUrl = (code: string) =>
   `${routes.collection}/preview?${new URLSearchParams({ s: code })}`;
 
-export const newCollectionEntryUrl = (troopType = '') =>
-  `${routes.collection}?${new URLSearchParams({ new: troopType })}`;
+export const heroEntryParam = 'hero';
+
+export const newCollectionEntryUrl = (
+  entry: TroopTypeCode | typeof heroEntryParam | '' = '',
+  game?: Game,
+) =>
+  `${routes.collection}?${new URLSearchParams({
+    new: entry,
+    ...(game === undefined ? {} : { game }),
+  })}`;
 
 export const sheetDispositions = ['attachment', 'inline'] as const;
 

@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { FantasyCardCode } from '@/lib/data/schema';
+import type { TagWord } from '@/lib/domain/collection/tag-words';
 import {
   canAddHero,
   heroCardOffers,
@@ -43,6 +44,7 @@ type HeroContext = {
   selection: FantasySelection;
   onEdit: SelectionEdit;
   newId: () => string;
+  tagWords: readonly TagWord[];
 };
 
 export const heroName = (hero: FantasyHero, index: number, numbered: string) =>
@@ -62,7 +64,7 @@ function HeroCard({
   const t = useTranslations('fantasyBuilder');
   const words = usePointsWords();
   const delayedId = useId();
-  const { catalogue, selection, onEdit } = context;
+  const { catalogue, selection, onEdit, tagWords } = context;
   const [draftTag, setDraftTag] = useState('');
   const name = heroName(hero, index, t('hero'));
   const offers = useMemo(
@@ -92,6 +94,7 @@ function HeroCard({
           </div>
 
           <TagField
+            ownWords={tagWords}
             tags={hero.tags}
             draft={draftTag}
             troopType={null}
