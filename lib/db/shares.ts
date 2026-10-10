@@ -1,16 +1,18 @@
 import { createHash } from 'node:crypto';
 import type { Kysely } from 'kysely';
-import {
-  type SelectionInput,
-  withGame,
-} from '../domain/army/selection-schema.ts';
+import type { StoredSavedList } from '../domain/army/saved-army.ts';
+import type { ArmySelection } from '../domain/army/selection.ts';
+import { withGame } from '../domain/army/selection-schema.ts';
 import { encodeShareCode } from '../domain/army/share-codec.ts';
 import { type SharedList, shareIdLength } from '../domain/army/shared-list.ts';
+import type { ViewableGame } from '../domain/game.ts';
 import { listColumns, storedList } from './list-columns.ts';
 import type { Database, Share } from './schema.ts';
 
-export type ShareContent = SelectionInput & {
+export type ShareContent = {
   name: string;
+  game?: ViewableGame | undefined;
+  selection: ArmySelection;
 };
 
 export type NewShareRecord = ShareContent & {
@@ -24,10 +26,17 @@ export const shareId = ({ name, ...list }: ShareContent) =>
     .digest('base64url')
     .slice(0, shareIdLength);
 
+const viewableList = (list: StoredSavedList) => {
+  if (list.game !== 'triumph') {
+    throw new Error(`a share was stored for ${list.game}, which has no view`);
+  }
+  return list;
+};
+
 export const toSharedList = (row: Share): SharedList => ({
   id: row.id,
   name: row.name,
-  ...storedList(row),
+  ...viewableList(storedList(row)),
   dataVersion: row.data_version,
   createdAt: row.created_at,
 });

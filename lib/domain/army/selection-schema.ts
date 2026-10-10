@@ -2,6 +2,11 @@ import { z } from 'zod';
 import { battleCardCodes, troopTypeCodes } from '../../data/schema.ts';
 import { dataVersionFormat, dataVersionPattern } from '../data-version.ts';
 import {
+  fantasySavedSelectionSchema,
+  fantasySelectionSchema,
+} from '../fantasy/selection-schema.ts';
+import { isViewableGame, type ViewableGame } from '../game.ts';
+import {
   type ContingentGroupId,
   parseContingentGroupId,
   parseTroopOptionId,
@@ -56,18 +61,68 @@ export const triumphSavedSelectionSchema = z.object({
 
 export const savedSelectionSchema = z.discriminatedUnion('game', [
   triumphSavedSelectionSchema,
+  fantasySavedSelectionSchema,
 ]);
 
 export type SavedSelection = z.infer<typeof savedSelectionSchema>;
+
+const triumphByDefault = z.literal('triumph').default('triumph');
+
+export const savedListInputSchema = z.union([
+  z.object({ game: triumphByDefault, selection: selectionSchema }),
+  fantasySavedSelectionSchema,
+]);
+
+export const savedListChangeSchema = z.union([
+  z.object({ game: triumphByDefault, selection: selectionSchema.optional() }),
+  z.object({
+    game: z.literal('fantasy'),
+    selection: fantasySelectionSchema.optional(),
+  }),
+]);
+
+export type SavedListChange = z.input<typeof savedListChangeSchema>;
+
+export const changedList = (
+  change: SavedListChange,
+): SavedSelection | undefined =>
+  change.game === 'fantasy'
+    ? change.selection && { game: 'fantasy', selection: change.selection }
+    : change.selection && { game: 'triumph', selection: change.selection };
+
+export const savedSelectionOf = (list: SavedSelection): SavedSelection => {
+  switch (list.game) {
+    case 'triumph':
+      return { game: list.game, selection: list.selection };
+    case 'fantasy':
+      return { game: list.game, selection: list.selection };
+  }
+};
+
+export type ViewableSavedSelection = Extract<
+  SavedSelection,
+  { game: ViewableGame }
+>;
+
+export const isViewableList = (
+  list: SavedSelection,
+): list is ViewableSavedSelection => isViewableGame(list.game);
+
+export type TriumphSavedSelection = z.infer<typeof triumphSavedSelectionSchema>;
+
+export type FantasySavedSelection = z.infer<typeof fantasySavedSelectionSchema>;
 
 export const parseStoredSelection = (game: string, json: string) =>
   savedSelectionSchema.parse({ game, selection: JSON.parse(json) });
 
 export type SelectionInput =
   | SavedSelection
-  | { game?: undefined; selection: z.infer<typeof selectionSchema> };
+  | {
+      game?: 'triumph' | undefined;
+      selection: z.infer<typeof selectionSchema>;
+    };
 
 export const withGame = (input: SelectionInput): SavedSelection =>
-  input.game === undefined
-    ? { game: 'triumph', selection: input.selection }
-    : { game: input.game, selection: input.selection };
+  input.game === 'fantasy'
+    ? { game: input.game, selection: input.selection }
+    : { game: 'triumph', selection: input.selection };

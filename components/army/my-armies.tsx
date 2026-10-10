@@ -32,17 +32,21 @@ import { useSession } from '@/lib/auth/client';
 import { isSignedIn } from '@/lib/auth/session';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import { searchSavedArmies } from '@/lib/domain/army/saved-army-index';
+import {
+  isViewableList,
+  type ViewableSavedSelection,
+} from '@/lib/domain/army/selection-schema';
 import { savableGames } from '@/lib/domain/game';
 import { describeError } from '@/lib/errors';
 import { routes } from '@/lib/navigation';
 
 const noArmies: readonly SavedArmy[] = [];
 
-const sheetList = ({ game, name, selection }: SavedArmy) => ({
+const sheetList = ({
   game,
   name,
   selection,
-});
+}: SavedArmy & ViewableSavedSelection) => ({ game, name, selection });
 
 export function MyArmies({ armyCount }: { armyCount: number }) {
   const t = useTranslations('armies');
@@ -75,9 +79,13 @@ export function MyArmies({ armyCount }: { armyCount: number }) {
 
   const actionsFor = useCallback(
     (army: SavedArmy) => ({
-      onPreviewPdf: () => exportSheet(sheetList(army), 'inline'),
-      onDownloadPdf: () => exportSheet(sheetList(army), 'attachment'),
-      onShare: () => shareArmy(sheetList(army)),
+      ...(isViewableList(army)
+        ? {
+            onPreviewPdf: () => exportSheet(sheetList(army), 'inline'),
+            onDownloadPdf: () => exportSheet(sheetList(army), 'attachment'),
+            onShare: () => shareArmy(sheetList(army)),
+          }
+        : {}),
       onRename: () => setRenaming(army),
       onDuplicate: () =>
         duplicateArmy(

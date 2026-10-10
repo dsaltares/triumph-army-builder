@@ -10,7 +10,7 @@ import {
 import { armyNameSchema } from '../../domain/army/saved-army.ts';
 import { selectionSchema } from '../../domain/army/selection-schema.ts';
 import { anonymousShareLimit } from '../../domain/army/shared-list.ts';
-import { defaultGame, savableGameSchema } from '../../domain/game.ts';
+import { viewableGameSchema } from '../../domain/game.ts';
 import { writeEvent } from '../events.ts';
 import { router, signedInProcedure } from '../trpc.ts';
 
@@ -25,7 +25,7 @@ export const shareRouter = router({
     .input(
       z.object({
         name: armyNameSchema,
-        game: savableGameSchema.default(defaultGame),
+        game: viewableGameSchema.default('triumph'),
         selection: selectionSchema,
       }),
     )

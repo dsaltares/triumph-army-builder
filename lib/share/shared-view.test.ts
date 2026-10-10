@@ -21,7 +21,12 @@ import {
   sharedListSummary,
 } from '@/lib/share/shared-view';
 import { sampleBundleHolding } from '@/test/bundle-source.ts';
-import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
+import {
+  armyDetail,
+  fixtureSelection,
+  triumphList,
+} from '@/test/fixtures/army.ts';
+import { fantasySelection } from '@/test/fixtures/fantasy.ts';
 
 const armyList = buildArmyList(armyDetail());
 
@@ -130,14 +135,16 @@ describe('loadSharedView', () => {
   });
 });
 
-const saveList = (name = 'Cannae') =>
-  insertArmy(db, {
-    id: 'saved-1',
-    userId: owner,
-    name,
-    selection: fixtureSelection(),
-    at,
-  });
+const saveList = async (name = 'Cannae') =>
+  triumphList(
+    await insertArmy(db, {
+      id: 'saved-1',
+      userId: owner,
+      name,
+      selection: fixtureSelection(),
+      at,
+    }),
+  );
 
 const addEntry = (
   userId: string,
@@ -205,6 +212,27 @@ describe('loadSavedView', () => {
         bundle,
         id: saved.id,
         userId: 'user-scipio',
+        isAnonymous: false,
+      }),
+    ).toBeNull();
+  });
+
+  it('is nothing yet for a Fantasy Triumph list, which has no view', async () => {
+    await insertArmy(db, {
+      id: 'saved-fantasy',
+      userId: owner,
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection: fantasySelection(),
+      at,
+    });
+
+    expect(
+      await loadSavedView({
+        db,
+        bundle,
+        id: 'saved-fantasy',
+        userId: owner,
         isAnonymous: false,
       }),
     ).toBeNull();

@@ -17,12 +17,16 @@ import {
   fantasyPoints,
 } from './points.ts';
 import { type FantasyReference, fantasyCatalogue } from './reference.ts';
-import type { FantasySelection } from './selection-schema.ts';
+import type {
+  FantasyCardChoice,
+  FantasySelection,
+} from './selection-schema.ts';
 
 export type FantasySheetCard = {
   code: FantasyCardCode;
   name: string;
   variants: readonly string[];
+  note: string | null;
 };
 
 export type FantasySheetUnit = {
@@ -99,15 +103,16 @@ export const fantasySheet = (
   const catalogue = fantasyCatalogue(reference);
   const names = fantasyTroopTypeNames(reference);
   const points = fantasyPoints(selection, catalogue);
-  const sheetCard = ({
-    code,
-    variants,
-  }: FantasyCardPrice): FantasySheetCard => {
+  const sheetCard = (
+    { code, variants }: FantasyCardPrice,
+    choice: FantasyCardChoice | undefined,
+  ): FantasySheetCard => {
     const card = catalogue.cards.get(code);
     return {
       code,
       name: fantasyCardName(code, card),
       variants: variantNames(card, variants),
+      note: choice?.note?.trim() || null,
     };
   };
   const unitNames = new Map(
@@ -183,7 +188,9 @@ export const fantasySheet = (
         troopTypeName: names[unit.troopType],
         stands: unit.stands,
         general: unit.id === selection.general,
-        cards: (priced?.cards ?? []).map(sheetCard),
+        cards: (priced?.cards ?? []).map((card, cardIndex) =>
+          sheetCard(card, unit.cards[cardIndex]),
+        ),
         delayedStands: Math.min(unit.marks.delayedEntry, unit.stands),
         transports: Math.min(unit.marks.transports, unit.stands),
         pointsPerStand: priced?.pointsPerStand ?? 0,
@@ -195,7 +202,9 @@ export const fantasySheet = (
       return {
         id: hero.id,
         name: hero.name.trim(),
-        cards: (priced?.cards ?? []).map(sheetCard),
+        cards: (priced?.cards ?? []).map((card, cardIndex) =>
+          sheetCard(card, hero.cards[cardIndex]),
+        ),
         delayedEntry: hero.delayedEntry,
         points: priced?.points ?? 0,
       };

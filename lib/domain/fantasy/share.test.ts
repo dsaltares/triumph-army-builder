@@ -92,4 +92,24 @@ describe('canonicalFantasySelection', () => {
     expect(canonical.armyCards).toEqual([{ code: 'noCamp' }]);
     expect(fantasySelectionSchema.parse(canonical)).toEqual(canonical);
   });
+
+  it('trims a card note, and drops one left blank', () => {
+    const canonical = canonicalFantasySelection(
+      fantasySelection({
+        units: [
+          fantasyUnit('a', 'LFT', {
+            cards: [
+              { code: 'terrainAffinity', note: '  Hills, woods ' },
+              { code: 'deadly', note: '   ' },
+            ],
+          }),
+        ],
+      }),
+    );
+
+    expect(canonical.units[0]?.cards).toEqual([
+      { code: 'deadly' },
+      { code: 'terrainAffinity', note: 'Hills, woods' },
+    ]);
+  });
 });

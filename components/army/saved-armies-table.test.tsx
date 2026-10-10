@@ -2,17 +2,20 @@ import { screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { SavedArmiesTable } from '@/components/army/saved-armies-table';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import type {
   SavedArmyEntry,
   SavedArmyStanding,
 } from '@/lib/domain/army/saved-army-index';
 import { fixtureDataVersion, fixtureSelection } from '@/test/fixtures/army';
+import { fantasySelection } from '@/test/fixtures/fantasy';
 import { renderUi } from '@/test/ui';
 
 const anHourAgo = () => new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
+const saved = (
+  overrides: Partial<TriumphSavedArmy> = {},
+): TriumphSavedArmy => ({
   id: 'army-1',
   game: 'triumph',
   name: 'Cannae',
@@ -110,6 +113,31 @@ describe('SavedArmiesTable', () => {
     expect(
       screen.getByRole('link', { name: 'Tidewrack Corsairs' }),
     ).toHaveAttribute('href', '/armies/list-carthage');
+  });
+
+  it('leads a Fantasy Triumph list to its own builder, with no army and no view', () => {
+    show([
+      entry({
+        army: {
+          ...saved({ id: 'army-2', name: 'Goblin raid' }),
+          game: 'fantasy',
+          armyListId: null,
+          selection: fantasySelection(),
+        },
+        listName: 'Fantasy Triumph',
+      }),
+    ]);
+
+    expect(screen.getByRole('link', { name: 'Goblin raid' })).toHaveAttribute(
+      'href',
+      '/fantasy/build?list=army-2',
+    );
+    expect(
+      screen.queryByRole('link', { name: 'View Goblin raid' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Fantasy Triumph' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the points against the cap, and the verdict', () => {

@@ -1,10 +1,11 @@
+import type { StoredSavedList } from '../domain/army/saved-army.ts';
 import {
   parseStoredSelection,
   type SavedSelection,
   type SelectionInput,
   withGame,
 } from '../domain/army/selection-schema.ts';
-import { gameModule } from '../domain/games/registry.ts';
+import { listArmyListId } from '../domain/games/registry.ts';
 
 export type StoredList = {
   game: string;
@@ -12,10 +13,10 @@ export type StoredList = {
   selection: string;
 };
 
-export const selectionColumns = ({ game, selection }: SavedSelection) => ({
-  army_list_id: gameModule(game).armyListId(selection),
-  selection: JSON.stringify(selection),
-  data_version: selection.dataVersion,
+export const selectionColumns = (list: SavedSelection) => ({
+  army_list_id: listArmyListId(list),
+  selection: JSON.stringify(list.selection),
+  data_version: list.selection.dataVersion,
 });
 
 export const listColumns = (input: SelectionInput) => {
@@ -30,7 +31,9 @@ const triumphArmyListId = ({ army_list_id }: StoredList) => {
   return army_list_id;
 };
 
-export const storedList = (row: StoredList) => ({
-  ...parseStoredSelection(row.game, row.selection),
-  armyListId: triumphArmyListId(row),
-});
+export const storedList = (row: StoredList): StoredSavedList => {
+  const list = parseStoredSelection(row.game, row.selection);
+  return list.game === 'triumph'
+    ? { ...list, armyListId: triumphArmyListId(row) }
+    : { ...list, armyListId: null };
+};

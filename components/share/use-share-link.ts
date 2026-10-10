@@ -4,14 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { startAnonymousSession, useSession } from '@/lib/auth/client';
 import type { ArmySelection } from '@/lib/domain/army/selection';
-import type { SavableGame } from '@/lib/domain/game';
+import type { ViewableGame } from '@/lib/domain/game';
 import { describeError } from '@/lib/errors';
 import { sharedListUrl } from '@/lib/navigation';
 import { useTRPC, useTRPCClient } from '@/lib/trpc/client';
 
 export type ShareInput = {
   name: string;
-  game: SavableGame;
+  game: ViewableGame;
   selection: ArmySelection;
 };
 

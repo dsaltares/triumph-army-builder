@@ -23,9 +23,13 @@ import {
   copyName,
   type SavedArmy,
 } from '../../domain/army/saved-army.ts';
-import { selectionSchema } from '../../domain/army/selection-schema.ts';
+import {
+  changedList,
+  savedListChangeSchema,
+  savedListInputSchema,
+  savedSelectionOf,
+} from '../../domain/army/selection-schema.ts';
 import { stalePins } from '../../domain/collection/pins.ts';
-import { defaultGame, savableGameSchema } from '../../domain/game.ts';
 import type { Caller, Context } from '../context.ts';
 import { writeEvent } from '../events.ts';
 import { publicProcedure, router, signedInProcedure } from '../trpc.ts';
@@ -33,8 +37,6 @@ import { publicProcedure, router, signedInProcedure } from '../trpc.ts';
 const listChangeThrottleMs = 10 * 60 * 1000;
 
 const armyIdSchema = z.object({ id: z.string().min(1) });
-
-const gameInputSchema = savableGameSchema.default(defaultGame);
 
 const capReached = () =>
   new TRPCError({
@@ -54,8 +56,12 @@ const guardCap = async ({ db, caller }: Context & { caller: Caller }) => {
 const forgetStalePins = async (
   db: Context['db'],
   owner: ArmyPinsOwner,
-  selection: SavedArmy['selection'],
+  list: SavedArmy,
 ) => {
+  if (list.game !== 'triumph') {
+    return;
+  }
+  const { selection } = list;
   const [pins, entries] = await Promise.all([
     listArmyPins(db, owner),
     listCollectionEntries(db, owner.userId),
@@ -95,13 +101,7 @@ export const armyRouter = router({
   }),
 
   create: signedInProcedure
-    .input(
-      z.object({
-        name: armyNameSchema,
-        game: gameInputSchema,
-        selection: selectionSchema,
-      }),
-    )
+    .input(z.object({ name: armyNameSchema }).and(savedListInputSchema))
     .mutation(async ({ ctx, input }) => {
       await guardCap(ctx);
       const at = ctx.now();
@@ -110,8 +110,7 @@ export const armyRouter = router({
           id: ctx.nextId(),
           userId: ctx.caller.userId,
           name: input.name,
-          game: input.game,
-          selection: input.selection,
+          ...savedSelectionOf(input),
           at,
         });
         await recordEvent(
@@ -124,14 +123,13 @@ export const armyRouter = router({
 
   update: signedInProcedure
     .input(
-      armyIdSchema.extend({
-        name: armyNameSchema.optional(),
-        game: gameInputSchema,
-        selection: selectionSchema.optional(),
-      }),
+      armyIdSchema
+        .extend({ name: armyNameSchema.optional() })
+        .and(savedListChangeSchema),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, game, ...changes } = input;
+      const { id, name } = input;
+      const list = changedList(input);
       const owner = { id, userId: ctx.caller.userId };
       const at = ctx.now();
       const army = await ctx.db.transaction().execute(async (trx) => {
@@ -139,37 +137,25 @@ export const armyRouter = router({
         if (!before) {
           return null;
         }
-        const updated = await updateArmy(
-          trx,
-          owner,
-          {
-            name: changes.name,
-            list: changes.selection && {
-              game,
-              selection: changes.selection,
-            },
-          },
-          at,
-        );
+        const updated = await updateArmy(trx, owner, { name, list }, at);
         if (!updated) {
           return null;
         }
-        if (changes.name !== undefined && changes.name !== before.name) {
+        if (name !== undefined && name !== before.name) {
           await recordThrottledEvent(
             trx,
             writeEvent(ctx, at, { kind: 'list.renamed' }, id),
             listChangeThrottleMs,
           );
         }
-        if (changes.selection) {
+        if (list) {
           await forgetStalePins(
             trx,
             { armyId: id, userId: ctx.caller.userId },
-            updated.selection,
+            updated,
           );
           if (
-            JSON.stringify(changes.selection) !==
-            JSON.stringify(before.selection)
+            JSON.stringify(list.selection) !== JSON.stringify(before.selection)
           ) {
             await recordThrottledEvent(
               trx,
@@ -203,8 +189,7 @@ export const armyRouter = router({
           id: ctx.nextId(),
           userId: ctx.caller.userId,
           name: copyName(army.name),
-          game: army.game,
-          selection: army.selection,
+          ...savedSelectionOf(army),
           at,
         });
         await recordEvent(

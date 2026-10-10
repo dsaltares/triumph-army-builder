@@ -9,7 +9,7 @@ import {
   type ListCoverage,
   listCoverage,
 } from '../collection/list-coverage.ts';
-import type { SavableGame } from '../game.ts';
+import type { ViewableGame } from '../game.ts';
 import { gameModule } from '../games/registry.ts';
 import type {
   TroopTypeCost,
@@ -18,7 +18,7 @@ import type {
 } from '../troop-types.ts';
 import type { ArmyList } from './army-list.ts';
 import type { PointsMeter } from './builder.ts';
-import type { SavedArmy } from './saved-army.ts';
+import type { ViewableSavedArmy } from './saved-army.ts';
 import type { ArmySelection } from './selection.ts';
 import type { SharedList } from './shared-list.ts';
 import type { ArmySheet } from './sheet.ts';
@@ -26,7 +26,7 @@ import type { ValidationReport } from './validation-report.ts';
 
 export type ViewedList = {
   name: string;
-  game: SavableGame;
+  game: ViewableGame;
   dataVersion: string;
   selection: ArmySelection;
 };
@@ -45,7 +45,7 @@ export type CollectionReading =
 
 export type SavedView = ListReading & {
   kind: 'saved';
-  list: SavedArmy;
+  list: ViewableSavedArmy;
   collection: CollectionReading;
 };
 
@@ -114,7 +114,7 @@ export const savedView = ({
   pins = [],
   ...data
 }: ListViewData & {
-  saved: SavedArmy;
+  saved: ViewableSavedArmy;
   collection: readonly NamedCollectionEntry[] | null;
   pins?: readonly CollectionPin[];
 }): SavedView => {

@@ -1,5 +1,5 @@
 import { deflateSync, inflateSync } from 'fflate';
-import { gameModule } from '../games/registry.ts';
+import { canonicalList } from '../games/registry.ts';
 import type { ArmySelection } from './selection.ts';
 import {
   type SavedSelection,
@@ -75,12 +75,9 @@ const jsonOf = (version: number, body: string): unknown => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const payloadOf = ({ game, selection }: SavedSelection) => {
-  const module = gameModule(game);
-  return {
-    game,
-    ...module.selectionSchema.parse(module.canonicalise(selection)),
-  };
+const payloadOf = (list: SavedSelection) => {
+  const { game, selection } = canonicalList(list);
+  return { game, ...selection };
 };
 
 const taggedPayload = (payload: unknown) => {
@@ -131,5 +128,10 @@ export const encodeSelection = (selection: ArmySelection) =>
 
 export const decodeSelection = (code: string): ShareDecoding => {
   const decoded = decodeShareCode(code);
-  return decoded.ok ? { ok: true, selection: decoded.list.selection } : decoded;
+  if (!decoded.ok) {
+    return decoded;
+  }
+  return decoded.list.game === 'triumph'
+    ? { ok: true, selection: decoded.list.selection }
+    : { ok: false, reason: 'malformed' };
 };

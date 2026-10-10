@@ -1,6 +1,9 @@
-import type { Game, SavableGame } from '../game.ts';
-import { gameModule } from '../games/registry.ts';
-import type { TriumphReference } from '../games/triumph.ts';
+import type { FantasyReference } from '../fantasy/reference.ts';
+import type { FantasySelection } from '../fantasy/selection-schema.ts';
+import type { FindingReport, SeverityFinding } from '../findings.ts';
+import type { Game } from '../game.ts';
+import { fantasy } from '../games/fantasy.ts';
+import { type TriumphReference, triumph } from '../games/triumph.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
 import type { PointsMeter } from './builder.ts';
 import type { SavedArmy } from './saved-army.ts';
@@ -24,11 +27,28 @@ export type SavedListReading = {
   standing: SavedArmyStanding;
 };
 
-export const savedListReading = (
-  { game, selection }: { game: SavableGame; selection: ArmySelection },
-  reference: TriumphReference,
+export type ReadableList =
+  | { game: 'triumph'; selection: ArmySelection; reference: TriumphReference }
+  | {
+      game: 'fantasy';
+      selection: FantasySelection;
+      reference: FantasyReference;
+    };
+
+type ReadingModule<Selection, Reference> = {
+  points: (selection: Selection, reference: Reference) => PointsMeter;
+  validate: (
+    selection: Selection,
+    reference: Reference,
+  ) => FindingReport<SeverityFinding>;
+  subjectName: (reference: Reference) => string;
+};
+
+const reading = <Selection, Reference>(
+  module: ReadingModule<Selection, Reference>,
+  selection: Selection,
+  reference: Reference,
 ): SavedListReading => {
-  const module = gameModule(game);
   const { legal, errors, warnings } = module.validate(selection, reference);
   return {
     listName: module.subjectName(reference),
@@ -39,6 +59,15 @@ export const savedListReading = (
       warnings,
     },
   };
+};
+
+export const savedListReading = (list: ReadableList): SavedListReading => {
+  switch (list.game) {
+    case 'triumph':
+      return reading(triumph, list.selection, list.reference);
+    case 'fantasy':
+      return reading(fantasy, list.selection, list.reference);
+  }
 };
 
 export const searchSavedArmies = (

@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useUpdateArmy } from '@/components/army/use-saved-armies';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
-import type { ArmySelection } from '@/lib/domain/army/selection';
-import { encodeSelection } from '@/lib/domain/army/share-codec';
+import {
+  type SavedSelection,
+  savedSelectionOf,
+} from '@/lib/domain/army/selection-schema';
+import { encodeShareCode } from '@/lib/domain/army/share-codec';
 
 export const autosaveQuietMs = 1200;
 
@@ -13,19 +16,18 @@ export type AutosaveStatus = 'saved' | 'saving' | 'failed';
 export type AutosaveInput = {
   saved: SavedArmy;
   listName: string;
-  selection: ArmySelection;
+  list: SavedSelection;
 };
 
-type Write = {
+type Write = SavedSelection & {
   id: string;
   name: string;
-  selection: ArmySelection;
 };
 
 const outstanding = (
   saved: SavedArmy,
   listName: string,
-  selection: ArmySelection,
+  list: SavedSelection,
 ): Write | null => {
   const name = listName.trim();
   if (!name) {
@@ -33,17 +35,17 @@ const outstanding = (
   }
   const changed =
     name !== saved.name ||
-    encodeSelection(selection) !== encodeSelection(saved.selection);
-  return changed ? { id: saved.id, name, selection } : null;
+    encodeShareCode(list) !== encodeShareCode(savedSelectionOf(saved));
+  return changed ? { ...list, id: saved.id, name } : null;
 };
 
-export const useAutosave = ({ saved, listName, selection }: AutosaveInput) => {
+export const useAutosave = ({ saved, listName, list }: AutosaveInput) => {
   const update = useUpdateArmy();
   const [failed, setFailed] = useState(false);
 
   const pending = useMemo(
-    () => outstanding(saved, listName, selection),
-    [saved, listName, selection],
+    () => outstanding(saved, listName, list),
+    [saved, listName, list],
   );
 
   const latest = useRef(pending);

@@ -16,6 +16,7 @@ export const trackedRoutes = [
   '/collection/preview',
   '/cookies',
   '/fantasy/battle-cards',
+  '/fantasy/build',
   '/fantasy/troop-types',
   '/forgot-password',
   '/my-armies',

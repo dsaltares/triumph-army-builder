@@ -14,11 +14,20 @@ const canonicalVariants = (variants: Variants) => {
   return entries.length === 0 ? {} : { variants: Object.fromEntries(entries) };
 };
 
+const canonicalNote = (note: string | undefined) => {
+  const trimmed = note?.trim() ?? '';
+  return trimmed === '' ? {} : { note: trimmed };
+};
+
 const canonicalCards = (
   cards: readonly FantasyCardChoice[],
 ): FantasyCardChoice[] =>
   cards
-    .map(({ code, variants }) => ({ code, ...canonicalVariants(variants) }))
+    .map(({ code, variants, note }) => ({
+      code,
+      ...canonicalVariants(variants),
+      ...canonicalNote(note),
+    }))
     .sort((left, right) =>
       ascending(JSON.stringify(left), JSON.stringify(right)),
     );

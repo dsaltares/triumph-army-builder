@@ -6,13 +6,25 @@ export { type Game, games } from '../data/schema.ts';
 
 export const gameSchema = z.enum(games);
 
-export const savableGames = ['triumph'] as const satisfies readonly Game[];
+export const savableGames = [
+  'triumph',
+  'fantasy',
+] as const satisfies readonly Game[];
 
 export type SavableGame = (typeof savableGames)[number];
 
 export const savableGameSchema = z.enum(savableGames);
 
 export const defaultGame: SavableGame = 'triumph';
+
+export const viewableGames = ['triumph'] as const satisfies readonly Game[];
+
+export type ViewableGame = (typeof viewableGames)[number];
+
+export const viewableGameSchema = z.enum(viewableGames);
+
+export const isViewableGame = (game: Game): game is ViewableGame =>
+  (viewableGames as readonly Game[]).includes(game);
 
 export type NamedSelection<Selection> = {
   name: string;

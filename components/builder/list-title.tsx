@@ -10,7 +10,7 @@ import { pageHeading } from '@/components/layout/page-header';
 import { armyNameMaxLength } from '@/lib/domain/army/saved-army';
 import { cn } from '@/lib/utils';
 
-function ListNameField({
+export function ListNameField({
   listName,
   rename,
 }: Pick<BuilderSnapshot, 'listName' | 'rename'>) {

@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { armyDetail, fixtureSelection } from '@/test/fixtures/army.ts';
-import { sampleBattleCards, sampleBundledTroopTypes } from '@/test/sample.ts';
+import { fantasySelection, fantasyUnit } from '@/test/fixtures/fantasy.ts';
+import {
+  sampleBattleCards,
+  sampleBundledTroopTypes,
+  sampleFantasyReference,
+} from '@/test/sample.ts';
 import { buildArmyList } from './army-list';
-import type { SavedArmy } from './saved-army';
+import type { TriumphSavedArmy } from './saved-army';
 import {
   type SavedArmyEntry,
   savedListReading,
@@ -19,9 +24,11 @@ const reference = {
 };
 
 const standingOf = (selection: ArmySelection) =>
-  savedListReading({ game: 'triumph', selection }, reference).standing;
+  savedListReading({ game: 'triumph', selection, reference }).standing;
 
-const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
+const saved = (
+  overrides: Partial<TriumphSavedArmy> = {},
+): TriumphSavedArmy => ({
   id: 'army-1',
   game: 'triumph',
   name: 'Cannae',
@@ -34,7 +41,7 @@ const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
 });
 
 const entry = (
-  army: Partial<SavedArmy>,
+  army: Partial<TriumphSavedArmy>,
   listName: string | null = 'Fixture Army',
 ): SavedArmyEntry => ({
   army: saved(army),
@@ -48,11 +55,28 @@ const found = (entries: readonly SavedArmyEntry[]) =>
 describe('savedListReading', () => {
   it('names a saved list after the army list it was built from', () => {
     expect(
-      savedListReading(
-        { game: 'triumph', selection: fixtureSelection() },
+      savedListReading({
+        game: 'triumph',
+        selection: fixtureSelection(),
         reference,
-      ).listName,
+      }).listName,
     ).toBe(list.name);
+  });
+
+  it('reads a Fantasy Triumph list against the Fantasy Triumph pack', async () => {
+    const reading = savedListReading({
+      game: 'fantasy',
+      selection: fantasySelection({
+        units: [fantasyUnit('wargs', 'JCV', { stands: 4 })],
+        general: 'wargs',
+      }),
+      reference: await sampleFantasyReference(),
+    });
+
+    expect(reading.listName).toBe('Fantasy Triumph');
+    expect(reading.standing.meter.cap).toBe(51);
+    expect(reading.standing.meter.total).toBeGreaterThan(0);
+    expect(reading.standing.legal).toBe(false);
   });
 
   it('prices a saved selection and says whether it is legal', () => {

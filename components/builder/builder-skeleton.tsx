@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function BuilderSkeleton() {
+export function BuilderSkeleton({ label }: { label?: string } = {}) {
   const t = useTranslations('builder');
   return (
     <div
@@ -11,7 +11,7 @@ export function BuilderSkeleton() {
       aria-busy="true"
       aria-live="polite"
     >
-      <span className="sr-only">{t('loadingArmyList')}</span>
+      <span className="sr-only">{label ?? t('loadingArmyList')}</span>
       <div className="flex flex-col gap-2" aria-hidden="true">
         <Skeleton className="h-8 w-40" />
         <Skeleton className="h-1.5 w-full" />

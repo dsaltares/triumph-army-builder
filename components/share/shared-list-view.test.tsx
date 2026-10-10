@@ -5,7 +5,7 @@ import {
   SharedListView,
 } from '@/components/share/shared-list-view';
 import { buildArmyList } from '@/lib/domain/army/army-list';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import {
   emptySelection,
   withArmyBattleCard,
@@ -66,7 +66,9 @@ const shared = (overrides: Partial<SharedList> = {}): SharedList => ({
   ...overrides,
 });
 
-const saved = (overrides: Partial<SavedArmy> = {}): SavedArmy => ({
+const saved = (
+  overrides: Partial<TriumphSavedArmy> = {},
+): TriumphSavedArmy => ({
   id: 'saved-1',
   game: 'triumph',
   name: 'Cannae',
@@ -89,7 +91,7 @@ const render = (view: ListView) =>
 const show = (list: SharedList = shared()) =>
   render(sharedView({ shared: list, armyList, troopTypes, battleCards }));
 
-const showSaved = (list: SavedArmy = saved()) =>
+const showSaved = (list: TriumphSavedArmy = saved()) =>
   render(
     savedView({
       saved: list,

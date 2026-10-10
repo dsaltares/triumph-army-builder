@@ -156,6 +156,9 @@ test('a new list starts from the My Armies empty state, by searching for an army
 
   await expect(page.getByRole('button', { name: 'New list' })).toBeHidden();
   await page.getByRole('button', { name: 'Start your first list' }).click();
+  await dialog(page)
+    .getByRole('button', { name: /^Triumph!/ })
+    .click();
 
   const search = dialog(page).getByRole('searchbox', {
     name: 'Search army lists',

@@ -18,10 +18,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export type SavedArmyActions = {
+export type SavedArmyViewActions = {
   onPreviewPdf: () => void;
   onDownloadPdf: () => void;
   onShare: () => void;
+};
+
+export type SavedArmyActions = Partial<SavedArmyViewActions> & {
   onRename: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
@@ -46,18 +49,24 @@ export function SavedArmyActionsMenu({
         <span className="sr-only">{t('actionsFor', { name })}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-40">
-        <DropdownMenuItem onClick={onShare}>
-          <IconLink />
-          {t('shareLink')}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={onPreviewPdf}>
-          <IconEye />
-          {t('previewPdf')}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={onDownloadPdf}>
-          <IconDownload />
-          {t('downloadPdf')}
-        </DropdownMenuItem>
+        {onShare && (
+          <DropdownMenuItem onClick={onShare}>
+            <IconLink />
+            {t('shareLink')}
+          </DropdownMenuItem>
+        )}
+        {onPreviewPdf && (
+          <DropdownMenuItem onClick={onPreviewPdf}>
+            <IconEye />
+            {t('previewPdf')}
+          </DropdownMenuItem>
+        )}
+        {onDownloadPdf && (
+          <DropdownMenuItem onClick={onDownloadPdf}>
+            <IconDownload />
+            {t('downloadPdf')}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={onRename}>
           <IconCursorText />
           {t('rename')}

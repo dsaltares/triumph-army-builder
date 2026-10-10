@@ -9,7 +9,7 @@ import {
 } from '@/lib/db/collection';
 import { listArmyPins, pinEntry } from '@/lib/db/collection-pins';
 import { buildArmyList } from '@/lib/domain/army/army-list';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import {
   type ArmySelection,
   emptySelection,
@@ -93,7 +93,7 @@ const entry = (
   ...overrides,
 });
 
-const saved = (selection: ArmySelection): SavedArmy => ({
+const saved = (selection: ArmySelection): TriumphSavedArmy => ({
   id: 'saved-1',
   game: 'triumph',
   name: 'Lagash',

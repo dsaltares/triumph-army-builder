@@ -10,7 +10,7 @@ import {
 } from 'react';
 import type { ArmyList } from '@/lib/domain/army/army-list';
 import type { PointCosts } from '@/lib/domain/army/points';
-import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
 import type { ArmySelection } from '@/lib/domain/army/selection';
 import type {
   TroopTypeFactors,
@@ -29,44 +29,57 @@ export type BuilderSnapshot = {
   names: TroopTypeNames;
   factors: TroopTypeFactors;
   movement: TroopTypeMovements;
-  saved: SavedArmy | null;
+  saved: TriumphSavedArmy | null;
 };
 
-type BuilderStateStore = {
-  snapshot: BuilderSnapshot | null;
-  publish: (snapshot: BuilderSnapshot | null) => void;
+type SnapshotStore<Snapshot> = {
+  snapshot: Snapshot | null;
+  publish: (snapshot: Snapshot | null) => void;
 };
 
-const BuilderStateContext = createContext<BuilderStateStore | null>(null);
+export const createSnapshotStore = <Snapshot,>() => {
+  const StoreContext = createContext<SnapshotStore<Snapshot> | null>(null);
 
-const useStore = () => {
-  const store = useContext(BuilderStateContext);
-  if (!store) {
-    throw new Error(
-      'the builder state is only readable inside a BuilderStateProvider',
+  const useStore = () => {
+    const store = useContext(StoreContext);
+    if (!store) {
+      throw new Error(
+        'the builder state is only readable inside its state provider',
+      );
+    }
+    return store;
+  };
+
+  function Provider({ children }: { children: ReactNode }) {
+    const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+    const store = useMemo(
+      () => ({ snapshot, publish: setSnapshot }),
+      [snapshot],
+    );
+    return (
+      <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
     );
   }
-  return store;
+
+  const usePublish = (snapshot: Snapshot) => {
+    const { publish } = useStore();
+
+    useEffect(() => {
+      publish(snapshot);
+    }, [publish, snapshot]);
+
+    useEffect(() => () => publish(null), [publish]);
+  };
+
+  const useSnapshot = () => useStore().snapshot;
+
+  return { Provider, usePublish, useSnapshot };
 };
 
-export function BuilderStateProvider({ children }: { children: ReactNode }) {
-  const [snapshot, setSnapshot] = useState<BuilderSnapshot | null>(null);
-  const store = useMemo(() => ({ snapshot, publish: setSnapshot }), [snapshot]);
-  return (
-    <BuilderStateContext.Provider value={store}>
-      {children}
-    </BuilderStateContext.Provider>
-  );
-}
+const triumphBuilderState = createSnapshotStore<BuilderSnapshot>();
 
-export const usePublishBuilderSnapshot = (snapshot: BuilderSnapshot) => {
-  const { publish } = useStore();
+export const BuilderStateProvider = triumphBuilderState.Provider;
 
-  useEffect(() => {
-    publish(snapshot);
-  }, [publish, snapshot]);
+export const usePublishBuilderSnapshot = triumphBuilderState.usePublish;
 
-  useEffect(() => () => publish(null), [publish]);
-};
-
-export const useBuilderSnapshot = () => useStore().snapshot;
+export const useBuilderSnapshot = triumphBuilderState.useSnapshot;
