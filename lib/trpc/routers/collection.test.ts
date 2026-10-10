@@ -569,8 +569,8 @@ describe('collection.photos', () => {
         perAccount: 200,
         onAccount: 3,
         covers: {
-          'entry-spearmen': 'photo-a',
-          'entry-cavalry': 'photo-cavalry',
+          'entry-spearmen': { id: 'photo-a', width: 1600, height: 1200 },
+          'entry-cavalry': { id: 'photo-cavalry', width: 1600, height: 1200 },
         },
       });
     });
@@ -582,7 +582,7 @@ describe('collection.photos', () => {
       });
 
       expect((await mine().overview()).covers).toEqual({
-        'entry-spearmen': 'photo-b',
+        'entry-spearmen': { id: 'photo-b', width: 1600, height: 1200 },
       });
     });
 

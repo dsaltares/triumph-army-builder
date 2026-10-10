@@ -16,6 +16,10 @@ import {
   EntryDialog,
   type EntryEditing,
 } from '@/components/collection/entry-dialog';
+import {
+  EntryGallery,
+  type GalleryViewing,
+} from '@/components/collection/entry-gallery';
 import { useCollectionEntries } from '@/components/collection/use-collection-entries';
 import {
   useCollectionFilters,
@@ -95,6 +99,7 @@ function Entries({
   const [sort, sortBy] = useCollectionSort();
   const trpc = useTRPC();
   const photos = useQuery(trpc.collection.photos.overview.queryOptions());
+  const [viewing, setViewing] = useState<GalleryViewing>(null);
   const troopTypes = useMemo(
     () => collectionTroopTypes(entries, filters.troopTypes),
     [entries, filters.troopTypes],
@@ -157,10 +162,12 @@ function Entries({
           covers={photos.data?.covers ?? noCovers}
           sort={sort}
           onSort={sortBy}
+          onView={(entry, cover) => setViewing({ entry, cover })}
           onEdit={onEdit}
           onDelete={onDelete}
         />
       )}
+      <EntryGallery viewing={viewing} onClose={() => setViewing(null)} />
     </div>
   );
 }

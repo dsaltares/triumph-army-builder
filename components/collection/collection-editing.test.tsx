@@ -431,6 +431,43 @@ describe('Collection entries', () => {
     ).toHaveAttribute('src', '/api/collection/photos/photo-1/thumb');
   });
 
+  it('opens an entry’s photos larger from its thumbnail, and pages through them', async () => {
+    await ownHoplites();
+    for (const [position, id, width] of [
+      [0, 'photo-front', 1200],
+      [1, 'photo-back', 900],
+    ] as const) {
+      await insertCollectionPhoto(api.database(), {
+        id,
+        entryId: 'entry-hoplites',
+        userId: owner,
+        position,
+        width,
+        height: 1000,
+        bytes: 1000,
+        at: new Date(Date.UTC(2026, 8, 18, 11)).toISOString(),
+      });
+    }
+    const { user } = open();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'View photos of Hoplites' }),
+    );
+
+    expect(dialog().getByRole('heading', { name: 'Hoplites' })).toBeVisible();
+    expect(
+      dialog().getByRole('img', { name: 'Hoplites · photo 1 of 2' }),
+    ).toHaveAttribute('src', '/api/collection/photos/photo-front/display');
+    expect(
+      await dialog().findByRole('button', { name: 'Previous photo' }),
+    ).toBeDisabled();
+    await user.click(dialog().getByRole('button', { name: 'Next photo' }));
+    expect(
+      dialog().getByRole('img', { name: 'Hoplites · photo 2 of 2' }),
+    ).toHaveAttribute('src', '/api/collection/photos/photo-back/display');
+    expect(dialog().getByRole('button', { name: 'Next photo' })).toBeDisabled();
+  });
+
   it('adds an entry with the photos picked on the form, in the order they were picked', async () => {
     const { user } = open();
     await addSpartans(user);

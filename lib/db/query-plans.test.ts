@@ -467,7 +467,9 @@ describe('collection photos', () => {
     await collectionPhotoCovers(db, owner);
 
     expect(
-      planFor(/select "id", "entry_id", "position" from "collection_photos"/),
+      planFor(
+        /select "id", "entry_id", "position", "width", "height" from "collection_photos"/,
+      ),
     ).toContain(
       'SEARCH collection_photos USING INDEX collection_photos_user_id (user_id=?)',
     );
