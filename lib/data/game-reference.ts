@@ -1,17 +1,9 @@
 import { buildArmyList } from '../domain/army/army-list.ts';
-import type { ArmySelection } from '../domain/army/selection.ts';
-import type {
-  SavedSelection,
-  ViewableSavedSelection,
-} from '../domain/army/selection-schema.ts';
+import type { SavedSelection } from '../domain/army/selection-schema.ts';
 import type { ListViewData } from '../domain/army/shared-view.ts';
-import type { ViewableGame } from '../domain/game.ts';
-import type { GameModules } from '../domain/games/registry.ts';
-import type { ArmyBundle } from './bundle-source.ts';
-
-export type GameReference<G extends ViewableGame> = Parameters<
-  GameModules[G]['points']
->[1];
+import type { FantasyReference } from '../domain/fantasy/reference.ts';
+import type { GameData } from '../domain/games/registry.ts';
+import type { ArmyBundle, FantasyBundle, ListBundle } from './bundle-source.ts';
 
 export const readArmyListReference = async (
   bundle: ArmyBundle,
@@ -28,17 +20,36 @@ export const readArmyListReference = async (
   return { armyList: buildArmyList(detail), troopTypes, battleCards };
 };
 
-const referenceReaders = {
-  triumph: (bundle: ArmyBundle, selection: ArmySelection) =>
-    readArmyListReference(bundle, selection.army),
-} satisfies {
-  [G in ViewableGame]: (
-    bundle: ArmyBundle,
-    selection: Extract<SavedSelection, { game: G }>['selection'],
-  ) => Promise<GameReference<G> | null>;
+export const readFantasyReference = async (
+  bundle: FantasyBundle,
+): Promise<FantasyReference | null> => {
+  const [troopTypes, cards, format] = await Promise.all([
+    bundle.readFantasyTroopTypes(),
+    bundle.readFantasyBattleCards(),
+    bundle.readFantasyFormat(),
+  ]);
+  return troopTypes && cards && format ? { troopTypes, cards, format } : null;
 };
 
-export const readGameReference = (
-  bundle: ArmyBundle,
-  { game, selection }: ViewableSavedSelection,
-) => referenceReaders[game](bundle, selection);
+export const readGameData = async (
+  bundle: ListBundle,
+  list: SavedSelection,
+): Promise<GameData | null> => {
+  switch (list.game) {
+    case 'triumph': {
+      const reference = await readArmyListReference(
+        bundle,
+        list.selection.army,
+      );
+      return (
+        reference && { game: list.game, selection: list.selection, reference }
+      );
+    }
+    case 'fantasy': {
+      const reference = await readFantasyReference(bundle);
+      return (
+        reference && { game: list.game, selection: list.selection, reference }
+      );
+    }
+  }
+};

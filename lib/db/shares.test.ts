@@ -25,7 +25,9 @@ const user = (id: string, isAnonymous = 0): Insertable<UsersTable> => ({
   isAnonymous,
 });
 
-const share = (overrides: Partial<Parameters<typeof insertShare>[1]> = {}) =>
+const share = (
+  overrides: Partial<{ userId: string; name: string; at: string }> = {},
+) =>
   insertShare(db, {
     userId: owner,
     name: 'Cannae',

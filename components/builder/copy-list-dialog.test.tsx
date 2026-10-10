@@ -63,7 +63,7 @@ const openDialog = (onOpenChange = vi.fn()) => ({
     <>
       <CopyListDialog
         open
-        sheet={sheet}
+        sheet={{ game: 'triumph', sheet }}
         siteUrl="https://triumph.example"
         onOpenChange={onOpenChange}
       />

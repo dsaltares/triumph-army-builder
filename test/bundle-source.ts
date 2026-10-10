@@ -4,6 +4,7 @@ import {
   type BundleSource,
   documentBundleSource,
 } from '@/lib/data/bundle-source.ts';
+import samplePack from '@/test/fixtures/reference/sample-pack.json';
 import type { BundleFiles } from '@/test/reference.ts';
 import { sampleBundle, sampleBundledTroopTypes } from '@/test/sample.ts';
 
@@ -26,6 +27,13 @@ export const sampleBundleHolding = async (...armies: ArmyDetail[]) =>
       armies.map((detail) => [bundlePaths.army(detail.id), detail]),
     ),
   });
+
+export const samplePackSource = () =>
+  memoryBundleSource(
+    Object.fromEntries(
+      samplePack.locales.en.map(({ path, contents }) => [path, contents]),
+    ),
+  );
 
 export const absentBundles = () => () => memoryBundleSource({});
 

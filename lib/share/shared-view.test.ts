@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { ArmyBundle } from '@/lib/data/bundle-source';
+import type { BundleSource } from '@/lib/data/bundle-source';
 import { countArmies, insertArmy } from '@/lib/db/armies';
 import { createDatabase } from '@/lib/db/client';
 import { insertCollectionEntry } from '@/lib/db/collection';
@@ -26,7 +26,11 @@ import {
   fixtureSelection,
   triumphList,
 } from '@/test/fixtures/army.ts';
-import { fantasySelection } from '@/test/fixtures/fantasy.ts';
+import {
+  fantasyHero,
+  fantasySelection,
+  fantasyUnit,
+} from '@/test/fixtures/fantasy.ts';
 
 const armyList = buildArmyList(armyDetail());
 
@@ -34,7 +38,7 @@ const owner = 'user-hannibal';
 
 const at = '2026-09-20T10:00:00.000Z';
 
-let bundle: ArmyBundle;
+let bundle: BundleSource;
 let db: ReturnType<typeof createDatabase>;
 
 beforeAll(async () => {
@@ -89,11 +93,43 @@ describe('loadSharedView', () => {
 
     expect(loaded?.kind).toBe('shared');
     expect(loaded?.list).toEqual(shared);
-    expect(loaded?.sheet.listName).toBe('Cannae');
-    expect(loaded?.sheet.armyName).toBe(armyList.name);
-    expect(loaded?.sheet.totals.stands).toBe(4);
+    expect(loaded).toMatchObject({
+      game: 'triumph',
+      sheet: {
+        listName: 'Cannae',
+        armyName: armyList.name,
+        totals: { stands: 4 },
+      },
+    });
     expect(loaded?.meter.total).toBe(loaded?.sheet.totals.total);
     expect(loaded?.report.legal).toBe(false);
+  });
+
+  it('reads a Fantasy Triumph copy back with its own sheet', async () => {
+    const shared = await insertShare(db, {
+      userId: owner,
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection: fantasySelection({
+        units: [
+          fantasyUnit('wargs', 'JCV', { name: 'Warg riders', stands: 4 }),
+        ],
+        general: 'wargs',
+      }),
+      at,
+    });
+
+    const loaded = await view(shared.id);
+
+    expect(loaded?.list).toEqual(shared);
+    expect(loaded).toMatchObject({
+      game: 'fantasy',
+      sheet: {
+        listName: 'Goblin raid',
+        units: [{ name: 'Warg riders', stands: 4, general: true }],
+      },
+    });
+    expect(loaded?.meter.total).toBe(loaded?.sheet.totals.total);
   });
 
   it('is nothing for an id that is not a share id, without asking the database', async () => {
@@ -167,7 +203,7 @@ const addEntry = (
 const spearmen = armyList.main.troopOptions[0]?.id as TroopOptionId;
 
 const sourcesOf = (view: SavedView | null) =>
-  view?.collection.kind === 'coverage'
+  view?.collection?.kind === 'coverage'
     ? view.collection.contingents.flatMap(({ options }) =>
         options.flatMap(({ lines }) => lines.flatMap(({ sources }) => sources)),
       )
@@ -217,7 +253,7 @@ describe('loadSavedView', () => {
     ).toBeNull();
   });
 
-  it('is nothing yet for a Fantasy Triumph list, which has no view', async () => {
+  it('reads a Fantasy Triumph list with its own sheet, and no coverage yet', async () => {
     await insertArmy(db, {
       id: 'saved-fantasy',
       userId: owner,
@@ -227,15 +263,20 @@ describe('loadSavedView', () => {
       at,
     });
 
-    expect(
-      await loadSavedView({
-        db,
-        bundle,
-        id: 'saved-fantasy',
-        userId: owner,
-        isAnonymous: false,
-      }),
-    ).toBeNull();
+    const loaded = await loadSavedView({
+      db,
+      bundle,
+      id: 'saved-fantasy',
+      userId: owner,
+      isAnonymous: false,
+    });
+
+    expect(loaded).toMatchObject({
+      kind: 'saved',
+      game: 'fantasy',
+      sheet: { listName: 'Goblin raid' },
+      collection: null,
+    });
   });
 
   it('is nothing for an id nobody saved', async () => {
@@ -477,6 +518,28 @@ describe('sharedListSummary', () => {
 
     expect(sharedListSummary(loaded, 'en')).toBe(
       `${armyList.name} · 16 points · 4 stands · 2900 BC`,
+    );
+  });
+
+  it('names the game, the points against the total, the stands and the heroes of a Fantasy Triumph list', async () => {
+    const shared = await insertShare(db, {
+      userId: owner,
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection: fantasySelection({
+        units: [fantasyUnit('wargs', 'JCV', { stands: 4 })],
+        heroes: [fantasyHero('boss', { name: 'Boss' })],
+        general: 'wargs',
+      }),
+      at,
+    });
+    const loaded = await view(shared.id);
+    if (!loaded) {
+      throw new Error('the fixture share did not load');
+    }
+
+    expect(sharedListSummary(loaded, 'en')).toBe(
+      `Fantasy Triumph · ${loaded.sheet.totals.total} / 51 points · 4 stands · 1 hero`,
     );
   });
 });

@@ -7,7 +7,10 @@ import {
 } from '@/components/og/og-card';
 import { servedReference } from '@/lib/data/served-bundle';
 import { getDatabase } from '@/lib/db/client';
+import type { SharedView } from '@/lib/domain/army/shared-view';
+import { fantasyGameName } from '@/lib/domain/games/fantasy';
 import { formatPoints, formatYear } from '@/lib/format';
+import type { Locale } from '@/lib/i18n/locales';
 import type { IdRouteProps } from '@/lib/navigation';
 import { loadSharedView } from '@/lib/share/shared-view';
 
@@ -15,7 +18,19 @@ export const size = ogSize;
 
 export const contentType = ogContentType;
 
-export const alt = 'A Triumph! army list';
+export const alt = 'A shared army list';
+
+const ogSubtitle = (view: SharedView, locale: Locale) =>
+  (view.game === 'triumph'
+    ? [
+        view.sheet.armyName,
+        formatYear(view.sheet.year, locale),
+        view.sheet.subFaction?.name,
+      ]
+    : [fantasyGameName, view.sheet.format.topography]
+  )
+    .filter((part) => !!part)
+    .join(' · ');
 
 export default async function SharedListImage({ params }: IdRouteProps) {
   const locale = await getLocale();
@@ -31,13 +46,7 @@ export default async function SharedListImage({ params }: IdRouteProps) {
   const card = view
     ? {
         title: view.list.name,
-        subtitle: [
-          view.sheet.armyName,
-          formatYear(view.sheet.year, locale),
-          view.sheet.subFaction?.name,
-        ]
-          .filter((part) => !!part)
-          .join(' · '),
+        subtitle: ogSubtitle(view, locale),
         stats: [
           {
             value: formatPoints(view.sheet.totals.total),

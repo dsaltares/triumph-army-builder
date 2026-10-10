@@ -7,15 +7,15 @@ import { useState } from 'react';
 import { ArmyNameDialog } from '@/components/army/army-name-dialog';
 import { useCreateArmy } from '@/components/army/use-saved-armies';
 import { Button } from '@/components/ui/button';
-import type { ArmySelection } from '@/lib/domain/army/selection';
+import type { SavedSelection } from '@/lib/domain/army/selection-schema';
 import { savedListUrl } from '@/lib/navigation';
 
 export function SaveSharedCopy({
   name,
-  selection,
+  list,
 }: {
   name: string;
-  selection: ArmySelection;
+  list: SavedSelection;
 }) {
   const t = useTranslations('share');
   const create = useCreateArmy();
@@ -37,10 +37,7 @@ export function SaveSharedCopy({
         name={name}
         onOpenChange={setNaming}
         onSubmit={async (chosen) => {
-          const created = await create.mutateAsync({
-            name: chosen,
-            selection,
-          });
+          const created = await create.mutateAsync({ name: chosen, ...list });
           router.push(savedListUrl(created));
         }}
       />

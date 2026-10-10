@@ -38,9 +38,8 @@ export function DraftViewActions({
         <HeaderActionLabel>{t('edit')}</HeaderActionLabel>
       </Button>
       <ListActionsMenu
-        sheet={sheet}
-        game={list.game}
-        selection={list.selection}
+        sheet={{ game: list.game, sheet }}
+        list={{ game: list.game, selection: list.selection }}
         onCanIBuildIt={() => setCoverageOpen(true)}
       />
       <CollectionCoverage

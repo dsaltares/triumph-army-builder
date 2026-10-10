@@ -38,7 +38,7 @@ const opensElsewhere = (event: MouseEvent) =>
   event.shiftKey ||
   event.altKey;
 
-function ViewListItem({ id, settle }: SavedListView) {
+export function ViewListItem({ id, settle }: SavedListView) {
   const t = useTranslations('builder');
   const router = useRouter();
   const href = listViewUrl(id);
@@ -91,9 +91,8 @@ export function BuilderMenu({
   return (
     <>
       <ListActionsMenu
-        sheet={sheet}
-        game={triumph.game}
-        selection={selection}
+        sheet={{ game: triumph.game, sheet }}
+        list={{ game: triumph.game, selection }}
         onCanIBuildIt={() => setCoverageOpen(true)}
       >
         {view && (

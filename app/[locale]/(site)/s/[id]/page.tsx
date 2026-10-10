@@ -14,17 +14,19 @@ import {
   servedReference,
 } from '@/lib/data/served-bundle';
 import { getDatabase } from '@/lib/db/client';
+import { savedSelectionOf } from '@/lib/domain/army/selection-schema';
+import type { SharedView } from '@/lib/domain/army/shared-view';
 import { armyUrl, type IdRouteProps } from '@/lib/navigation';
 import { loadSharedView, sharedListSummary } from '@/lib/share/shared-view';
 
-const sharedView = cache(async (reference: ServedReference, id: string) => {
-  const { readArmyDetail, readBattleCards, readTroopTypes } = reference.bundle;
-  return loadSharedView({
-    db: getDatabase(),
-    bundle: { readArmyDetail, readBattleCards, readTroopTypes },
-    id,
-  });
-});
+const sharedView = cache(async (reference: ServedReference, id: string) =>
+  loadSharedView({ db: getDatabase(), bundle: reference.bundle, id }),
+);
+
+const backToArmy = (view: SharedView) =>
+  view.game === 'triumph'
+    ? { back: { href: armyUrl(view.sheet.armyId), label: view.sheet.armyName } }
+    : {};
 
 export const generateMetadata = async ({
   params,
@@ -63,15 +65,17 @@ export default async function SharedListPage({ params }: IdRouteProps) {
   if (!view) {
     notFound();
   }
-  const { list, sheet } = view;
+  const { list } = view;
   return (
     <>
       <PageHeader
-        back={{ href: armyUrl(sheet.armyId), label: sheet.armyName }}
+        {...backToArmy(view)}
         title={list.name}
         meta={<SharedCopyBadge />}
         description={sharedListSummary(view, locale)}
-        action={<SaveSharedCopy name={list.name} selection={list.selection} />}
+        action={
+          <SaveSharedCopy name={list.name} list={savedSelectionOf(list)} />
+        }
       />
       <SharedListView view={view} currentDataVersion={reference.dataVersion} />
     </>

@@ -1,0 +1,49 @@
+[b]Goblin raid[/b]
+[b]Total: 51 / 51 puntos · Valor de victoria: 48 puntos · 10 peanas[/b]
+
+[list]
+[*]Total de puntos: 51 puntos
+[*]Topografía propia: Dense Forest · densa
+[*]Índice de invasión: 4 · -1 punto
+[*]Índice de maniobra: 3 · 1 punto
+[/list]
+
+[b]Unidades[/b]
+[list]
+[*]Warg riders — 4 × Javelin Cavalry · General · 18 puntos
+[list]
+[*]Fierce, Terrain Affinity (Woods, hills)
+[*]4½ puntos por peana
+[/list]
+[*]Goblin archers — 4 × Shooters · 14 puntos
+[list]
+[*]Craven
+[*]3½ puntos por peana
+[*]Entrada retrasada: 2 peanas
+[/list]
+[*]Cave trolls — 2 × Warriors · 10 puntos
+[list]
+[*]Massive, Regenerate
+[*]5 puntos por peana
+[/list]
+[/list]
+
+[b]Héroes[/b]
+[list]
+[*]Grishnak — 6 puntos
+[list]
+[*]Deadly, Prowess, Champion, Hearten
+[/list]
+[/list]
+
+[b]Cartas de ejército[/b]
+[list]
+[*]Fortified Camp (Heavily Fortified Camp) — 2 puntos
+[*]Ambush (Home topography only) — 2 puntos
+[*]Prepared Defenses ×2 — 2 puntos
+[*]Hold the Line ×2 — Goblin archers — 1 punto
+[*]Delayed Entry ×2 — Goblin archers — -4 puntos
+[/list]
+
+Hecho con Triumph! Army Builder — https://triumph.example/fantasy/build
+Datos de Fantasy Triumph, versión 2026-09-17.abcdef01

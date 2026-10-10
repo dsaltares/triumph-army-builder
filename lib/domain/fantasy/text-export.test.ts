@@ -19,7 +19,9 @@ beforeAll(async () => {
 const words: FantasyTextWords = {
   label: (label) => `<${label}>`,
   points: (points) => `${points} pts`,
+  outOf: (points, total) => `${points}/${total} pts`,
   stands: (stands) => `${stands}×`,
+  standsOf: (stands, troopType) => `${stands}× ${troopType}`,
   topography: (topography) => topography.toLowerCase(),
 };
 
@@ -68,7 +70,7 @@ describe('fantasyTextGroups', () => {
         {
           kind: 'line',
           strong: true,
-          text: '<total>: 36 pts / 51 pts · <victoryValue>: 38 pts · 6×',
+          text: '<total>: 36/51 pts · <victoryValue>: 38 pts · 6×',
         },
       ],
       [
@@ -154,6 +156,25 @@ describe('fantasyTextGroups', () => {
       kind: 'list',
       items: [
         { children: ['Terrain Affinity (Hills, woods)', expect.any(String)] },
+      ],
+    });
+  });
+
+  it('numbers a hero nobody named, the way the builder does', () => {
+    const [, , , heroes] = groups(
+      fantasySelection({
+        heroes: [
+          fantasyHero('thane', { name: 'Thane' }),
+          fantasyHero('nameless'),
+        ],
+      }),
+    );
+
+    expect(heroes?.[1]).toMatchObject({
+      kind: 'list',
+      items: [
+        { text: expect.stringMatching(/^Thane — /) },
+        { text: expect.stringMatching(/^<hero> 2 — /) },
       ],
     });
   });

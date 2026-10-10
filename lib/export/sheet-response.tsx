@@ -1,17 +1,20 @@
 import { renderToBuffer } from '@react-pdf/renderer';
 import { z } from 'zod';
-import { ArmySheetDocument } from '@/components/export/army-sheet';
-import type { ArmyBundle } from '@/lib/data/bundle-source';
-import { readGameReference } from '@/lib/data/game-reference';
+import { listSheetDocument } from '@/components/export/list-sheet';
+import type { ListBundle } from '@/lib/data/bundle-source';
+import { readGameData } from '@/lib/data/game-reference';
 import { summarisedIssues } from '@/lib/data/zod-issues';
 import { armyNameSchema } from '@/lib/domain/army/saved-army';
-import { isViewableList } from '@/lib/domain/army/selection-schema';
 import {
   decodeShareCode,
   shareCodeMaxChars,
 } from '@/lib/domain/army/share-codec';
 import { shareIdPattern } from '@/lib/domain/army/shared-list';
-import { gameModule } from '@/lib/domain/games/registry';
+import {
+  listArmyListId,
+  listSheet,
+  listSubjectName,
+} from '@/lib/domain/games/registry';
 import { describeError } from '@/lib/errors';
 import { registerSheetFonts } from '@/lib/export/pdf-theme';
 import type { Locale } from '@/lib/i18n/locales';
@@ -25,7 +28,7 @@ import {
 
 const log = getLogger('export');
 
-export type SheetBundle = ArmyBundle;
+export type SheetBundle = ListBundle;
 
 export type ArmySheetRequest = {
   request: Request;
@@ -91,20 +94,16 @@ export const armySheetResponse = async ({
     );
   }
   const { list } = decoded;
-  if (!isViewableList(list)) {
-    return plainText(w('unreadableCode'), 400);
-  }
-  const module = gameModule(list.game);
-  if (armyId !== undefined && module.armyListId(list.selection) !== armyId) {
+  if (armyId !== undefined && listArmyListId(list) !== armyId) {
     return plainText(w('wrongArmy'), 400);
   }
 
-  const reference = await readGameReference(bundle, list);
-  if (!reference) {
+  const data = await readGameData(bundle, list);
+  if (!data) {
     return plainText(w('noSuchArmy'), 404);
   }
 
-  const listName = parsed.data.name ?? module.subjectName(reference);
+  const listName = parsed.data.name ?? listSubjectName(data);
   const shareUrl = parsed.data.share
     ? `${siteUrl}${sharedListUrl(parsed.data.share)}`
     : null;
@@ -113,16 +112,12 @@ export const armySheetResponse = async ({
 
   try {
     const body = await renderToBuffer(
-      <ArmySheetDocument
-        locale={locale}
-        sheet={module.sheetData(
-          { name: listName, selection: list.selection },
-          reference,
-        )}
-        generatedAt={generatedAt}
-        siteUrl={siteUrl}
-        shareUrl={shareUrl}
-      />,
+      listSheetDocument(listSheet(data, listName), {
+        locale,
+        generatedAt,
+        siteUrl,
+        shareUrl,
+      }),
     );
     return new Response(new Uint8Array(body), {
       headers: {
@@ -136,7 +131,7 @@ export const armySheetResponse = async ({
     });
   } catch (thrown: unknown) {
     log.error(
-      { err: thrown, game: list.game, army: module.armyListId(list.selection) },
+      { err: thrown, game: list.game, army: listArmyListId(list) },
       'army sheet PDF failed to render',
     );
     return plainText(describeError(thrown), 500);

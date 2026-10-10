@@ -22,10 +22,9 @@ const savedView = cache(async (reference: ServedReference, id: string) => {
   if (!session) {
     return null;
   }
-  const { readArmyDetail, readBattleCards, readTroopTypes } = reference.bundle;
   return loadSavedView({
     db: getDatabase(),
-    bundle: { readArmyDetail, readBattleCards, readTroopTypes },
+    bundle: reference.bundle,
     id,
     userId: session.user.id,
     isAnonymous: isAnonymousSession(session),
@@ -63,7 +62,7 @@ export default async function SavedListPage({ params }: IdRouteProps) {
         action={
           <ListViewActions
             list={view.list}
-            sheet={view.sheet}
+            sheet={view}
             collection={view.collection}
           />
         }

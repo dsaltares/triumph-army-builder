@@ -17,6 +17,7 @@ import {
 } from '@/lib/domain/army/selection';
 import {
   type NamedCollectionEntry,
+  type SavedView,
   savedView,
 } from '@/lib/domain/army/shared-view';
 import type { CollectionPin } from '@/lib/domain/collection/coverage';
@@ -104,6 +105,13 @@ const saved = (selection: ArmySelection): TriumphSavedArmy => ({
   updatedAt: '2026-09-21T10:00:00.000Z',
 });
 
+const coverageOf = ({ collection }: SavedView) => {
+  if (!collection) {
+    throw new Error('a Triumph! list always has a coverage reading');
+  }
+  return collection;
+};
+
 const show = async (
   collection: readonly NamedCollectionEntry[] | null,
   selection: ArmySelection = lagash,
@@ -112,16 +120,22 @@ const show = async (
   const rendered = renderUi(
     <CollectionCoverage
       armyId="saved-1"
-      collection={
+      collection={coverageOf(
         savedView({
           saved: saved(selection),
+          data: {
+            game: 'triumph',
+            selection,
+            reference: {
+              armyList,
+              troopTypes,
+              battleCards: sampleBattleCards,
+            },
+          },
           collection,
           pins,
-          armyList,
-          troopTypes,
-          battleCards: sampleBattleCards,
-        }).collection
-      }
+        }),
+      )}
       control={{ open: true, onOpenChange: () => {} }}
     />,
     { wrap: api.wrap },

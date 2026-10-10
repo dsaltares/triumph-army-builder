@@ -24,20 +24,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { ArmySelection } from '@/lib/domain/army/selection';
-import type { ArmySheet } from '@/lib/domain/army/sheet';
-import type { ViewableGame } from '@/lib/domain/game';
+import type { SavedSelection } from '@/lib/domain/army/selection-schema';
+import type { ListSheet } from '@/lib/domain/games/registry';
 
-const useListExport = (
-  sheet: ArmySheet,
-  game: ViewableGame,
-  selection: ArmySelection,
-) => {
+const useListExport = (sheet: ListSheet, selected: SavedSelection) => {
   const t = useTranslations('builder');
   const { share, dialog } = useShareLink();
   const exportSheet = useSheetExport();
   const [copying, setCopying] = useState(false);
-  const list = { name: sheet.listName, game, selection };
+  const list = { name: sheet.sheet.listName, ...selected };
 
   const sharing = (
     <>
@@ -84,24 +79,18 @@ const useListExport = (
 
 export function ListActionsMenu({
   sheet,
-  game,
-  selection,
+  list,
   onCanIBuildIt,
   children,
 }: {
-  sheet: ArmySheet;
-  game: ViewableGame;
-  selection: ArmySelection;
-  onCanIBuildIt: () => void;
+  sheet: ListSheet;
+  list: SavedSelection;
+  onCanIBuildIt?: (() => void) | undefined;
   children?: ReactNode;
 }) {
   const t = useTranslations('builder');
   const coverageWords = useTranslations('coverage');
-  const {
-    sharing,
-    sheet: sheetItems,
-    dialogs,
-  } = useListExport(sheet, game, selection);
+  const { sharing, sheet: sheetItems, dialogs } = useListExport(sheet, list);
 
   return (
     <>
@@ -120,11 +109,13 @@ export function ListActionsMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-48">
           {children}
-          <DropdownMenuItem onClick={onCanIBuildIt}>
-            <IconChecklist />
-            {coverageWords('canIBuildIt')}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {onCanIBuildIt && (
+            <DropdownMenuItem onClick={onCanIBuildIt}>
+              <IconChecklist />
+              {coverageWords('canIBuildIt')}
+            </DropdownMenuItem>
+          )}
+          {(children || onCanIBuildIt) && <DropdownMenuSeparator />}
           <DropdownMenuGroup>
             <DropdownMenuLabel>{t('export')}</DropdownMenuLabel>
             {sharing}

@@ -8,9 +8,10 @@ import { ListActionsMenu } from '@/components/builder/list-actions-menu';
 import { CollectionCoverage } from '@/components/collection/collection-coverage';
 import { HeaderActionLabel, iconOnlyBelowMd } from '@/components/header-action';
 import { buttonVariants } from '@/components/ui/button';
-import type { ViewableSavedArmy } from '@/lib/domain/army/saved-army';
+import type { SavedArmy } from '@/lib/domain/army/saved-army';
+import { savedSelectionOf } from '@/lib/domain/army/selection-schema';
 import type { CollectionReading } from '@/lib/domain/army/shared-view';
-import type { ArmySheet } from '@/lib/domain/army/sheet';
+import type { ListSheet } from '@/lib/domain/games/registry';
 import { savedListUrl } from '@/lib/navigation';
 
 export function ListViewActions({
@@ -18,9 +19,9 @@ export function ListViewActions({
   sheet,
   collection,
 }: {
-  list: ViewableSavedArmy;
-  sheet: ArmySheet;
-  collection: CollectionReading;
+  list: SavedArmy;
+  sheet: ListSheet;
+  collection: CollectionReading | null;
 }) {
   const t = useTranslations('share');
   const [coverageOpen, setCoverageOpen] = useState(false);
@@ -38,15 +39,16 @@ export function ListViewActions({
       </Link>
       <ListActionsMenu
         sheet={sheet}
-        game={list.game}
-        selection={list.selection}
-        onCanIBuildIt={() => setCoverageOpen(true)}
+        list={savedSelectionOf(list)}
+        onCanIBuildIt={collection ? () => setCoverageOpen(true) : undefined}
       />
-      <CollectionCoverage
-        armyId={list.id}
-        collection={collection}
-        control={{ open: coverageOpen, onOpenChange: setCoverageOpen }}
-      />
+      {collection && (
+        <CollectionCoverage
+          armyId={list.id}
+          collection={collection}
+          control={{ open: coverageOpen, onOpenChange: setCoverageOpen }}
+        />
+      )}
     </div>
   );
 }

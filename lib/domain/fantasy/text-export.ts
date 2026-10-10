@@ -27,6 +27,7 @@ export type FantasyTextLabel =
   | 'units'
   | 'noUnits'
   | 'heroes'
+  | 'hero'
   | 'noHeroes'
   | 'armyCards'
   | 'noArmyCards'
@@ -41,7 +42,9 @@ export type FantasyTextLabel =
 export type FantasyTextWords = {
   label: (label: FantasyTextLabel) => string;
   points: (points: number) => string;
+  outOf: (points: number, total: number) => string;
   stands: (stands: number) => string;
+  standsOf: (stands: number, troopType: string) => string;
   topography: (topography: string) => string;
 };
 
@@ -50,7 +53,7 @@ const item = (
   children: readonly string[] = [],
 ): FantasyTextItem => ({ text, children });
 
-const cardText = ({
+export const cardText = ({
   name,
   variants,
   note = null,
@@ -84,7 +87,7 @@ const formatItems = (
 const unitItem = (unit: FantasySheetUnit, w: FantasyTextWords) =>
   item(
     [
-      `${unit.name} — ${w.stands(unit.stands)} ${unit.troopTypeName}`,
+      `${unit.name} — ${w.standsOf(unit.stands, unit.troopTypeName)}`,
       ...(unit.general ? [w.label('general')] : []),
       w.points(unit.points),
     ].join(' · '),
@@ -100,11 +103,20 @@ const unitItem = (unit: FantasySheetUnit, w: FantasyTextWords) =>
     ],
   );
 
-const heroItem = (hero: FantasySheetHero, w: FantasyTextWords) =>
-  item(`${hero.name} — ${w.points(hero.points)}`, [
-    ...cardsLine(hero.cards),
-    ...(hero.delayedEntry ? [w.label('delayedEntry')] : []),
-  ]);
+export const heroLabel = (
+  { name }: FantasySheetHero,
+  index: number,
+  numbered: string,
+) => name || `${numbered} ${index + 1}`;
+
+const heroItem = (hero: FantasySheetHero, index: number, w: FantasyTextWords) =>
+  item(
+    `${heroLabel(hero, index, w.label('hero'))} — ${w.points(hero.points)}`,
+    [
+      ...cardsLine(hero.cards),
+      ...(hero.delayedEntry ? [w.label('delayedEntry')] : []),
+    ],
+  );
 
 const armyCardItem = (line: FantasySheetArmyLine, w: FantasyTextWords) =>
   item(
@@ -119,7 +131,7 @@ const section = <Row>(
   heading: string,
   rows: readonly Row[],
   empty: string,
-  toItem: (row: Row) => FantasyTextItem,
+  toItem: (row: Row, index: number) => FantasyTextItem,
 ): readonly FantasyTextBlock[] => [
   { kind: 'heading', text: heading },
   rows.length === 0
@@ -137,7 +149,7 @@ export const fantasyTextGroups = (
       kind: 'line',
       strong: true,
       text: [
-        `${w.label('total')}: ${w.points(sheet.totals.total)} / ${w.points(sheet.totals.pointsTotal)}`,
+        `${w.label('total')}: ${w.outOf(sheet.totals.total, sheet.totals.pointsTotal)}`,
         `${w.label('victoryValue')}: ${w.points(sheet.totals.victoryValue)}`,
         w.stands(sheet.totals.stands),
       ].join(' · '),
@@ -147,8 +159,8 @@ export const fantasyTextGroups = (
   section(w.label('units'), sheet.units, w.label('noUnits'), (unit) =>
     unitItem(unit, w),
   ),
-  section(w.label('heroes'), sheet.heroes, w.label('noHeroes'), (hero) =>
-    heroItem(hero, w),
+  section(w.label('heroes'), sheet.heroes, w.label('noHeroes'), (hero, index) =>
+    heroItem(hero, index, w),
   ),
   section(
     w.label('armyCards'),

@@ -115,7 +115,7 @@ describe('SavedArmiesTable', () => {
     ).toHaveAttribute('href', '/armies/list-carthage');
   });
 
-  it('leads a Fantasy Triumph list to its own builder, with no army and no view', () => {
+  it('leads a Fantasy Triumph list to its own builder and its own view, with no army', () => {
     show([
       entry({
         army: {
@@ -133,8 +133,8 @@ describe('SavedArmiesTable', () => {
       '/fantasy/build?list=army-2',
     );
     expect(
-      screen.queryByRole('link', { name: 'View Goblin raid' }),
-    ).not.toBeInTheDocument();
+      screen.getByRole('link', { name: 'View Goblin raid' }),
+    ).toHaveAttribute('href', '/my-armies/army-2');
     expect(
       screen.queryByRole('link', { name: 'Fantasy Triumph' }),
     ).not.toBeInTheDocument();

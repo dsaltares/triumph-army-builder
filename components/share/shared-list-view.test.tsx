@@ -1,11 +1,16 @@
 import { screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import {
   SharedCopyBadge,
   SharedListView,
 } from '@/components/share/shared-list-view';
+import { readFantasyReference } from '@/lib/data/game-reference';
 import { buildArmyList } from '@/lib/domain/army/army-list';
-import type { TriumphSavedArmy } from '@/lib/domain/army/saved-army';
+import type {
+  FantasySavedArmy,
+  TriumphSavedArmy,
+} from '@/lib/domain/army/saved-army';
+import type { ArmySelection } from '@/lib/domain/army/selection';
 import {
   emptySelection,
   withArmyBattleCard,
@@ -16,14 +21,24 @@ import type { SharedList } from '@/lib/domain/army/shared-list';
 import {
   draftView,
   type ListView,
+  type ListViewData,
   savedView,
   sharedView,
 } from '@/lib/domain/army/shared-view';
+import type { FantasyReference } from '@/lib/domain/fantasy/reference';
+import type { FantasySelection } from '@/lib/domain/fantasy/selection-schema';
+import { samplePackSource } from '@/test/bundle-source';
 import {
   armyDetail,
   builderArmyDetail,
   fixtureSelection,
 } from '@/test/fixtures/army';
+import {
+  cards,
+  fantasyHero,
+  fantasySelection,
+  fantasyUnit,
+} from '@/test/fixtures/fantasy';
 import {
   sampleBattleCards,
   sampleTroopTypes,
@@ -55,7 +70,16 @@ const selection = withArmyBattleCard(
   1,
 );
 
-const shared = (overrides: Partial<SharedList> = {}): SharedList => ({
+type TriumphSharedList = Extract<SharedList, { game: 'triumph' }>;
+
+const triumphData = (
+  { selection: chosen }: { selection: ArmySelection },
+  reference: ListViewData = { armyList, troopTypes, battleCards },
+) => ({ game: 'triumph' as const, selection: chosen, reference });
+
+const shared = (
+  overrides: Partial<TriumphSharedList> = {},
+): TriumphSharedList => ({
   id: 'AbCdEfGhIjKl',
   game: 'triumph',
   name: 'Cannae',
@@ -88,19 +112,11 @@ const render = (view: ListView) =>
     </>,
   );
 
-const show = (list: SharedList = shared()) =>
-  render(sharedView({ shared: list, armyList, troopTypes, battleCards }));
+const show = (list: TriumphSharedList = shared()) =>
+  render(sharedView({ shared: list, data: triumphData(list) }));
 
 const showSaved = (list: TriumphSavedArmy = saved()) =>
-  render(
-    savedView({
-      saved: list,
-      collection: [],
-      armyList,
-      troopTypes,
-      battleCards,
-    }),
-  );
+  render(savedView({ saved: list, data: triumphData(list), collection: [] }));
 
 const section = (name: string) => {
   const heading = screen.getByRole('heading', { name, level: 2 });
@@ -195,9 +211,11 @@ describe('SharedListView', () => {
     render(
       sharedView({
         shared: shared(),
-        armyList,
-        troopTypes: unmeasuredTroopTypes,
-        battleCards,
+        data: triumphData(shared(), {
+          armyList,
+          troopTypes: unmeasuredTroopTypes,
+          battleCards,
+        }),
       }),
     );
 
@@ -225,30 +243,33 @@ describe('SharedListView', () => {
     if (!dwellers) {
       throw new Error('the builder fixture no longer has a second option');
     }
+    const builderShare = shared({
+      armyListId: builderList.id,
+      selection: withStands(
+        withStands(
+          emptySelection({
+            army: builderList.id,
+            dataVersion,
+            year: -2900,
+          }),
+          dwellers,
+          'LFT',
+          1,
+        ),
+        dwellers,
+        'RBL',
+        1,
+      ),
+    });
     renderUi(
       <SharedListView
         view={sharedView({
-          shared: shared({
-            armyListId: builderList.id,
-            selection: withStands(
-              withStands(
-                emptySelection({
-                  army: builderList.id,
-                  dataVersion,
-                  year: -2900,
-                }),
-                dwellers,
-                'LFT',
-                1,
-              ),
-              dwellers,
-              'RBL',
-              1,
-            ),
+          shared: builderShare,
+          data: triumphData(builderShare, {
+            armyList: builderList,
+            troopTypes,
+            battleCards,
           }),
-          armyList: builderList,
-          troopTypes,
-          battleCards,
         })}
         currentDataVersion={dataVersion}
       />,
@@ -363,5 +384,127 @@ describe('SharedListView of a list not saved yet', () => {
       screen.queryByRole('link', { name: 'Edit it in the builder' }),
     ).not.toBeInTheDocument();
     expect(screen.queryByText('Shared copy')).not.toBeInTheDocument();
+  });
+});
+
+let fantasyReference: FantasyReference;
+
+beforeAll(async () => {
+  const reference = await readFantasyReference(samplePackSource());
+  if (!reference) {
+    throw new Error('the sample pack has no Fantasy Triumph section');
+  }
+  fantasyReference = reference;
+});
+
+const goblins = fantasySelection({
+  dataVersion,
+  units: [
+    fantasyUnit('wargs', 'JCV', {
+      name: 'Warg riders',
+      stands: 4,
+      cards: cards('fierce'),
+    }),
+    fantasyUnit('archers', 'ARC', {
+      name: 'Goblin archers',
+      stands: 2,
+      marks: { delayedEntry: 1 },
+    }),
+  ],
+  heroes: [fantasyHero('boss', { cards: cards('prowess') })],
+  armyCards: [{ code: 'fortifiedCamp', variants: { defenses: 'heavily' } }],
+  general: 'wargs',
+});
+
+type FantasySharedList = Extract<SharedList, { game: 'fantasy' }>;
+
+const fantasyShared: FantasySharedList = {
+  id: 'GoBlInRaId00',
+  game: 'fantasy',
+  name: 'Goblin raid',
+  armyListId: null,
+  dataVersion,
+  selection: goblins,
+  createdAt: '2026-09-20T10:00:00.000Z',
+};
+
+const fantasyData = (selection: FantasySelection) => ({
+  game: 'fantasy' as const,
+  selection,
+  reference: fantasyReference,
+});
+
+const showFantasy = () =>
+  render(sharedView({ shared: fantasyShared, data: fantasyData(goblins) }));
+
+describe('SharedListView of a Fantasy Triumph list', () => {
+  it('shows its total against the points total, and its victory value', () => {
+    showFantasy();
+
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-valuetext',
+      expect.stringMatching(/^\d+(½)? of 51 points/),
+    );
+    expect(screen.getByText('Victory value')).toBeVisible();
+    expect(screen.getByText('Points total')).toBeVisible();
+  });
+
+  it('lists each unit with its troop type under its Fantasy name, its cards and its marks', () => {
+    showFantasy();
+
+    const units = section('Units');
+    expect(units.getByText('Warg riders')).toBeVisible();
+    expect(units.getByText('General')).toBeVisible();
+    expect(units.getByText('Fierce')).toBeVisible();
+    expect(units.getByText('Shooters')).toBeVisible();
+    expect(units.getByText('Delayed entry: 1 stand')).toBeVisible();
+  });
+
+  it('numbers a nameless hero, and prints the army cards with who bears them', () => {
+    showFantasy();
+
+    expect(section('Heroes').getByText('Hero 1')).toBeVisible();
+    expect(section('Heroes').getByText('Prowess')).toBeVisible();
+    const armyCards = section('Army cards');
+    expect(
+      armyCards.getByText('Fortified Camp (Heavily Fortified Camp)'),
+    ).toBeVisible();
+    expect(armyCards.getByText('Delayed Entry')).toBeVisible();
+    expect(armyCards.getByText('Goblin archers')).toBeVisible();
+  });
+
+  it('describes its findings in Fantasy Triumph terms', () => {
+    showFantasy();
+
+    expect(section('Validation').getByText(/of 51 unspent/)).toBeVisible();
+  });
+
+  it('names the game it was built for, not an army list', () => {
+    showFantasy();
+
+    expect(
+      screen.getByText(/against reference data 2026-09-17\.abcdef01/),
+    ).toBeVisible();
+    expect(
+      screen.getByRole('link', {
+        name: 'build your own Fantasy Triumph list',
+      }),
+    ).toHaveAttribute('href', '/fantasy/build');
+    expect(
+      screen.getByRole('link', { name: 'Open it as a PDF' }),
+    ).toHaveAttribute('href', expect.stringContaining('/api/lists/sheet?s='));
+  });
+
+  it('leads your own copy back to the Fantasy Triumph builder', () => {
+    const saved: FantasySavedArmy = {
+      ...fantasyShared,
+      id: 'saved-goblins',
+      updatedAt: '2026-09-21T10:00:00.000Z',
+    };
+    render(savedView({ saved, data: fantasyData(goblins), collection: null }));
+
+    expect(
+      screen.getByRole('link', { name: 'Edit it in the builder' }),
+    ).toHaveAttribute('href', '/fantasy/build?list=saved-goblins');
   });
 });

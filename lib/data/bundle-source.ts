@@ -114,6 +114,13 @@ export type ArmyBundle = Pick<
   'readArmyDetail' | 'readBattleCards' | 'readTroopTypes'
 >;
 
+export type FantasyBundle = Pick<
+  BundleSource,
+  'readFantasyTroopTypes' | 'readFantasyBattleCards' | 'readFantasyFormat'
+>;
+
+export type ListBundle = ArmyBundle & FantasyBundle;
+
 export type CollectionBundle = Pick<
   BundleSource,
   'readArmyDetails' | 'readBattleCards' | 'readTroopTypes'

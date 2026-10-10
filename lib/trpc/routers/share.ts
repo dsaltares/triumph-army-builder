@@ -8,9 +8,8 @@ import {
   shareId,
 } from '../../db/shares.ts';
 import { armyNameSchema } from '../../domain/army/saved-army.ts';
-import { selectionSchema } from '../../domain/army/selection-schema.ts';
+import { savedListInputSchema } from '../../domain/army/selection-schema.ts';
 import { anonymousShareLimit } from '../../domain/army/shared-list.ts';
-import { viewableGameSchema } from '../../domain/game.ts';
 import { writeEvent } from '../events.ts';
 import { router, signedInProcedure } from '../trpc.ts';
 
@@ -22,13 +21,7 @@ const capReached = () =>
 
 export const shareRouter = router({
   create: signedInProcedure
-    .input(
-      z.object({
-        name: armyNameSchema,
-        game: viewableGameSchema.default('triumph'),
-        selection: selectionSchema,
-      }),
-    )
+    .input(z.object({ name: armyNameSchema }).and(savedListInputSchema))
     .mutation(({ ctx, input }) =>
       ctx.db.transaction().execute(async (trx) => {
         const shared = await findShare(trx, shareId(input));
@@ -44,9 +37,7 @@ export const shareRouter = router({
         const at = ctx.now();
         const minted = await insertShare(trx, {
           userId: ctx.caller.userId,
-          name: input.name,
-          game: input.game,
-          selection: input.selection,
+          ...input,
           at,
         });
         await recordEvent(
