@@ -222,9 +222,15 @@ export const deleteCollectionPhotosById = async (
   return Number(numDeletedRows);
 };
 
+export type CollectionPhotoCover = {
+  id: string;
+  width: number;
+  height: number;
+};
+
 export type CollectionPhotoCovers = {
   onAccount: number;
-  covers: Record<string, string>;
+  covers: Record<string, CollectionPhotoCover>;
 };
 
 export const collectionPhotoCovers = async (
@@ -233,20 +239,23 @@ export const collectionPhotoCovers = async (
 ): Promise<CollectionPhotoCovers> => {
   const rows = await db
     .selectFrom('collection_photos')
-    .select(['id', 'entry_id', 'position'])
+    .select(['id', 'entry_id', 'position', 'width', 'height'])
     .where('user_id', '=', userId)
     .execute();
-  const firsts = new Map<string, { id: string; position: number }>();
-  for (const { id, entry_id, position } of rows) {
-    const first = firsts.get(entry_id);
-    if (!first || position < first.position) {
-      firsts.set(entry_id, { id, position });
+  const firsts = new Map<string, (typeof rows)[number]>();
+  for (const row of rows) {
+    const first = firsts.get(row.entry_id);
+    if (!first || row.position < first.position) {
+      firsts.set(row.entry_id, row);
     }
   }
   return {
     onAccount: rows.length,
     covers: Object.fromEntries(
-      [...firsts].map(([entryId, { id }]) => [entryId, id]),
+      [...firsts].map(([entryId, { id, width, height }]) => [
+        entryId,
+        { id, width, height },
+      ]),
     ),
   };
 };
