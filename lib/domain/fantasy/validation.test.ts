@@ -221,7 +221,12 @@ describe('validateFantasyList', () => {
     ).toContain('cardNotForPlacement');
   });
 
-  it('asks for every variant a card offers', () => {
+  it('asks for every variant a card offers, once per card', () => {
+    expect(
+      codes({
+        heroes: [fantasyHero('mage', { cards: cards('spellblast') })],
+      }).filter((code) => code === 'variantNotChosen'),
+    ).toHaveLength(1);
     expect(
       findings({
         heroes: [

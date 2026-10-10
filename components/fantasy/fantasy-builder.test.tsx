@@ -616,6 +616,37 @@ describe('validation', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('asks once for a card’s choices, and stops asking once every one is made', async () => {
+    const { user } = await openBuilder();
+    const heroes = section('Heroes');
+    await user.click(heroes.getByRole('button', { name: 'Add hero' }));
+    await user.type(
+      heroes.getByRole('textbox', { name: 'Hero name' }),
+      'Wizard',
+    );
+    await pick(
+      user,
+      heroes.getByRole('button', { name: 'Add card' }),
+      'Spellblast',
+    );
+    const unchosen = () =>
+      section('Validation').queryAllByText(
+        'Spellblast for Wizard has no choice made',
+      );
+
+    expect(unchosen()).toHaveLength(1);
+
+    await user.click(
+      heroes.getByRole('button', { name: 'Limited Spellblast' }),
+    );
+
+    expect(unchosen()).toHaveLength(1);
+
+    await user.click(heroes.getByRole('button', { name: 'Physical' }));
+
+    expect(unchosen()).toHaveLength(0);
+  });
 });
 
 describe('can I build it', () => {

@@ -380,13 +380,22 @@ const variantFindings = (
   card: BundledFantasyCard,
   variants: Readonly<Record<string, string>> | undefined,
   target: FantasyFindingTarget,
-): readonly FantasyFinding[] =>
-  Object.entries(card.variants ?? {}).flatMap(([choice, options]) => {
-    const chosen = variants?.[choice];
-    return chosen !== undefined && chosen in options
-      ? []
-      : [finding('variantNotChosen', target, { card: card.code, choice })];
-  });
+): readonly FantasyFinding[] => {
+  const unchosen = Object.entries(card.variants ?? {}).find(
+    ([choice, options]) => {
+      const chosen = variants?.[choice];
+      return chosen === undefined || !(chosen in options);
+    },
+  );
+  return unchosen
+    ? [
+        finding('variantNotChosen', target, {
+          card: card.code,
+          choice: unchosen[0],
+        }),
+      ]
+    : [];
+};
 
 const countMax = (card: BundledFantasyCard) =>
   card.cost.kind === 'perCount' ? card.cost.max : 1;
