@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
+import { SessionCacheReset } from '@/components/auth/session-cache-reset';
 import { HydrationMarker } from '@/components/layout/hydration-marker';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -81,6 +82,7 @@ export default async function RootLayout({
                 <TooltipProvider>{children}</TooltipProvider>
                 <Toaster />
                 <PageViewBeacon />
+                <SessionCacheReset />
                 <HydrationMarker />
               </ThemeProvider>
             </NuqsAdapter>
