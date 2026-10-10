@@ -1,8 +1,8 @@
 'use client';
 
-import { IconLink, IconMenu2 } from '@tabler/icons-react';
+import { IconChecklist, IconLink, IconMenu2 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   AutosaveStatus,
@@ -13,6 +13,7 @@ import {
   type FantasyBuilderSnapshot,
   useFantasySnapshot,
 } from '@/components/fantasy/fantasy-builder-state';
+import { FantasyCoverageSheet } from '@/components/fantasy/fantasy-coverage-sheet';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -32,9 +33,15 @@ export const fantasyDraftUrl = (selection: FantasySelection) =>
     code: encodeShareCode({ game: fantasy.game, selection }),
   })}`;
 
-function FantasyListMenu({ selection }: { selection: FantasySelection }) {
+function FantasyListMenu({
+  snapshot: { selection, reference },
+}: {
+  snapshot: FantasyBuilderSnapshot;
+}) {
   const t = useTranslations('fantasyBuilder');
   const b = useTranslations('builder');
+  const coverageWords = useTranslations('coverage');
+  const [coverageOpen, setCoverageOpen] = useState(false);
 
   const copyLink = async () => {
     try {
@@ -46,26 +53,37 @@ function FantasyListMenu({ selection }: { selection: FantasySelection }) {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="outline"
-            size="icon-touch"
-            className="shrink-0"
-            aria-label={b('listActions')}
-          />
-        }
-      >
-        <IconMenu2 />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-48">
-        <DropdownMenuItem onClick={copyLink}>
-          <IconLink />
-          {t('copyLink')}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon-touch"
+              className="shrink-0"
+              aria-label={b('listActions')}
+            />
+          }
+        >
+          <IconMenu2 />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-48">
+          <DropdownMenuItem onClick={() => setCoverageOpen(true)}>
+            <IconChecklist />
+            {coverageWords('canIBuildIt')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={copyLink}>
+            <IconLink />
+            {t('copyLink')}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <FantasyCoverageSheet
+        selection={selection}
+        reference={reference}
+        control={{ open: coverageOpen, onOpenChange: setCoverageOpen }}
+      />
+    </>
   );
 }
 
@@ -85,7 +103,7 @@ function SavedFantasyActions({
   return (
     <>
       <AutosaveStatus {...autosave} />
-      <FantasyListMenu selection={snapshot.selection} />
+      <FantasyListMenu snapshot={snapshot} />
     </>
   );
 }
@@ -105,7 +123,7 @@ export function FantasyBuilderActions() {
         listName={snapshot.listName}
         list={{ game: fantasy.game, selection: snapshot.selection }}
       />
-      <FantasyListMenu selection={snapshot.selection} />
+      <FantasyListMenu snapshot={snapshot} />
     </>
   );
 }

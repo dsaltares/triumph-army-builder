@@ -8,15 +8,24 @@ import { Notice } from '@/components/notice';
 import { referenceStaleTime, useReference } from '@/components/use-reference';
 import type { TroopTypeCode } from '@/lib/data/schema';
 import { normaliseTags } from '@/lib/domain/collection/entry-schema';
-import { suggestTags } from '@/lib/domain/collection/tag-words';
+import { suggestTags, type TagWord } from '@/lib/domain/collection/tag-words';
 import { useTRPC } from '@/lib/trpc/client';
 
 const typedTag = (draft: string) => draft.trim().toLowerCase();
+
+const withOwnWordsFirst = (
+  own: readonly TagWord[],
+  packed: readonly TagWord[],
+) => {
+  const taken = new Set(own.map(({ word }) => word));
+  return [...own, ...packed.filter(({ word }) => !taken.has(word))];
+};
 
 export function TagField({
   tags,
   draft,
   troopType,
+  ownWords = [],
   error,
   onDraftChange,
   onTagsChange,
@@ -25,6 +34,7 @@ export function TagField({
   tags: readonly string[];
   draft: string;
   troopType: TroopTypeCode | null;
+  ownWords?: readonly TagWord[];
   error: string | undefined;
   onDraftChange: (draft: string) => void;
   onTagsChange: (tags: string[]) => void;
@@ -43,10 +53,12 @@ export function TagField({
   );
   const suggestions = useMemo(
     () =>
-      words.data
-        ? suggestTags(words.data, { typed: draft, tags, troopType })
-        : [],
-    [words.data, draft, tags, troopType],
+      suggestTags(withOwnWordsFirst(ownWords, words.data ?? []), {
+        typed: draft,
+        tags,
+        troopType,
+      }),
+    [ownWords, words.data, draft, tags, troopType],
   );
   const typed = typedTag(draft);
   const typedIsNew =

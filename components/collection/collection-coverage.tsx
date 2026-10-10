@@ -30,15 +30,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import type { TroopOptionId } from '@/lib/domain/army/army-list';
+import type { Game } from '@/lib/data/schema';
 import type { CollectionReading } from '@/lib/domain/army/shared-view';
 import type {
   CoverageLine,
+  CoverageOption,
   CoverageSource,
-  ListCoverage,
+  CoverageSummary,
 } from '@/lib/domain/collection/list-coverage';
 import { formatPoints } from '@/lib/format';
-import { newCollectionEntryUrl, routes } from '@/lib/navigation';
+import {
+  heroEntryParam,
+  newCollectionEntryUrl,
+  routes,
+} from '@/lib/navigation';
 import { cn } from '@/lib/utils';
 
 const headingKeys = [
@@ -52,12 +57,18 @@ const headingKeys = [
 
 type ReadDemand = {
   armyId: string | null;
-  option: TroopOptionId;
+  game: Game;
   line: CoverageLine;
 };
 
-const pinnable = ({ armyId, ...demand }: ReadDemand): CoveredDemand | null =>
-  armyId === null ? null : { armyId, ...demand };
+const pinnable = ({ armyId, line }: ReadDemand): CoveredDemand | null =>
+  armyId === null || line.pin === null ? null : { armyId, pin: line.pin, line };
+
+export type CoverageTable = {
+  id: string;
+  name: string;
+  options: readonly CoverageOption[];
+};
 
 const useCoverageWords = () => useTranslations('coverage');
 
@@ -89,7 +100,7 @@ export function CollectionLink() {
   );
 }
 
-function NeedsAccount() {
+export function NeedsAccount() {
   const t = useCoverageWords();
   const auth = useTranslations('auth');
   return (
@@ -118,7 +129,7 @@ function NeedsAccount() {
 }
 
 const coverageSummary = (
-  { coveredPoints, points, toPaint, toBuy }: ListCoverage,
+  { coveredPoints, points, toPaint, toBuy }: CoverageSummary,
   t: ReturnType<typeof useCoverageWords>,
 ) =>
   [
@@ -183,13 +194,20 @@ const rowActionClass = 'text-xs';
 function RowActions(demand: ReadDemand) {
   const t = useCoverageWords();
   const pinning = pinnable(demand);
-  const { line } = demand;
+  const { line, game } = demand;
   return (
     <div className="flex gap-2">
       {pinning && <CoverWith {...pinning} className={rowActionClass} />}
       {line.toBuy > 0 && (
         <Link
-          href={newCollectionEntryUrl(line.troopType)}
+          href={
+            line.troopType === null
+              ? newCollectionEntryUrl(heroEntryParam)
+              : newCollectionEntryUrl(
+                  line.troopType,
+                  game === 'triumph' ? undefined : game,
+                )
+          }
           className={cn(
             buttonVariants({ variant: 'outline', size: 'touch' }),
             rowActionClass,
@@ -242,15 +260,19 @@ function CoverageRow({
   );
 }
 
-function Coverage({
+export function Coverage({
   armyId,
-  coverage,
+  game,
+  summary,
+  tables,
 }: {
   armyId: string | null;
-  coverage: ListCoverage;
+  game: Game;
+  summary: CoverageSummary;
+  tables: readonly CoverageTable[];
 }) {
   const t = useCoverageWords();
-  if (coverage.entries === 0) {
+  if (summary.entries === 0) {
     return (
       <EmptyState
         title={t('emptyCollectionTitle')}
@@ -260,17 +282,17 @@ function Coverage({
       </EmptyState>
     );
   }
-  if (coverage.stands === 0) {
+  if (summary.stands === 0) {
     return <p className="text-sm text-muted-foreground">{t('emptyList')}</p>;
   }
-  const ready = coverage.toBuy === 0 && coverage.toPaint === 0;
+  const ready = summary.toBuy === 0 && summary.toPaint === 0;
   const headings = headingKeys.map(({ key, ...heading }) => ({
     label: t(key),
     ...heading,
   }));
   return (
     <>
-      <p className="text-sm font-medium">{coverageSummary(coverage, t)}</p>
+      <p className="text-sm font-medium">{coverageSummary(summary, t)}</p>
       {ready && (
         <Alert variant="success">
           <IconCircleCheck />
@@ -278,17 +300,17 @@ function Coverage({
           <AlertDescription>{t('fullyCoveredBody')}</AlertDescription>
         </Alert>
       )}
-      {coverage.contingents.map((contingent) => (
-        <div key={contingent.id} className="flex flex-col gap-2">
-          <h3 className="text-sm font-semibold">{contingent.name}</h3>
-          <FrozenTable label={contingent.name} headings={headings}>
-            {contingent.options.map((option) => (
+      {tables.map((table) => (
+        <div key={table.id} className="flex flex-col gap-2">
+          <h3 className="text-sm font-semibold">{table.name}</h3>
+          <FrozenTable label={table.name} headings={headings}>
+            {table.options.map((option) => (
               <FrozenTableGroup key={option.id}>
                 {option.lines.map((line) => (
                   <CoverageRow
-                    key={line.troopType}
+                    key={line.troopType ?? heroEntryParam}
                     armyId={armyId}
-                    option={option.id}
+                    game={game}
                     line={line}
                     description={option.description}
                   />
@@ -312,7 +334,12 @@ export function CoverageReading({
   return collection.kind === 'needsAccount' ? (
     <NeedsAccount />
   ) : (
-    <Coverage armyId={armyId} coverage={collection} />
+    <Coverage
+      armyId={armyId}
+      game="triumph"
+      summary={collection}
+      tables={collection.contingents}
+    />
   );
 }
 
