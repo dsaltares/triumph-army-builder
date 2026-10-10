@@ -54,7 +54,11 @@ const formValues = (entry: CollectionEntry): CollectionEntryFormInput => {
 const newEntryValues = (draft: NewEntry): CollectionEntryFormInput =>
   draft.kind === 'hero'
     ? { ...blankEntry, kind: 'hero' }
-    : { ...blankEntry, troopType: draft.troopType };
+    : {
+        ...blankEntry,
+        troopType: draft.troopType,
+        ...(draft.game === undefined ? {} : { games: [draft.game] }),
+      };
 
 function Cancel() {
   const t = useTranslations('collection');

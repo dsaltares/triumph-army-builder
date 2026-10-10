@@ -285,6 +285,19 @@ describe('Collection entries', () => {
     ).toBeInTheDocument();
   });
 
+  it('keeps stands for the game a link asks for', async () => {
+    await ownHoplites();
+    open({ searchParams: '?new=JCV&game=fantasy' });
+
+    await screen.findByRole('dialog');
+    const games = within(dialog().getByRole('group', { name: 'Games' }));
+    expect(troopTypeInput()).toHaveValue('JCV');
+    expect(
+      games.getByRole('checkbox', { name: 'Fantasy Triumph' }),
+    ).toBeChecked();
+    expect(games.getByRole('checkbox', { name: 'Triumph!' })).not.toBeChecked();
+  });
+
   it('opens the hero form from a link', async () => {
     await ownHoplites();
     open({ searchParams: '?new=hero' });

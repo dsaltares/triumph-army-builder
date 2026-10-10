@@ -136,7 +136,7 @@ describe('ListViewActions', () => {
 });
 
 describe('ListViewActions of a Fantasy Triumph list', () => {
-  it('edits it in its own builder, and offers no collection check yet', async () => {
+  it('edits it in its own builder, and checks it against the collection', async () => {
     const reference = await readFantasyReference(samplePackSource());
     if (!reference) {
       throw new Error('the sample pack has no Fantasy Triumph section');
@@ -161,6 +161,7 @@ describe('ListViewActions of a Fantasy Triumph list', () => {
         list={goblins}
         sheet={view}
         collection={view.collection}
+        fantasyReference={reference}
       />,
       { wrap: api.wrap },
     );
@@ -173,8 +174,10 @@ describe('ListViewActions of a Fantasy Triumph list', () => {
     expect(
       await screen.findByRole('menuitem', { name: 'Share link' }),
     ).toBeVisible();
+    await user.click(screen.getByRole('menuitem', { name: 'Can I build it?' }));
+
     expect(
-      screen.queryByRole('menuitem', { name: 'Can I build it?' }),
-    ).not.toBeInTheDocument();
+      await screen.findByRole('dialog', { name: 'Can I build it?' }),
+    ).toBeVisible();
   });
 });

@@ -9,6 +9,7 @@ import { ListViewActions } from '@/components/share/list-view-actions';
 import { SharedListView } from '@/components/share/shared-list-view';
 import { getAuth } from '@/lib/auth/auth';
 import { isAnonymousSession } from '@/lib/auth/session';
+import { readFantasyReference } from '@/lib/data/game-reference';
 import {
   type ServedReference,
   servedReference,
@@ -53,6 +54,10 @@ export default async function SavedListPage({ params }: IdRouteProps) {
     notFound();
   }
   const nav = await getTranslations('nav');
+  const fantasyReference =
+    view.game === 'fantasy'
+      ? await readFantasyReference(reference.bundle)
+      : null;
   return (
     <>
       <PageHeader
@@ -64,6 +69,7 @@ export default async function SavedListPage({ params }: IdRouteProps) {
             list={view.list}
             sheet={view}
             collection={view.collection}
+            fantasyReference={fantasyReference}
           />
         }
       />

@@ -20,6 +20,7 @@ import {
   useFantasyFindings,
 } from '@/components/fantasy/use-fantasy-findings';
 import type { FantasySavedArmy } from '@/lib/domain/army/saved-army';
+import { fantasyTagWords } from '@/lib/domain/collection/fantasy-coverage';
 import {
   startFantasyList,
   topographyPricedCards,
@@ -112,6 +113,7 @@ export function FantasyBuilderView({
   const presenter = useFantasyFindings(
     useBuilderNames(selection, catalogue, names),
   );
+  const tagWords = useMemo(() => fantasyTagWords(selection), [selection]);
   const snapshot = useMemo(
     () => ({ listName, rename, selection, saved, reference }),
     [listName, selection, saved, reference],
@@ -156,11 +158,12 @@ export function FantasyBuilderView({
           format: selection.format,
           onEdit,
           newId: newItemId,
+          tagWords,
         }}
       />
       <HeroesSection
         priced={points.heroes}
-        context={{ catalogue, selection, onEdit, newId: newItemId }}
+        context={{ catalogue, selection, onEdit, newId: newItemId, tagWords }}
       />
       <ArmyCardsSection
         selection={selection}

@@ -13,16 +13,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useErrorMessage } from '@/components/use-error-message';
-import type { TroopOptionId } from '@/lib/domain/army/army-list';
 import type {
   CoverageLine,
+  CoveragePinKey,
   CoverageSource,
 } from '@/lib/domain/collection/list-coverage';
 import { useTRPC } from '@/lib/trpc/client';
 
 export type CoveredDemand = {
   armyId: string;
-  option: TroopOptionId;
+  pin: CoveragePinKey;
   line: CoverageLine;
 };
 
@@ -37,13 +37,13 @@ const useRefreshAfter = () => {
 
 export function CoverWith({
   armyId,
-  option,
+  pin: { option, troopType },
   line,
   className,
 }: CoveredDemand & { className?: string }) {
   const t = useTranslations('coverage');
   const trpc = useTRPC();
-  const pin = useMutation(
+  const pinEntry = useMutation(
     trpc.collection.pin.mutationOptions(useRefreshAfter()),
   );
   if (line.candidates.length === 0) {
@@ -52,7 +52,7 @@ export function CoverWith({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        disabled={pin.isPending}
+        disabled={pinEntry.isPending}
         render={<Button variant="outline" size="touch" className={className} />}
       >
         <IconPin data-icon="inline-start" />
@@ -63,10 +63,10 @@ export function CoverWith({
           <DropdownMenuItem
             key={entry}
             onClick={() =>
-              pin.mutate({
+              pinEntry.mutate({
                 armyId,
                 option,
-                troopType: line.troopType,
+                troopType,
                 entryId: entry,
                 count: line.stands,
               })
@@ -82,10 +82,9 @@ export function CoverWith({
 
 export function Unpin({
   armyId,
-  option,
-  line,
+  pin: { option, troopType },
   source,
-}: CoveredDemand & { source: CoverageSource }) {
+}: Omit<CoveredDemand, 'line'> & { source: CoverageSource }) {
   const t = useTranslations('coverage');
   const trpc = useTRPC();
   const unpin = useMutation(
@@ -101,7 +100,7 @@ export function Unpin({
         unpin.mutate({
           armyId,
           option,
-          troopType: line.troopType,
+          troopType,
           entryId: source.entry,
         })
       }

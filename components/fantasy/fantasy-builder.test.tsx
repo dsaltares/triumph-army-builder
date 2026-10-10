@@ -6,6 +6,7 @@ import { FantasyBuilderActions } from '@/components/fantasy/fantasy-builder-acti
 import { FantasyBuilderStateProvider } from '@/components/fantasy/fantasy-builder-state';
 import { FantasyListTitle } from '@/components/fantasy/fantasy-list-title';
 import { insertArmy, listArmies } from '@/lib/db/armies';
+import { insertCollectionEntry } from '@/lib/db/collection';
 import type { FantasySelection } from '@/lib/domain/fantasy/selection-schema';
 import { serveApi } from '@/test/api';
 import { asSignedIn } from '@/test/auth-client';
@@ -286,6 +287,25 @@ describe('a unit', () => {
     expect(total()).toHaveTextContent('8/ 51');
   });
 
+  it('suggests tags from the names in the list', async () => {
+    const { user } = await openBuilder(
+      '',
+      fantasySelection({
+        units: [
+          fantasyUnit('wargs', 'JCV', { name: 'Zorbrak wolf riders' }),
+          fantasyUnit('archers', 'ARC'),
+        ],
+      }),
+    );
+    const card = unitCard(1);
+
+    await user.type(card.getByRole('combobox', { name: 'Tags' }), 'zor');
+
+    expect(
+      await screen.findByRole('option', { name: 'zorbrak' }),
+    ).toBeInTheDocument();
+  });
+
   it('offers only the cards it may take, and prices the ones it buys', async () => {
     const { user } = await openBuilder();
     await addUnit(user, 'War Wagons');
@@ -529,6 +549,45 @@ describe('validation', () => {
   });
 });
 
+describe('can I build it', () => {
+  it('covers the list as it stands with the player’s collection', async () => {
+    await insertCollectionEntry(api.database(), {
+      id: 'entry-wolves',
+      userId: owner,
+      at: '2026-10-09T08:00:00.000Z',
+      name: 'Wolf pack',
+      count: 4,
+      troopType: 'JCV',
+      tags: ['wolf'],
+      games: ['fantasy'],
+      status: 'painted',
+      notes: '',
+    });
+    const { user } = await openBuilder(
+      '',
+      fantasySelection({
+        units: [
+          fantasyUnit('wargs', 'JCV', {
+            name: 'Warg riders',
+            tags: ['wolf'],
+            stands: 2,
+          }),
+        ],
+      }),
+    );
+
+    await user.click(screen.getByRole('button', { name: 'List actions' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Can I build it?' }),
+    );
+
+    const sheet = within(
+      await screen.findByRole('dialog', { name: 'Can I build it?' }),
+    );
+    expect(await sheet.findByText('Wolf pack × 2')).toBeInTheDocument();
+  });
+});
+
 describe('saving', () => {
   it('saves a draft as a Fantasy Triumph list, then keeps every change', async () => {
     const { user } = await openBuilder();
@@ -618,7 +677,7 @@ describe('exporting', () => {
     ).toContain('Warg riders — 4 × Javelin Cavalry · General · 16 points');
   });
 
-  it('offers the PDF and the saved view, but no collection check yet', async () => {
+  it('offers the PDF, the saved view and the collection check together', async () => {
     await openSavedGoblins();
 
     expect(
@@ -629,7 +688,7 @@ describe('exporting', () => {
       '/my-armies/saved-1',
     );
     expect(
-      screen.queryByRole('menuitem', { name: 'Can I build it?' }),
-    ).not.toBeInTheDocument();
+      screen.getByRole('menuitem', { name: 'Can I build it?' }),
+    ).toBeInTheDocument();
   });
 });

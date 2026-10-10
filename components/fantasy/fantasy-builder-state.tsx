@@ -9,8 +9,8 @@ export type FantasyBuilderSnapshot = {
   listName: string;
   rename: (name: string) => void;
   selection: FantasySelection;
-  saved: FantasySavedArmy | null;
   reference: FantasyReference;
+  saved: FantasySavedArmy | null;
 };
 
 const fantasyBuilderState = createSnapshotStore<FantasyBuilderSnapshot>();

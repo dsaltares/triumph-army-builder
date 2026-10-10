@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import {
   CanIBuildItSheet,
   CoverageReading,
@@ -20,6 +20,7 @@ import {
   collectionReading,
 } from '@/lib/domain/army/shared-view';
 import { armySheet } from '@/lib/domain/army/sheet';
+import type { CollectionEntry } from '@/lib/domain/collection/entry';
 import type {
   TroopTypeFactors,
   TroopTypeMovements,
@@ -81,7 +82,11 @@ function Loading() {
   );
 }
 
-function SignedInCoverage(props: CoverageSheetProps) {
+export type CollectionCoverer = (
+  entries: readonly CollectionEntry[] | null,
+) => ReactNode;
+
+function SignedInCoverage({ cover }: { cover: CollectionCoverer }) {
   const t = useTranslations('coverage');
   const trpc = useTRPC();
   const entries = useQuery(trpc.collection.list.queryOptions());
@@ -96,22 +101,16 @@ function SignedInCoverage(props: CoverageSheetProps) {
       />
     );
   }
-  return <DraftCoverage {...props} entries={entries.data} />;
+  return cover(entries.data);
 }
 
-function OpenCoverage(props: CoverageSheetProps) {
-  const { data: session } = useSession();
-  return isSignedIn(session) ? (
-    <SignedInCoverage {...props} />
-  ) : (
-    <DraftCoverage {...props} entries={null} />
-  );
-}
-
-export function CoverageSheet({
+export function DraftCoverageSheet({
+  cover,
   control,
-  ...props
-}: CoverageSheetProps & { control: SheetControl }) {
+}: {
+  cover: CollectionCoverer;
+  control: SheetControl;
+}) {
   const t = useTranslations('coverage');
   const { data: session } = useSession();
   return (
@@ -120,7 +119,19 @@ export function CoverageSheet({
       collectionLink={isSignedIn(session)}
       control={control}
     >
-      <OpenCoverage {...props} />
+      {isSignedIn(session) ? <SignedInCoverage cover={cover} /> : cover(null)}
     </CanIBuildItSheet>
+  );
+}
+
+export function CoverageSheet({
+  control,
+  ...props
+}: CoverageSheetProps & { control: SheetControl }) {
+  return (
+    <DraftCoverageSheet
+      control={control}
+      cover={(entries) => <DraftCoverage {...props} entries={entries} />}
+    />
   );
 }

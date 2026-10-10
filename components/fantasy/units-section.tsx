@@ -33,6 +33,7 @@ import {
   type TroopTypeCode,
   troopTypeCodes,
 } from '@/lib/data/schema';
+import type { TagWord } from '@/lib/domain/collection/tag-words';
 import {
   canSplit,
   cardCountMax,
@@ -77,6 +78,7 @@ type UnitContext = {
   format: FantasyListFormat;
   onEdit: SelectionEdit;
   newId: () => string;
+  tagWords: readonly TagWord[];
 };
 
 const troopTypeOptions = (catalogue: FantasyCatalogue) =>
@@ -336,7 +338,7 @@ function UnitCard({
 }) {
   const t = useTranslations('fantasyBuilder');
   const words = usePointsWords();
-  const { catalogue, names, format, onEdit, newId } = context;
+  const { catalogue, names, format, onEdit, newId, tagWords } = context;
   const [draftTag, setDraftTag] = useState('');
   const [splitting, setSplitting] = useState(false);
   const name = unitName(unit, names);
@@ -389,6 +391,7 @@ function UnitCard({
           </div>
 
           <TagField
+            ownWords={tagWords}
             tags={unit.tags}
             draft={draftTag}
             troopType={unit.troopType}

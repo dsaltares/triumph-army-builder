@@ -2,7 +2,7 @@
 
 import { IconLink } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   type SavedListView,
@@ -18,6 +18,7 @@ import {
   type FantasyBuilderSnapshot,
   useFantasySnapshot,
 } from '@/components/fantasy/fantasy-builder-state';
+import { FantasyCoverageSheet } from '@/components/fantasy/fantasy-coverage-sheet';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import type { FantasySavedArmy } from '@/lib/domain/army/saved-army';
 import { encodeShareCode } from '@/lib/domain/army/share-codec';
@@ -51,6 +52,7 @@ function FantasyListMenu({
       ),
     [listName, selection, reference],
   );
+  const [coverageOpen, setCoverageOpen] = useState(false);
 
   const copyLink = async () => {
     try {
@@ -62,16 +64,24 @@ function FantasyListMenu({
   };
 
   return (
-    <ListActionsMenu
-      sheet={{ game: fantasy.game, sheet }}
-      list={{ game: fantasy.game, selection }}
-    >
-      {view && <ViewListItem {...view} />}
-      <DropdownMenuItem onClick={copyLink}>
-        <IconLink />
-        {t('copyLink')}
-      </DropdownMenuItem>
-    </ListActionsMenu>
+    <>
+      <ListActionsMenu
+        sheet={{ game: fantasy.game, sheet }}
+        list={{ game: fantasy.game, selection }}
+        onCanIBuildIt={() => setCoverageOpen(true)}
+      >
+        {view && <ViewListItem {...view} />}
+        <DropdownMenuItem onClick={copyLink}>
+          <IconLink />
+          {t('copyLink')}
+        </DropdownMenuItem>
+      </ListActionsMenu>
+      <FantasyCoverageSheet
+        selection={selection}
+        reference={reference}
+        control={{ open: coverageOpen, onOpenChange: setCoverageOpen }}
+      />
+    </>
   );
 }
 
