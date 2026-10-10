@@ -13,12 +13,22 @@ import {
   withStands,
   withTroopBattleCard,
 } from '@/lib/domain/army/selection';
-import { encodeSelection } from '@/lib/domain/army/share-codec';
-import { armyListText, listTextFormats } from '@/lib/export/list-text';
+import {
+  encodeSelection,
+  encodeShareCode,
+} from '@/lib/domain/army/share-codec';
+import type { FantasySelection } from '@/lib/domain/fantasy/selection-schema';
+import { listText, listTextFormats } from '@/lib/export/list-text';
 import { armySheetResponse } from '@/lib/export/sheet-response';
 import { loadSharedView } from '@/lib/share/shared-view';
 import { sampleBundleHolding } from '@/test/bundle-source.ts';
 import { builderArmyDetail, fixtureDataVersion } from '@/test/fixtures/army.ts';
+import {
+  cards,
+  fantasyHero,
+  fantasySelection,
+  fantasyUnit,
+} from '@/test/fixtures/fantasy.ts';
 
 const siteUrl = 'https://triumph.example';
 const detail = builderArmyDetail();
@@ -86,6 +96,15 @@ const selection = withArmyBattleCard(
 
 const renderedAt = /\(D:\d{14}Z\)|\/ID \[<\w+> <\w+>\]/g;
 
+const pdfDigest = async (response: Response) =>
+  createHash('sha256')
+    .update(
+      Buffer.from(await response.arrayBuffer())
+        .toString('latin1')
+        .replace(renderedAt, ''),
+    )
+    .digest('hex');
+
 let bundle: BundleSource;
 let db: ReturnType<typeof createDatabase>;
 
@@ -115,6 +134,10 @@ const sharedView = async () => {
     selection,
     at: '2026-09-20T10:00:00.000Z',
   });
+  return loadedShare(id);
+};
+
+const loadedShare = async (id: string) => {
   const view = await loadSharedView({
     db,
     bundle,
@@ -129,7 +152,7 @@ const sharedView = async () => {
 
 describe('the golden fixture list', () => {
   it('reads the same on a shared list', async () => {
-    const { list, ...reading } = await sharedView();
+    const { list, game, ...reading } = await sharedView();
 
     await expect(JSON.stringify(reading, null, 2)).toMatchFileSnapshot(
       '__golden__/shared-list.json',
@@ -141,10 +164,8 @@ describe('the golden fixture list', () => {
       (['en', 'es'] as const).map((locale) => ({ format, locale })),
     ),
   )('writes the same $format text in $locale', async ({ format, locale }) => {
-    const { sheet } = await sharedView();
-
     await expect(
-      armyListText(sheet, { format, siteUrl, locale }),
+      listText(await sharedView(), { format, siteUrl, locale }),
     ).toMatchFileSnapshot(`__golden__/list.${locale}.${format}.txt`);
   });
 
@@ -161,13 +182,153 @@ describe('the golden fixture list', () => {
         siteUrl,
         generatedAt: new Date('2026-09-20T00:00:00Z'),
       });
-      const body = Buffer.from(await response.arrayBuffer())
-        .toString('latin1')
-        .replace(renderedAt, '');
+      await expect(await pdfDigest(response)).toMatchFileSnapshot(
+        `__golden__/sheet.${locale}.pdf.sha256`,
+      );
+    },
+  );
+});
 
-      await expect(
-        createHash('sha256').update(body).digest('hex'),
-      ).toMatchFileSnapshot(`__golden__/sheet.${locale}.pdf.sha256`);
+const goblinRaid: FantasySelection = fantasySelection({
+  format: {
+    pointsTotal: 51,
+    topography: 'Dense Forest',
+    invasion: 4,
+    maneuver: 3,
+  },
+  units: [
+    fantasyUnit('wargs', 'JCV', {
+      name: 'Warg riders',
+      stands: 4,
+      cards: cards('fierce', {
+        code: 'terrainAffinity',
+        note: 'Woods, hills',
+      }),
+    }),
+    fantasyUnit('archers', 'ARC', {
+      name: 'Goblin archers',
+      stands: 4,
+      cards: cards('craven'),
+      marks: { delayedEntry: 2, eventCards: { holdTheLine: 2 } },
+    }),
+    fantasyUnit('trolls', 'WRR', {
+      name: 'Cave trolls',
+      stands: 2,
+      cards: cards('massive', 'regenerate'),
+    }),
+  ],
+  heroes: [
+    fantasyHero('boss', {
+      name: 'Grishnak',
+      cards: cards('deadly', 'prowess', 'champion', 'hearten'),
+    }),
+  ],
+  armyCards: [
+    { code: 'fortifiedCamp', variants: { defenses: 'heavily' } },
+    { code: 'ambush', variants: { reach: 'home' } },
+    { code: 'preparedDefenses', count: 2 },
+  ],
+  general: 'wargs',
+});
+
+const fantasyView = async () => {
+  const { id } = await insertShare(db, {
+    userId: 'user-golden',
+    name: 'Goblin raid',
+    game: 'fantasy',
+    selection: goblinRaid,
+    at: '2026-09-20T10:00:00.000Z',
+  });
+  const view = await loadedShare(id);
+  if (view.game !== 'fantasy') {
+    throw new Error('the Fantasy golden share loaded as another game');
+  }
+  return view;
+};
+
+describe('the golden Fantasy Triumph list', () => {
+  it('prices every line the way a player does by hand', async () => {
+    const { sheet } = await fantasyView();
+
+    expect(
+      sheet.units.map(({ name, pointsPerStand, points }) => ({
+        name,
+        pointsPerStand,
+        points,
+      })),
+    ).toEqual([
+      { name: 'Warg riders', pointsPerStand: 4 - 0.5 + 1, points: 18 },
+      { name: 'Goblin archers', pointsPerStand: 4 - 0.5, points: 14 },
+      { name: 'Cave trolls', pointsPerStand: 3 + 1 + 1, points: 10 },
+    ]);
+    expect(sheet.heroes.map(({ points }) => points)).toEqual([
+      1 + 2 + 1 + 1 + 1,
+    ]);
+    expect(sheet.format.invasion).toEqual({ rating: 4, points: -1 });
+    expect(sheet.format.maneuver).toEqual({ rating: 3, points: 1 });
+    expect(
+      sheet.armyCards.map(({ code, count, bearer, points }) => ({
+        code,
+        count,
+        bearer,
+        points,
+      })),
+    ).toEqual([
+      { code: 'fortifiedCamp', count: 1, bearer: null, points: 2 },
+      { code: 'ambush', count: 1, bearer: null, points: 2 },
+      { code: 'preparedDefenses', count: 2, bearer: null, points: 2 },
+      { code: 'holdTheLine', count: 2, bearer: 'Goblin archers', points: 1 },
+      {
+        code: 'delayedEntry',
+        count: 2,
+        bearer: 'Goblin archers',
+        points: -2 * 2,
+      },
+    ]);
+    expect(sheet.totals).toEqual({
+      stands: 10,
+      heroes: 1,
+      victoryValue: 18 + 14 + 10 + 6,
+      total: 48 - 1 + 1 + 2 + 2 + 2 + 1 - 4,
+      pointsTotal: 51,
+    });
+  });
+
+  it('reads the same on a shared list', async () => {
+    const { list, game, ...reading } = await fantasyView();
+
+    await expect(JSON.stringify(reading, null, 2)).toMatchFileSnapshot(
+      '__golden__/fantasy-shared-list.json',
+    );
+  });
+
+  it.each(
+    listTextFormats.flatMap((format) =>
+      (['en', 'es'] as const).map((locale) => ({ format, locale })),
+    ),
+  )('writes the same $format text in $locale', async ({ format, locale }) => {
+    await expect(
+      listText(await fantasyView(), { format, siteUrl, locale }),
+    ).toMatchFileSnapshot(`__golden__/fantasy-list.${locale}.${format}.txt`);
+  });
+
+  it.each(['en', 'es'] as const)(
+    'prints the same PDF sheet in %s',
+    async (locale) => {
+      const response = await armySheetResponse({
+        request: new Request(
+          `${siteUrl}/api/lists/sheet?s=${encodeURIComponent(encodeShareCode({ game: 'fantasy', selection: goblinRaid }))}&name=${encodeURIComponent('Goblin raid')}`,
+        ),
+        bundle,
+        locale,
+        siteUrl,
+        generatedAt: new Date('2026-09-20T00:00:00Z'),
+      });
+
+      expect(response.headers.get('content-type')).toBe('application/pdf');
+      await expect(await pdfDigest(response)).toMatchFileSnapshot(
+        `__golden__/fantasy-sheet.${locale}.pdf.sha256`,
+      );
     },
   );
 });

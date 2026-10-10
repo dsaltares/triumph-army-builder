@@ -1,16 +1,12 @@
 import type { Kysely } from 'kysely';
-import type { ArmyBundle } from '../data/bundle-source.ts';
-import {
-  readArmyListReference,
-  readGameReference,
-} from '../data/game-reference.ts';
+import type { ArmyBundle, ListBundle } from '../data/bundle-source.ts';
+import { readArmyListReference, readGameData } from '../data/game-reference.ts';
 import { currentListDataVersions } from '../data/list-data-version.ts';
 import { findArmy } from '../db/armies.ts';
 import { listCollectionEntries } from '../db/collection.ts';
 import { listArmyPins } from '../db/collection-pins.ts';
 import type { Database } from '../db/schema.ts';
 import { findShare, touchShare } from '../db/shares.ts';
-import { isViewableList } from '../domain/army/selection-schema.ts';
 import { decodeSelection } from '../domain/army/share-codec.ts';
 import { shareIdPattern } from '../domain/army/shared-list.ts';
 import {
@@ -22,6 +18,7 @@ import {
   savedView,
   sharedView,
 } from '../domain/army/shared-view.ts';
+import { fantasyGameName } from '../domain/games/fantasy.ts';
 import { countOf, formatPoints, formatYear } from '../format.ts';
 import type { Locale } from '../i18n/locales.ts';
 
@@ -29,7 +26,7 @@ export const seenResolutionMs = 24 * 60 * 60 * 1000;
 
 export type SharedViewRequest = {
   db: Kysely<Database>;
-  bundle: ArmyBundle;
+  bundle: ListBundle;
   id: string;
   now?: () => Date;
 };
@@ -49,7 +46,7 @@ const markSeen = async (
 
 export type SavedViewRequest = {
   db: Kysely<Database>;
-  bundle: ArmyBundle;
+  bundle: ListBundle;
   id: string;
   userId: string;
   isAnonymous: boolean;
@@ -70,8 +67,8 @@ export const loadSharedView = async ({
   }
   await markSeen(db, id, now);
   const shared = await (await currentListDataVersions(db))(found);
-  const data = await readGameReference(bundle, shared);
-  return data && sharedView({ shared, ...data });
+  const data = await readGameData(bundle, shared);
+  return data && sharedView({ shared, data });
 };
 
 export const loadSavedView = async ({
@@ -82,16 +79,16 @@ export const loadSavedView = async ({
   isAnonymous,
 }: SavedViewRequest): Promise<SavedView | null> => {
   const found = await findArmy(db, { id, userId });
-  if (!found || !isViewableList(found)) {
+  if (!found) {
     return null;
   }
   const saved = await (await currentListDataVersions(db))(found);
   const [data, collection, pins] = await Promise.all([
-    readGameReference(bundle, saved),
+    readGameData(bundle, saved),
     isAnonymous ? null : listCollectionEntries(db, userId),
     isAnonymous ? [] : listArmyPins(db, { armyId: id, userId }),
   ]);
-  return data && savedView({ saved, collection, pins, ...data });
+  return data && savedView({ saved, data, collection, pins });
 };
 
 export type DraftViewRequest = {
@@ -119,10 +116,23 @@ export const loadDraftView = async ({
   return data && draftView({ selection, collection, ...data });
 };
 
-export const sharedListSummary = ({ sheet }: ListView, locale: Locale) =>
-  [
-    sheet.armyName,
-    `${formatPoints(sheet.totals.total)} points`,
-    countOf(sheet.totals.stands, 'stand'),
-    formatYear(sheet.year, locale),
-  ].join(' · ');
+export const sharedListSummary = (view: ListView, locale: Locale) => {
+  switch (view.game) {
+    case 'triumph':
+      return [
+        view.sheet.armyName,
+        `${formatPoints(view.sheet.totals.total)} points`,
+        countOf(view.sheet.totals.stands, 'stand'),
+        formatYear(view.sheet.year, locale),
+      ].join(' · ');
+    case 'fantasy':
+      return [
+        fantasyGameName,
+        `${formatPoints(view.sheet.totals.total)} / ${formatPoints(view.sheet.totals.pointsTotal)} points`,
+        countOf(view.sheet.totals.stands, 'stand'),
+        ...(view.sheet.totals.heroes > 0
+          ? [countOf(view.sheet.totals.heroes, 'hero', 'heroes')]
+          : []),
+      ].join(' · ');
+  }
+};

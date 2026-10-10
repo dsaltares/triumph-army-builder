@@ -24,7 +24,7 @@ export type SavedArmyViewActions = {
   onShare: () => void;
 };
 
-export type SavedArmyActions = Partial<SavedArmyViewActions> & {
+export type SavedArmyActions = SavedArmyViewActions & {
   onRename: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
@@ -49,24 +49,18 @@ export function SavedArmyActionsMenu({
         <span className="sr-only">{t('actionsFor', { name })}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-40">
-        {onShare && (
-          <DropdownMenuItem onClick={onShare}>
-            <IconLink />
-            {t('shareLink')}
-          </DropdownMenuItem>
-        )}
-        {onPreviewPdf && (
-          <DropdownMenuItem onClick={onPreviewPdf}>
-            <IconEye />
-            {t('previewPdf')}
-          </DropdownMenuItem>
-        )}
-        {onDownloadPdf && (
-          <DropdownMenuItem onClick={onDownloadPdf}>
-            <IconDownload />
-            {t('downloadPdf')}
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={onShare}>
+          <IconLink />
+          {t('shareLink')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onPreviewPdf}>
+          <IconEye />
+          {t('previewPdf')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onDownloadPdf}>
+          <IconDownload />
+          {t('downloadPdf')}
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={onRename}>
           <IconCursorText />
           {t('rename')}

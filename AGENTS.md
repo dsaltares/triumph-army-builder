@@ -142,19 +142,22 @@ TS (strict), Yarn 4, Node 24, Next.js 16 App Router, React 19.
 - `lib/email/` is the only module that sends mail. `sendEmail` takes a rendered message and
   returns a result; it never throws. Templates render to HTML and text before a transport sees
   them, so a transport never imports React.
-- `lib/export/` renders a saved or drafted list to a file or to the clipboard. `armySheet` in
-  `lib/domain/army/sheet.ts` decides what goes on the sheet and returns plain data; the
-  `@react-pdf/renderer` component under `components/export/` only draws it, and `list-text.ts`
-  writes the same sheet out as plain text, Markdown or BBCode (#48) — a new field on the sheet
-  belongs in both or in neither. The PDF route at `app/api/lists/sheet` — `app/api/armies/[id]/sheet` stays as an alias
+- `lib/export/` renders a saved or drafted list to a file or to the clipboard. Each game's module
+  decides what goes on its sheet and returns plain data — `armySheet` in
+  `lib/domain/army/sheet.ts`, `fantasySheet` in `lib/domain/fantasy/sheet-data.ts`; the
+  `@react-pdf/renderer` document for that game under `components/export/` only draws it, and
+  `list-text.ts` writes the same sheet out as plain text, Markdown or BBCode (#48) — a new field on
+  a sheet belongs in both or in neither. The games share the page furniture in `sheet-parts.tsx`. The PDF route at `app/api/lists/sheet` — `app/api/armies/[id]/sheet` stays as an alias
   for links already minted — is one of two API surfaces outside `lib/trpc/` — tRPC returns JSON envelopes, and a download wants bytes and a
   `Content-Disposition`. The collection's photo routes under `app/api/collection/photos` are the
   other, for the same reason in both directions (ADR 0031). It takes a share code and nothing else: no database, no session, so no
   ownership to get wrong (ADR 0020). `armySheetResponse` takes its bundle source as a parameter, so
   a test drives it over `memoryBundleSource` from `test/bundle-source.ts`. It takes the game from
-  the code and asks the registry in `lib/domain/games/` for the sheet, through
-  `readGameReference` in `lib/data/game-reference.ts`, as the share page, the saved view and the
-  saved-lists table do (ADR 0039): none of them branches on the game. Each game's builder lives
+  the code, reads that game's reference with `readGameData` in `lib/data/game-reference.ts`, and
+  asks the registry in `lib/domain/games/` for the sheet, as the share page, the saved view and
+  the saved-lists table do (ADR 0039). A surface that draws a list switches on its `game` to pick
+  that game's renderer — `listSheet`, `listText`, `listSheetDocument`, `SharedListView` — and the
+  types make every switch exhaustive, so a new game fails to compile until each one draws it. Each game's builder lives
   at `/<game>/build`, opened on `?list=<id>` or `?s=<code>`; `/armies/<id>/build` stays as the
   Triumph! entry from an army page and for every link already minted. Sheet colours are hex in `pdf-theme.ts` because react-pdf
   cannot read `oklch()`, Tailwind or CSS variables.

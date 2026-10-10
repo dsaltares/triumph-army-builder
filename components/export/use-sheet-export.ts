@@ -3,16 +3,11 @@
 import { useLocale } from 'next-intl';
 import { useCallback } from 'react';
 import { useShareId } from '@/components/share/use-share-link';
-import type { ArmySelection } from '@/lib/domain/army/selection';
+import type { SavedSelection } from '@/lib/domain/army/selection-schema';
 import { encodeShareCode } from '@/lib/domain/army/share-codec';
-import type { ViewableGame } from '@/lib/domain/game';
 import { listSheetUrl, type SheetDisposition } from '@/lib/navigation';
 
-export type SheetList = {
-  game: ViewableGame;
-  name: string;
-  selection: ArmySelection;
-};
+export type SheetList = { name: string } & SavedSelection;
 
 const deliverSheet = (
   disposition: SheetDisposition,
@@ -35,19 +30,16 @@ export const useSheetExport = () => {
   const shareId = useShareId();
 
   return useCallback(
-    async (
-      { game, name, selection }: SheetList,
-      disposition: SheetDisposition,
-    ) => {
+    async ({ name, ...list }: SheetList, disposition: SheetDisposition) => {
       const reservedTab =
         disposition === 'inline' ? window.open('', '_blank') : null;
       deliverSheet(
         disposition,
         reservedTab,
         listSheetUrl({
-          code: encodeShareCode({ game, selection }),
+          code: encodeShareCode(list),
           name,
-          share: await shareId({ name, game, selection }),
+          share: await shareId({ name, ...list }),
           lang: locale,
           disposition,
         }),

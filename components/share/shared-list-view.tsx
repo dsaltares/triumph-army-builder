@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 import { BadgeRow } from '@/components/badge-row';
 import { PointsMeterBar } from '@/components/builder/points-meter';
 import {
@@ -16,6 +17,7 @@ import {
   FrozenTableRowHeading,
 } from '@/components/frozen-table';
 import { Section } from '@/components/layout/section';
+import { FantasyListView } from '@/components/share/fantasy-list-view';
 import {
   StackedTable,
   StackedTableField,
@@ -28,6 +30,7 @@ import type {
   ListView,
   SavedView,
   SharedView,
+  TriumphReading,
 } from '@/lib/domain/army/shared-view';
 import {
   type SheetBattleCard,
@@ -37,6 +40,7 @@ import {
   sheetStandColumns,
   sheetTroopHeadings,
 } from '@/lib/domain/army/sheet';
+import { fantasyGameName } from '@/lib/domain/games/fantasy';
 import {
   battleLineLabels,
   cardStandsCell,
@@ -46,7 +50,12 @@ import {
 } from '@/lib/export/sheet-layout';
 import { formatDate, formatPoints, formatStandCount } from '@/lib/format';
 import { wordsFor } from '@/lib/i18n/translator';
-import { buildArmyUrl, listSheetUrl, savedListUrl } from '@/lib/navigation';
+import {
+  buildArmyUrl,
+  gameBuilderUrl,
+  listSheetUrl,
+  savedListUrl,
+} from '@/lib/navigation';
 
 const cardColumns =
   'grid gap-x-4 gap-y-1 px-3 py-3 sm:grid-cols-[minmax(10rem,2fr)_4.5rem_4.5rem_4.5rem]';
@@ -143,17 +152,31 @@ function BattleCardRow({ card }: { card: SheetBattleCard }) {
   );
 }
 
+function BuildYourOwn({ view }: { view: SharedView }) {
+  const s = useTranslations('share');
+  return view.game === 'triumph' ? (
+    <Link className={linkClass} href={buildArmyUrl(view.sheet.armyId)}>
+      {s('buildYourOwn', { army: view.sheet.armyName })}
+    </Link>
+  ) : (
+    <Link className={linkClass} href={gameBuilderUrl(view.game)}>
+      {s('buildYourOwn', { army: fantasyGameName })}
+    </Link>
+  );
+}
+
 function SharedProvenance({ view }: { view: SharedView }) {
   const locale = useLocale();
   const w = useSheetWords();
   const s = useTranslations('share');
-  const { list, sheet } = view;
+  const { list } = view;
+  const on = {
+    date: formatDate(list.createdAt, locale),
+    version: list.dataVersion,
+  };
   return (
     <>
-      {w('sharedOn', {
-        date: formatDate(list.createdAt, locale),
-        version: list.dataVersion,
-      })}
+      {view.game === 'triumph' ? w('sharedOn', on) : s('sharedOnData', on)}
       <a
         className={linkClass}
         href={listSheetUrl({
@@ -169,10 +192,7 @@ function SharedProvenance({ view }: { view: SharedView }) {
         {s('openAsPdf')}
       </a>
       {s('orSeparator')}
-      <Link className={linkClass} href={buildArmyUrl(sheet.armyId)}>
-        {s('buildYourOwn', { army: sheet.armyName })}
-      </Link>
-      .
+      <BuildYourOwn view={view} />.
     </>
   );
 }
@@ -181,12 +201,13 @@ function SavedProvenance({ view }: { view: SavedView }) {
   const locale = useLocale();
   const s = useTranslations('share');
   const { list } = view;
+  const on = {
+    date: formatDate(list.updatedAt, locale),
+    version: list.dataVersion,
+  };
   return (
     <>
-      {s('savedOn', {
-        date: formatDate(list.updatedAt, locale),
-        version: list.dataVersion,
-      })}
+      {view.game === 'triumph' ? s('savedOn', on) : s('savedOnData', on)}
       {s('followsEdits')}
       <Link className={linkClass} href={savedListUrl(list)}>
         {s('editInBuilder')}
@@ -221,16 +242,16 @@ export function SharedCopyBadge() {
   );
 }
 
-export function SharedListView({
-  view,
-  currentDataVersion,
+function TriumphListView({
+  reading,
+  notice,
 }: {
-  view: ListView;
-  currentDataVersion: string;
+  reading: TriumphReading;
+  notice: ReactNode;
 }) {
   const locale = useLocale();
   const w = useSheetWords();
-  const { list, sheet, report, meter } = view;
+  const { sheet, report, meter } = reading;
   return (
     <>
       <PointsMeterBar
@@ -238,10 +259,7 @@ export function SharedListView({
         trailing={<LegalityBadge report={report} />}
       />
 
-      <DataVersionNotice
-        savedVersion={list.dataVersion}
-        currentVersion={currentDataVersion}
-      />
+      {notice}
 
       <Card>
         <CardContent>
@@ -279,6 +297,30 @@ export function SharedListView({
       </Section>
 
       <ValidationPanel report={report} anchors={noAnchors} />
+    </>
+  );
+}
+
+export function SharedListView({
+  view,
+  currentDataVersion,
+}: {
+  view: ListView;
+  currentDataVersion: string;
+}) {
+  const notice = (
+    <DataVersionNotice
+      savedVersion={view.list.dataVersion}
+      currentVersion={currentDataVersion}
+    />
+  );
+  return (
+    <>
+      {view.game === 'triumph' ? (
+        <TriumphListView reading={view} notice={notice} />
+      ) : (
+        <FantasyListView reading={view} notice={notice} />
+      )}
 
       <p className="max-w-reading text-xs/relaxed text-pretty text-muted-foreground">
         <Provenance view={view} />

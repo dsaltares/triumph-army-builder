@@ -1,13 +1,11 @@
-import type { FantasyReference } from '../fantasy/reference.ts';
-import type { FantasySelection } from '../fantasy/selection-schema.ts';
 import type { FindingReport, SeverityFinding } from '../findings.ts';
 import type { Game } from '../game.ts';
 import { fantasy } from '../games/fantasy.ts';
-import { type TriumphReference, triumph } from '../games/triumph.ts';
+import type { GameData } from '../games/registry.ts';
+import { triumph } from '../games/triumph.ts';
 import { matchesAllTerms, searchTerms } from '../text-search.ts';
 import type { PointsMeter } from './builder.ts';
 import type { SavedArmy } from './saved-army.ts';
-import type { ArmySelection } from './selection.ts';
 
 export type SavedArmyStanding = {
   meter: PointsMeter;
@@ -22,13 +20,7 @@ export type SavedArmyEntry = {
   standing: SavedArmyStanding | null;
 };
 
-export type ReadableList =
-  | { game: 'triumph'; selection: ArmySelection; reference: TriumphReference }
-  | {
-      game: 'fantasy';
-      selection: FantasySelection;
-      reference: FantasyReference;
-    };
+export type ReadableList = GameData;
 
 type ReadingModule<Selection, Reference> = {
   points: (selection: Selection, reference: Reference) => PointsMeter;

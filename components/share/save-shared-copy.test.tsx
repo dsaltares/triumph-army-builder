@@ -18,9 +18,13 @@ const owner = 'user-scipio';
 const dialog = () => within(screen.getByRole('dialog'));
 
 const show = () =>
-  renderUi(<SaveSharedCopy name="Cannae" selection={fixtureSelection()} />, {
-    wrap: api.wrap,
-  });
+  renderUi(
+    <SaveSharedCopy
+      name="Cannae"
+      list={{ game: 'triumph', selection: fixtureSelection() }}
+    />,
+    { wrap: api.wrap },
+  );
 
 beforeEach(async () => {
   asSignedIn({ id: owner });

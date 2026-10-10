@@ -1,24 +1,24 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useCallback, useMemo, useState } from 'react';
 import { PointsMeterBar } from '@/components/builder/points-meter';
 import {
-  type FindingPresenter,
   FindingsBadge,
   FindingsPanel,
 } from '@/components/builder/validation-panel';
 import { ArmyCardsSection } from '@/components/fantasy/army-cards-section';
-import {
-  fantasyAnchors,
-  fantasyFindingAnchor,
-} from '@/components/fantasy/fantasy-anchors';
+import { fantasyAnchors } from '@/components/fantasy/fantasy-anchors';
 import { usePublishFantasySnapshot } from '@/components/fantasy/fantasy-builder-state';
 import { FormatSection } from '@/components/fantasy/format-section';
 import { GeneralSection } from '@/components/fantasy/general-section';
 import { HeroesSection, heroName } from '@/components/fantasy/heroes-section';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
 import { UnitsSection } from '@/components/fantasy/units-section';
+import {
+  type FantasyNameLookup,
+  useFantasyFindings,
+} from '@/components/fantasy/use-fantasy-findings';
 import type { FantasySavedArmy } from '@/lib/domain/army/saved-army';
 import { fantasyTagWords } from '@/lib/domain/collection/fantasy-coverage';
 import {
@@ -37,45 +37,35 @@ import {
   fantasyCatalogue,
 } from '@/lib/domain/fantasy/reference';
 import type { FantasySelection } from '@/lib/domain/fantasy/selection-schema';
-import type { FantasyFinding } from '@/lib/domain/fantasy/validation';
 import { fantasy } from '@/lib/domain/games/fantasy';
 import type { TroopTypeNames } from '@/lib/domain/troop-types';
-import { describeFantasyFinding } from '@/lib/fantasy-findings';
-import { formatPoints, joinWithAnd } from '@/lib/format';
+import { formatPoints } from '@/lib/format';
 
 export const newItemId = () => crypto.randomUUID().slice(0, 8);
 
-const useFantasyFindings = (
+const useBuilderNames = (
   selection: FantasySelection,
   catalogue: FantasyCatalogue,
   names: TroopTypeNames,
-): FindingPresenter<FantasyFinding> => {
-  const t = useTranslations('fantasyFindings');
+): FantasyNameLookup => {
   const b = useTranslations('fantasyBuilder');
-  const locale = useLocale();
-  return useMemo(() => {
-    const findingNames = {
-      card: (code: Parameters<typeof fantasyCardName>[0]) =>
-        fantasyCardName(code, catalogue.cards.get(code)),
-      unit: (id: string) => {
+  return useMemo(
+    () => ({
+      card: (code) => fantasyCardName(code, catalogue.cards.get(code)),
+      unit: (id) => {
         const unit = selection.units.find((candidate) => candidate.id === id);
         return unit ? unitName(unit, names) : id;
       },
-      hero: (id: string) => {
+      hero: (id) => {
         const index = selection.heroes.findIndex(
           (candidate) => candidate.id === id,
         );
         const hero = selection.heroes[index];
         return hero ? heroName(hero, index, b('hero')) : id;
       },
-      army: b('theArmy'),
-      join: (items: readonly string[]) => joinWithAnd(items, locale),
-    };
-    return {
-      describe: (finding) => describeFantasyFinding(finding, t, findingNames),
-      anchorOf: (finding) => fantasyFindingAnchor(finding.target),
-    };
-  }, [selection, catalogue, names, t, b, locale]);
+    }),
+    [selection, catalogue, names, b],
+  );
 };
 
 export type FantasyBuilderViewProps = {
@@ -120,11 +110,13 @@ export function FantasyBuilderView({
     () => topographyPricedCards(catalogue).map(({ name }) => name),
     [catalogue],
   );
-  const presenter = useFantasyFindings(selection, catalogue, names);
+  const presenter = useFantasyFindings(
+    useBuilderNames(selection, catalogue, names),
+  );
   const tagWords = useMemo(() => fantasyTagWords(selection), [selection]);
   const snapshot = useMemo(
-    () => ({ listName, rename, selection, reference, saved }),
-    [listName, selection, reference, saved],
+    () => ({ listName, rename, selection, saved, reference }),
+    [listName, selection, saved, reference],
   );
 
   usePublishFantasySnapshot(snapshot);

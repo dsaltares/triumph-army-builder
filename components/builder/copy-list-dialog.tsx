@@ -15,10 +15,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { ArmySheet } from '@/lib/domain/army/sheet';
+import type { ListSheet } from '@/lib/domain/games/registry';
 import {
-  armyListText,
   type ListTextFormat,
+  listText,
   listTextFormats,
 } from '@/lib/export/list-text';
 
@@ -36,7 +36,7 @@ const formatHints = {
 
 export type CopyListDialogProps = {
   open: boolean;
-  sheet: ArmySheet;
+  sheet: ListSheet;
   siteUrl: string;
   onOpenChange: (open: boolean) => void;
 };
@@ -64,14 +64,14 @@ export function CopyListDialog({
   const locale = useLocale();
   const [format, setFormat] = useState<ListTextFormat>('plain');
   const textFor = (marks: ListTextFormat) =>
-    armyListText(sheet, { format: marks, siteUrl, locale });
+    listText(sheet, { format: marks, siteUrl, locale });
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(textFor(format));
       toast.success(
         t('copiedAs', {
-          name: sheet.listName,
+          name: sheet.sheet.listName,
           format: t(formatLabels[format]),
         }),
       );

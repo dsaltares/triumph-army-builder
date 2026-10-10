@@ -9,6 +9,7 @@ import { ListViewActions } from '@/components/share/list-view-actions';
 import { SharedListView } from '@/components/share/shared-list-view';
 import { getAuth } from '@/lib/auth/auth';
 import { isAnonymousSession } from '@/lib/auth/session';
+import { readFantasyReference } from '@/lib/data/game-reference';
 import {
   type ServedReference,
   servedReference,
@@ -22,10 +23,9 @@ const savedView = cache(async (reference: ServedReference, id: string) => {
   if (!session) {
     return null;
   }
-  const { readArmyDetail, readBattleCards, readTroopTypes } = reference.bundle;
   return loadSavedView({
     db: getDatabase(),
-    bundle: { readArmyDetail, readBattleCards, readTroopTypes },
+    bundle: reference.bundle,
     id,
     userId: session.user.id,
     isAnonymous: isAnonymousSession(session),
@@ -54,6 +54,10 @@ export default async function SavedListPage({ params }: IdRouteProps) {
     notFound();
   }
   const nav = await getTranslations('nav');
+  const fantasyReference =
+    view.game === 'fantasy'
+      ? await readFantasyReference(reference.bundle)
+      : null;
   return (
     <>
       <PageHeader
@@ -63,8 +67,9 @@ export default async function SavedListPage({ params }: IdRouteProps) {
         action={
           <ListViewActions
             list={view.list}
-            sheet={view.sheet}
+            sheet={view}
             collection={view.collection}
+            fantasyReference={fantasyReference}
           />
         }
       />

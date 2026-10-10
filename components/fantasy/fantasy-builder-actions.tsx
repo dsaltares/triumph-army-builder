@@ -1,9 +1,14 @@
 'use client';
 
-import { IconChecklist, IconLink, IconMenu2 } from '@tabler/icons-react';
+import { IconLink } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import {
+  type SavedListView,
+  ViewListItem,
+} from '@/components/builder/builder-actions';
+import { ListActionsMenu } from '@/components/builder/list-actions-menu';
 import {
   AutosaveStatus,
   SaveDraftAction,
@@ -14,13 +19,7 @@ import {
   useFantasySnapshot,
 } from '@/components/fantasy/fantasy-builder-state';
 import { FantasyCoverageSheet } from '@/components/fantasy/fantasy-coverage-sheet';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import type { FantasySavedArmy } from '@/lib/domain/army/saved-army';
 import { encodeShareCode } from '@/lib/domain/army/share-codec';
 import type { FantasySelection } from '@/lib/domain/fantasy/selection-schema';
@@ -34,13 +33,25 @@ export const fantasyDraftUrl = (selection: FantasySelection) =>
   })}`;
 
 function FantasyListMenu({
-  snapshot: { selection, reference },
+  snapshot,
+  view,
 }: {
   snapshot: FantasyBuilderSnapshot;
+  view: SavedListView | null;
 }) {
   const t = useTranslations('fantasyBuilder');
-  const b = useTranslations('builder');
-  const coverageWords = useTranslations('coverage');
+  const { listName, selection, reference } = snapshot;
+  const sheet = useMemo(
+    () =>
+      fantasy.sheetData(
+        {
+          name: listName.trim() || fantasy.subjectName(reference),
+          selection,
+        },
+        reference,
+      ),
+    [listName, selection, reference],
+  );
   const [coverageOpen, setCoverageOpen] = useState(false);
 
   const copyLink = async () => {
@@ -54,30 +65,17 @@ function FantasyListMenu({
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="outline"
-              size="icon-touch"
-              className="shrink-0"
-              aria-label={b('listActions')}
-            />
-          }
-        >
-          <IconMenu2 />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-48">
-          <DropdownMenuItem onClick={() => setCoverageOpen(true)}>
-            <IconChecklist />
-            {coverageWords('canIBuildIt')}
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={copyLink}>
-            <IconLink />
-            {t('copyLink')}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ListActionsMenu
+        sheet={{ game: fantasy.game, sheet }}
+        list={{ game: fantasy.game, selection }}
+        onCanIBuildIt={() => setCoverageOpen(true)}
+      >
+        {view && <ViewListItem {...view} />}
+        <DropdownMenuItem onClick={copyLink}>
+          <IconLink />
+          {t('copyLink')}
+        </DropdownMenuItem>
+      </ListActionsMenu>
       <FantasyCoverageSheet
         selection={selection}
         reference={reference}
@@ -103,7 +101,10 @@ function SavedFantasyActions({
   return (
     <>
       <AutosaveStatus {...autosave} />
-      <FantasyListMenu snapshot={snapshot} />
+      <FantasyListMenu
+        snapshot={snapshot}
+        view={{ id: saved.id, settle: autosave.settle }}
+      />
     </>
   );
 }
@@ -123,7 +124,7 @@ export function FantasyBuilderActions() {
         listName={snapshot.listName}
         list={{ game: fantasy.game, selection: snapshot.selection }}
       />
-      <FantasyListMenu snapshot={snapshot} />
+      <FantasyListMenu snapshot={snapshot} view={null} />
     </>
   );
 }

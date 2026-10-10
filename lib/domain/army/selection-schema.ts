@@ -5,7 +5,6 @@ import {
   fantasySavedSelectionSchema,
   fantasySelectionSchema,
 } from '../fantasy/selection-schema.ts';
-import { isViewableGame, type ViewableGame } from '../game.ts';
 import {
   type ContingentGroupId,
   parseContingentGroupId,
@@ -98,15 +97,6 @@ export const savedSelectionOf = (list: SavedSelection): SavedSelection => {
       return { game: list.game, selection: list.selection };
   }
 };
-
-export type ViewableSavedSelection = Extract<
-  SavedSelection,
-  { game: ViewableGame }
->;
-
-export const isViewableList = (
-  list: SavedSelection,
-): list is ViewableSavedSelection => isViewableGame(list.game);
 
 export type TriumphSavedSelection = z.infer<typeof triumphSavedSelectionSchema>;
 

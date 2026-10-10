@@ -1,0 +1,243 @@
+{
+  "kind": "shared",
+  "sheet": {
+    "listName": "Goblin raid",
+    "dataVersion": "2026-09-17.abcdef01",
+    "format": {
+      "pointsTotal": 51,
+      "topography": "Dense Forest",
+      "dense": true,
+      "invasion": {
+        "rating": 4,
+        "points": -1
+      },
+      "maneuver": {
+        "rating": 3,
+        "points": 1
+      }
+    },
+    "units": [
+      {
+        "id": "wargs",
+        "name": "Warg riders",
+        "troopType": "JCV",
+        "troopTypeName": "Javelin Cavalry",
+        "stands": 4,
+        "general": true,
+        "cards": [
+          {
+            "code": "fierce",
+            "name": "Fierce",
+            "variants": [],
+            "note": null
+          },
+          {
+            "code": "terrainAffinity",
+            "name": "Terrain Affinity",
+            "variants": [],
+            "note": "Woods, hills"
+          }
+        ],
+        "delayedStands": 0,
+        "transports": 0,
+        "pointsPerStand": 4.5,
+        "points": 18
+      },
+      {
+        "id": "archers",
+        "name": "Goblin archers",
+        "troopType": "ARC",
+        "troopTypeName": "Shooters",
+        "stands": 4,
+        "general": false,
+        "cards": [
+          {
+            "code": "craven",
+            "name": "Craven",
+            "variants": [],
+            "note": null
+          }
+        ],
+        "delayedStands": 2,
+        "transports": 0,
+        "pointsPerStand": 3.5,
+        "points": 14
+      },
+      {
+        "id": "trolls",
+        "name": "Cave trolls",
+        "troopType": "WRR",
+        "troopTypeName": "Warriors",
+        "stands": 2,
+        "general": false,
+        "cards": [
+          {
+            "code": "massive",
+            "name": "Massive",
+            "variants": [],
+            "note": null
+          },
+          {
+            "code": "regenerate",
+            "name": "Regenerate",
+            "variants": [],
+            "note": null
+          }
+        ],
+        "delayedStands": 0,
+        "transports": 0,
+        "pointsPerStand": 5,
+        "points": 10
+      }
+    ],
+    "heroes": [
+      {
+        "id": "boss",
+        "name": "Grishnak",
+        "cards": [
+          {
+            "code": "deadly",
+            "name": "Deadly",
+            "variants": [],
+            "note": null
+          },
+          {
+            "code": "prowess",
+            "name": "Prowess",
+            "variants": [],
+            "note": null
+          },
+          {
+            "code": "champion",
+            "name": "Champion",
+            "variants": [],
+            "note": null
+          },
+          {
+            "code": "hearten",
+            "name": "Hearten",
+            "variants": [],
+            "note": null
+          }
+        ],
+        "delayedEntry": false,
+        "points": 6
+      }
+    ],
+    "armyCards": [
+      {
+        "kind": "armyCard",
+        "code": "fortifiedCamp",
+        "name": "Fortified Camp",
+        "count": 1,
+        "variants": [
+          "Heavily Fortified Camp"
+        ],
+        "bearer": null,
+        "points": 2
+      },
+      {
+        "kind": "armyCard",
+        "code": "ambush",
+        "name": "Ambush",
+        "count": 1,
+        "variants": [
+          "Home topography only"
+        ],
+        "bearer": null,
+        "points": 2
+      },
+      {
+        "kind": "armyCard",
+        "code": "preparedDefenses",
+        "name": "Prepared Defenses",
+        "count": 2,
+        "variants": [],
+        "bearer": null,
+        "points": 2
+      },
+      {
+        "kind": "eventCard",
+        "code": "holdTheLine",
+        "name": "Hold the Line",
+        "count": 2,
+        "variants": [],
+        "bearer": "Goblin archers",
+        "points": 1
+      },
+      {
+        "kind": "delayedEntry",
+        "code": "delayedEntry",
+        "name": "Delayed Entry",
+        "count": 2,
+        "variants": [],
+        "bearer": "Goblin archers",
+        "points": -4
+      }
+    ],
+    "totals": {
+      "stands": 10,
+      "heroes": 1,
+      "victoryValue": 48,
+      "total": 51,
+      "pointsTotal": 51
+    }
+  },
+  "report": {
+    "findings": [],
+    "errors": 0,
+    "warnings": 0,
+    "notes": 0,
+    "legal": true
+  },
+  "meter": {
+    "total": 51,
+    "cap": 51,
+    "remaining": 0,
+    "status": "exact",
+    "standPoints": 48,
+    "allyStandPoints": 0,
+    "battleCardPoints": 3,
+    "filled": 1,
+    "victoryValue": 48
+  },
+  "cardNames": {
+    "ambush": "Ambush",
+    "armored": "Armored",
+    "away": "Away",
+    "brittle": "Brittle",
+    "champion": "Champion",
+    "chargeThrough": "Charge Through",
+    "craven": "Craven",
+    "deadly": "Deadly",
+    "delayedEntry": "Delayed Entry",
+    "fast": "Fast",
+    "fierce": "Fierce",
+    "flying": "Flying",
+    "fortifiedCamp": "Fortified Camp",
+    "hearten": "Hearten",
+    "holdTheLine": "Hold the Line",
+    "illusion": "Illusion",
+    "marksman": "Marksman",
+    "massive": "Massive",
+    "mindblast": "Mindblast",
+    "mobileInfantry": "Mobile Infantry",
+    "negateMagic": "Negate Magic",
+    "noCamp": "No Camp",
+    "packTrain": "Pack Train and Herds",
+    "preparedDefenses": "Prepared Defenses",
+    "prowess": "Prowess",
+    "rangedAttack": "Ranged Attack",
+    "regenerate": "Regenerate",
+    "slow": "Slow",
+    "spellblast": "Spellblast",
+    "spikedCarts": "Spiked Carts",
+    "subcommander": "Subcommander",
+    "supportingShooters": "Supporting Shooters",
+    "terrainAffinity": "Terrain Affinity",
+    "terror": "Terror",
+    "unreliable": "Unreliable",
+    "unruly": "Unruly",
+    "weaken": "Weaken"
+  }
+}

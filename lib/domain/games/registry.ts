@@ -13,6 +13,29 @@ export type GameModules = typeof gameModules;
 export const gameModule = <G extends Game>(game: G): GameModules[G] =>
   gameModules[game];
 
+export type GameSelection<G extends Game> = Extract<
+  SavedSelection,
+  { game: G }
+>['selection'];
+
+export type GameReference<G extends Game> = Parameters<
+  GameModules[G]['points']
+>[1];
+
+export type GameSheet<G extends Game> = ReturnType<GameModules[G]['sheetData']>;
+
+export type GameData = {
+  [G in Game]: {
+    game: G;
+    selection: GameSelection<G>;
+    reference: GameReference<G>;
+  };
+}[Game];
+
+export type ListSheet = {
+  [G in Game]: { game: G; sheet: GameSheet<G> };
+}[Game];
+
 const parsedCanonical = <Selection>(
   module: {
     selectionSchema: { parse: (value: unknown) => Selection };
@@ -42,5 +65,35 @@ export const listArmyListId = (list: SavedSelection) => {
       return triumph.armyListId(list.selection);
     case 'fantasy':
       return fantasy.armyListId(list.selection);
+  }
+};
+
+export const listSubjectName = (data: GameData) => {
+  switch (data.game) {
+    case 'triumph':
+      return triumph.subjectName(data.reference);
+    case 'fantasy':
+      return fantasy.subjectName(data.reference);
+  }
+};
+
+export const listSheet = (data: GameData, name: string): ListSheet => {
+  switch (data.game) {
+    case 'triumph':
+      return {
+        game: data.game,
+        sheet: triumph.sheetData(
+          { name, selection: data.selection },
+          data.reference,
+        ),
+      };
+    case 'fantasy':
+      return {
+        game: data.game,
+        sheet: fantasy.sheetData(
+          { name, selection: data.selection },
+          data.reference,
+        ),
+      };
   }
 };

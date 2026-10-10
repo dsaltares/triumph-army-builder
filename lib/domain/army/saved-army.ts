@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { ViewableGame } from '../game.ts';
 import type {
   FantasySavedSelection,
   SavedSelection,
@@ -38,8 +37,6 @@ export const storedSavedList = (list: SavedSelection): StoredSavedList =>
     : { ...list, armyListId: null };
 
 export type TriumphSavedArmy = Extract<SavedArmy, { game: 'triumph' }>;
-
-export type ViewableSavedArmy = Extract<SavedArmy, { game: ViewableGame }>;
 
 export type FantasySavedArmy = Extract<SavedArmy, { game: 'fantasy' }>;
 

@@ -12,9 +12,14 @@ import {
   type SheetBundle,
 } from '@/lib/export/sheet-response';
 import { armyUrl, externalLinks, sharedListUrl } from '@/lib/navigation';
-import { sampleBundleHolding } from '@/test/bundle-source.ts';
+import {
+  filesOf,
+  memoryBundleSource,
+  sampleBundleHolding,
+} from '@/test/bundle-source.ts';
 import { armyDetail } from '@/test/fixtures/army.ts';
-import { fantasySelection } from '@/test/fixtures/fantasy.ts';
+import { fantasySelection, fantasyUnit } from '@/test/fixtures/fantasy.ts';
+import { sampleBundle } from '@/test/sample.ts';
 
 const siteUrl = 'https://triumph.example';
 const generatedAt = new Date('2026-09-20T00:00:00Z');
@@ -262,13 +267,60 @@ describe('the sheet of any list, by its code alone', () => {
     expect(response.status).toBe(404);
   });
 
-  it('has no sheet yet for a Fantasy Triumph list', async () => {
+  it('renders a Fantasy Triumph list, named after its game when the link names nothing', async () => {
+    const code = encodeShareCode({
+      game: 'fantasy',
+      selection: fantasySelection({
+        units: [fantasyUnit('wargs', 'JCV', { name: 'Warg riders' })],
+        general: 'wargs',
+      }),
+    });
+
+    const response = await fetchListSheet(`?s=${encodeURIComponent(code)}`);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('application/pdf');
+    expect(response.headers.get('content-disposition')).toContain(
+      encodeURIComponent('Fantasy Triumph.pdf'),
+    );
+  });
+
+  it('has no sheet for a Fantasy Triumph list when the pack has no Fantasy Triumph section', async () => {
+    const triumphOnly = memoryBundleSource(
+      filesOf(
+        (await sampleBundle()).filter(
+          ({ path }) => !path.startsWith('games/fantasy/'),
+        ),
+      ),
+    );
     const code = encodeShareCode({
       game: 'fantasy',
       selection: fantasySelection(),
     });
 
-    const response = await fetchListSheet(`?s=${code}`);
+    const response = await armySheetResponse({
+      request: new Request(
+        `${siteUrl}/api/lists/sheet?s=${encodeURIComponent(code)}`,
+      ),
+      bundle: triumphOnly,
+      locale: 'en',
+      siteUrl,
+      generatedAt,
+    });
+
+    expect(response.status).toBe(404);
+  });
+
+  it('turns a Fantasy Triumph code away from an army list’s own sheet link', async () => {
+    const code = encodeShareCode({
+      game: 'fantasy',
+      selection: fantasySelection(),
+    });
+
+    const response = await fetchSheet(
+      armyList.id,
+      `?s=${encodeURIComponent(code)}`,
+    );
 
     expect(response.status).toBe(400);
   });

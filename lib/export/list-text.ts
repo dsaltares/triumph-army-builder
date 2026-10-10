@@ -5,6 +5,9 @@ import type {
   SheetStandLine,
   SheetTroopOption,
 } from '../domain/army/sheet.ts';
+import type { FantasySheet } from '../domain/fantasy/sheet-data.ts';
+import { fantasyTextGroups } from '../domain/fantasy/text-export.ts';
+import type { ListSheet } from '../domain/games/registry.ts';
 import type { BattleLine } from '../domain/troop-options.ts';
 import {
   countOf,
@@ -18,7 +21,8 @@ import {
 import { campText } from '../i18n/camp.ts';
 import type { Locale } from '../i18n/locales.ts';
 import { type Words, wordsFor } from '../i18n/translator.ts';
-import { armyUrl } from '../navigation.ts';
+import { armyUrl, gameBuilderUrl } from '../navigation.ts';
+import { fantasySheetWords, fantasyTextWords } from './fantasy-sheet-layout.ts';
 import { noValue } from './sheet-layout.ts';
 
 export const listTextFormats = ['plain', 'markdown', 'bbcode'] as const;
@@ -269,4 +273,33 @@ export const armyListText = (
   return documentGroups(sheet, siteUrl, locale, w)
     .map((group) => group.flatMap(render).join('\n'))
     .join('\n\n');
+};
+
+export const fantasyListText = (
+  sheet: FantasySheet,
+  { format, siteUrl, locale }: ListTextOptions,
+) => {
+  const w = fantasySheetWords(locale);
+  const render = renderers[format];
+  return [
+    ...fantasyTextGroups(sheet, fantasyTextWords(locale)),
+    [
+      {
+        kind: 'line',
+        text: w('builtWith', { url: `${siteUrl}${gameBuilderUrl('fantasy')}` }),
+      },
+      { kind: 'line', text: w('dataFrom', { version: sheet.dataVersion }) },
+    ] satisfies readonly Block[],
+  ]
+    .map((group) => group.flatMap(render).join('\n'))
+    .join('\n\n');
+};
+
+export const listText = (list: ListSheet, options: ListTextOptions) => {
+  switch (list.game) {
+    case 'triumph':
+      return armyListText(list.sheet, options);
+    case 'fantasy':
+      return fantasyListText(list.sheet, options);
+  }
 };

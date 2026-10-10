@@ -11,6 +11,7 @@ import { createCaller } from '@/lib/trpc/root.ts';
 import { absentBundles } from '@/test/bundle-source.ts';
 import { carthage, recordedEvents, recordedKinds } from '@/test/events.ts';
 import { fixtureSelection } from '@/test/fixtures/army.ts';
+import { fantasySelection, fantasyUnit } from '@/test/fixtures/fantasy.ts';
 import { absentPhotoStore } from '@/test/photo-store.ts';
 
 let db: ReturnType<typeof createDatabase>;
@@ -82,6 +83,26 @@ describe('share.create', () => {
       name: 'Cannae',
       armyListId: 'army-1',
       createdAt: at(1),
+    });
+  });
+
+  it('copies a Fantasy Triumph list, which has no army list', async () => {
+    const selection = fantasySelection({
+      units: [fantasyUnit('wargs', 'JCV', { name: 'Warg riders' })],
+      general: 'wargs',
+    });
+
+    const shared = await caller(owner).share.create({
+      name: 'Goblin raid',
+      game: 'fantasy',
+      selection,
+    });
+
+    expect(shared).toMatchObject({
+      id: shareId({ name: 'Goblin raid', game: 'fantasy', selection }),
+      game: 'fantasy',
+      armyListId: null,
+      selection,
     });
   });
 

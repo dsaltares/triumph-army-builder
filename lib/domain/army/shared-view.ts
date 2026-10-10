@@ -1,3 +1,4 @@
+import type { FantasyCardCode } from '../../data/schema.ts';
 import type { PricedBattleCard } from '../battle-cards/costs.ts';
 import type { ListedCard } from '../battle-cards/listing.ts';
 import {
@@ -10,8 +11,13 @@ import {
   type ListCoverage,
   listCoverage,
 } from '../collection/list-coverage.ts';
-import type { ViewableGame } from '../game.ts';
-import { gameModule } from '../games/registry.ts';
+import type { FantasyReference } from '../fantasy/reference.ts';
+import type { FantasySelection } from '../fantasy/selection-schema.ts';
+import type { FantasySheet } from '../fantasy/sheet-data.ts';
+import type { FantasyValidationReport } from '../fantasy/validation.ts';
+import { type FantasyPointsMeter, fantasy } from '../games/fantasy.ts';
+import type { GameData } from '../games/registry.ts';
+import { triumph } from '../games/triumph.ts';
 import type {
   TroopTypeCost,
   TroopTypeFactor,
@@ -19,24 +25,32 @@ import type {
 } from '../troop-types.ts';
 import type { ArmyList } from './army-list.ts';
 import type { PointsMeter } from './builder.ts';
-import type { ViewableSavedArmy } from './saved-army.ts';
+import type { SavedArmy } from './saved-army.ts';
 import type { ArmySelection } from './selection.ts';
 import type { SharedList } from './shared-list.ts';
 import type { ArmySheet } from './sheet.ts';
 import type { ValidationReport } from './validation-report.ts';
 
-export type ViewedList = {
-  name: string;
-  game: ViewableGame;
-  dataVersion: string;
-  selection: ArmySelection;
-};
+export type FantasyCardNames = Readonly<
+  Partial<Record<FantasyCardCode, string>>
+>;
 
-export type ListReading = {
+export type TriumphReading = {
+  game: 'triumph';
   sheet: ArmySheet;
   report: ValidationReport;
   meter: PointsMeter;
 };
+
+export type FantasyReading = {
+  game: 'fantasy';
+  sheet: FantasySheet;
+  report: FantasyValidationReport;
+  meter: FantasyPointsMeter;
+  cardNames: FantasyCardNames;
+};
+
+export type ListReading = TriumphReading | FantasyReading;
 
 export type SharedView = ListReading & { kind: 'shared'; list: SharedList };
 
@@ -46,17 +60,23 @@ export type CollectionReading =
 
 export type SavedView = ListReading & {
   kind: 'saved';
-  list: ViewableSavedArmy;
-  collection: CollectionReading;
+  list: SavedArmy;
+  collection: CollectionReading | null;
 };
 
 export type NamedCollectionEntry = CollectionEntry & { name: string };
 
 export type CollectedEntry = NamedCollectionEntry | HeroKind;
 
-export type DraftList = ViewedList & { armyListId: string };
+export type DraftList = {
+  name: string;
+  game: 'triumph';
+  dataVersion: string;
+  selection: ArmySelection;
+  armyListId: string;
+};
 
-export type DraftView = ListReading & {
+export type DraftView = TriumphReading & {
   kind: 'draft';
   list: DraftList;
   collection: CollectionReading;
@@ -72,25 +92,50 @@ export type ListViewData = {
   battleCards: readonly (ListedCard & PricedBattleCard)[];
 };
 
-export const listReading = (
-  list: ViewedList,
-  data: ListViewData,
-): ListReading => {
-  const module = gameModule(list.game);
-  return {
-    sheet: module.sheetData(list, data),
-    report: module.validate(list.selection, data),
-    meter: module.points(list.selection, data),
-  };
+const triumphReading = (
+  name: string,
+  selection: ArmySelection,
+  reference: ListViewData,
+): TriumphReading => ({
+  game: 'triumph',
+  sheet: triumph.sheetData({ name, selection }, reference),
+  report: triumph.validate(selection, reference),
+  meter: triumph.points(selection, reference),
+});
+
+const fantasyReading = (
+  name: string,
+  selection: FantasySelection,
+  reference: FantasyReference,
+): FantasyReading => ({
+  game: 'fantasy',
+  sheet: fantasy.sheetData({ name, selection }, reference),
+  report: fantasy.validate(selection, reference),
+  meter: fantasy.points(selection, reference),
+  cardNames: Object.fromEntries(
+    reference.cards.map(({ code, name: cardName }) => [code, cardName]),
+  ),
+});
+
+const listReading = (name: string, data: GameData): ListReading => {
+  switch (data.game) {
+    case 'triumph':
+      return triumphReading(name, data.selection, data.reference);
+    case 'fantasy':
+      return fantasyReading(name, data.selection, data.reference);
+  }
 };
 
 export const sharedView = ({
   shared,
-  ...data
-}: ListViewData & { shared: SharedList }): SharedView => ({
+  data,
+}: {
+  shared: SharedList;
+  data: GameData;
+}): SharedView => ({
   kind: 'shared',
   list: shared,
-  ...listReading(shared, data),
+  ...listReading(shared.name, data),
 });
 
 export const collectionReading = (
@@ -117,27 +162,43 @@ export const collectionReading = (
 
 export const savedView = ({
   saved,
+  data,
   collection,
   pins = [],
-  ...data
-}: ListViewData & {
-  saved: ViewableSavedArmy;
+}: {
+  saved: SavedArmy;
+  data: GameData;
   collection: readonly CollectedEntry[] | null;
   pins?: readonly CollectionPin[];
 }): SavedView => {
-  const reading = listReading(saved, data);
-  return {
-    kind: 'saved',
-    list: saved,
-    ...reading,
-    collection: collectionReading(
-      saved.selection,
-      data.armyList,
-      reading.sheet,
-      collection,
-      pins,
-    ),
-  };
+  switch (data.game) {
+    case 'triumph': {
+      const reading = triumphReading(
+        saved.name,
+        data.selection,
+        data.reference,
+      );
+      return {
+        kind: 'saved',
+        list: saved,
+        ...reading,
+        collection: collectionReading(
+          data.selection,
+          data.reference.armyList,
+          reading.sheet,
+          collection,
+          pins,
+        ),
+      };
+    }
+    case 'fantasy':
+      return {
+        kind: 'saved',
+        list: saved,
+        ...fantasyReading(saved.name, data.selection, data.reference),
+        collection: null,
+      };
+  }
 };
 
 export const draftView = ({
@@ -155,7 +216,7 @@ export const draftView = ({
     selection,
     armyListId: data.armyList.id,
   };
-  const reading = listReading(list, data);
+  const reading = triumphReading(list.name, selection, data);
   return {
     kind: 'draft',
     list,

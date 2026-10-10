@@ -626,3 +626,69 @@ describe('saving', () => {
     expect(total()).toHaveTextContent('16/ 51');
   });
 });
+
+const openSavedGoblins = async () => {
+  await insertArmy(api.database(), {
+    id: 'saved-1',
+    userId: owner,
+    name: 'Goblin raid',
+    game: 'fantasy',
+    selection: fantasySelection({
+      units: [fantasyUnit('wargs', 'JCV', { name: 'Warg riders', stands: 4 })],
+      general: 'wargs',
+    }),
+    at: '2026-10-09T08:00:00.000Z',
+  });
+  const rendered = await openBuilder('?list=saved-1');
+  await rendered.user.click(
+    screen.getByRole('button', { name: 'List actions' }),
+  );
+  return rendered;
+};
+
+describe('exporting', () => {
+  it('shares the list as a Fantasy Triumph copy behind a short link', async () => {
+    const { user } = await openSavedGoblins();
+
+    await user.click(screen.getByRole('menuitem', { name: 'Share link' }));
+
+    const link = await within(
+      screen.getByRole('dialog'),
+    ).findByLabelText<HTMLInputElement>('Link');
+    expect(link.value).toMatch(/\/s\/[\w-]{12}$/);
+    expect(
+      await api
+        .database()
+        .selectFrom('shares')
+        .select(['game', 'army_list_id', 'name'])
+        .execute(),
+    ).toEqual([{ game: 'fantasy', army_list_id: null, name: 'Goblin raid' }]);
+  });
+
+  it('copies the list as text, unit by unit', async () => {
+    const { user } = await openSavedGoblins();
+
+    await user.click(screen.getByRole('menuitem', { name: 'Copy as text…' }));
+
+    expect(
+      within(screen.getByRole('dialog')).getByRole<HTMLTextAreaElement>(
+        'textbox',
+      ).value,
+    ).toContain('Warg riders — 4 × Javelin Cavalry · General · 16 points');
+  });
+
+  it('offers the PDF, the saved view and the collection check together', async () => {
+    await openSavedGoblins();
+
+    expect(
+      screen.getByRole('menuitem', { name: 'Download PDF' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'View list' })).toHaveAttribute(
+      'href',
+      '/my-armies/saved-1',
+    );
+    expect(
+      screen.getByRole('menuitem', { name: 'Can I build it?' }),
+    ).toBeInTheDocument();
+  });
+});

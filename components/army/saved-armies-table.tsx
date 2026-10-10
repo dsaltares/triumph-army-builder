@@ -26,7 +26,6 @@ import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { SavedArmy } from '@/lib/domain/army/saved-army';
 import type { SavedArmyEntry } from '@/lib/domain/army/saved-army-index';
-import { isViewableList } from '@/lib/domain/army/selection-schema';
 import {
   compareDataVersions,
   type DataVersionComparison,
@@ -218,20 +217,18 @@ const columns = [
       const actions = table.options.meta?.actionsFor(army);
       return (
         <span className="flex items-center justify-end">
-          {isViewableList(army) && (
-            <Link
-              href={listViewUrl(army.id)}
-              className={buttonVariants({
-                variant: 'ghost',
-                size: 'icon-touch',
-              })}
-            >
-              <IconListDetails className="size-4" />
-              <span className="sr-only">
-                {table.options.meta?.t('viewList', { name: army.name })}
-              </span>
-            </Link>
-          )}
+          <Link
+            href={listViewUrl(army.id)}
+            className={buttonVariants({
+              variant: 'ghost',
+              size: 'icon-touch',
+            })}
+          >
+            <IconListDetails className="size-4" />
+            <span className="sr-only">
+              {table.options.meta?.t('viewList', { name: army.name })}
+            </span>
+          </Link>
           {actions && <SavedArmyActionsMenu name={army.name} {...actions} />}
         </span>
       );
