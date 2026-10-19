@@ -155,7 +155,11 @@ export const battleCardForbiddenTroopTypes: Readonly<
 export const battleCardPairsOneUsedPerBattle: readonly (readonly [
   BattleCardCode,
   BattleCardCode,
-])[] = [['FC', 'PT']];
+])[] = [
+  ['FC', 'NC'],
+  ['FC', 'PT'],
+  ['NC', 'PT'],
+];
 
 const severityOf: Record<FindingCode, FindingSeverity> = {
   overPointsCap: 'error',
