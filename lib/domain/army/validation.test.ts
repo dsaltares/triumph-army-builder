@@ -915,6 +915,45 @@ describe('battle cards', () => {
     ).toEqual([]);
   });
 
+  it('reports Fortified Camp bought alongside Pack Train and Herds', () => {
+    const camped = buildArmyList(
+      armyDetail({
+        battleCardEntries: [
+          battleCardEntry({ battleCardCode: 'FC' }),
+          battleCardEntry({ battleCardCode: 'PT' }),
+        ],
+      }),
+    );
+    const roomForBoth = withStands(
+      withStands(legal, archers, 'ARC', 3),
+      archers,
+      'BLV',
+      1,
+    );
+    const both = withArmyBattleCard(
+      withArmyBattleCard(roomForBoth, 'FC', 1),
+      'PT',
+      1,
+    );
+
+    expect(findingsFor(both, camped)).toEqual([
+      {
+        code: 'battleCardsOneUsedPerBattle',
+        severity: 'warning',
+        message:
+          'Fortified Camp and Pack Train and Herds may both be bought, but only one may be used in a battle',
+        target: { kind: 'armyBattleCard', code: 'FC' },
+      },
+    ]);
+    expect(isLegal(rawFindingsFor(both, camped))).toBe(true);
+    expect(
+      only(
+        findingsFor(withArmyBattleCard(roomForBoth, 'PT', 1), camped),
+        'battleCardsOneUsedPerBattle',
+      ),
+    ).toEqual([]);
+  });
+
   it('cites the live card text for the Hold the Line cap', () => {
     const mdText =
       sampleSnapshotBattleCards.find(

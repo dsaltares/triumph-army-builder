@@ -68,6 +68,7 @@ export const findingCodes = [
   'battleCardPurchaseLimit',
   'battleCardNeedsPairsOfStands',
   'battleCardForbidsTroopType',
+  'battleCardsOneUsedPerBattle',
 ] as const;
 
 export type FindingCode = (typeof findingCodes)[number];
@@ -127,6 +128,7 @@ export type FindingParams = {
   };
   battleCardPurchaseLimit: { card: string; limit: number; purchases: number };
   battleCardForbidsTroopType: { card: string; troopType: string };
+  battleCardsOneUsedPerBattle: { card: string; other: string };
 };
 
 export type Finding = {
@@ -149,6 +151,11 @@ export const battleCardPurchaseLimits: Readonly<
 export const battleCardForbiddenTroopTypes: Readonly<
   Partial<Record<BattleCardCode, TroopTypeCode>>
 > = { ES: 'ELE' };
+
+export const battleCardPairsOneUsedPerBattle: readonly (readonly [
+  BattleCardCode,
+  BattleCardCode,
+])[] = [['FC', 'PT']];
 
 const severityOf: Record<FindingCode, FindingSeverity> = {
   overPointsCap: 'error',
@@ -176,6 +183,7 @@ const severityOf: Record<FindingCode, FindingSeverity> = {
   battleCardPurchaseLimit: 'error',
   battleCardNeedsPairsOfStands: 'error',
   battleCardForbidsTroopType: 'error',
+  battleCardsOneUsedPerBattle: 'warning',
 };
 
 const finding = <Code extends FindingCode>(
@@ -602,13 +610,10 @@ const purchaseLimitFindings = (
         ];
   });
 
-const forbiddenTroopTypeFindings = (
-  { standLines }: ArmyPoints,
+const takenCardTargets = (
   selection: ArmySelection,
-  names: TroopTypeNames,
-  cardNames: CardNames,
-): readonly Finding[] => {
-  const taken = new Map(
+): ReadonlyMap<BattleCardCode, FindingTarget> =>
+  new Map(
     battleCardSelections(selection)
       .filter((entry) =>
         entry.scope === 'army' ? entry.copies > 0 : entry.stands > 0,
@@ -624,6 +629,14 @@ const forbiddenTroopTypeFindings = (
             } as const),
       ]),
   );
+
+const forbiddenTroopTypeFindings = (
+  { standLines }: ArmyPoints,
+  selection: ArmySelection,
+  names: TroopTypeNames,
+  cardNames: CardNames,
+): readonly Finding[] => {
+  const taken = takenCardTargets(selection);
   return [...taken].flatMap(([code, target]) => {
     const forbidden = battleCardForbiddenTroopTypes[code];
     if (
@@ -638,6 +651,24 @@ const forbiddenTroopTypeFindings = (
         troopType: names[forbidden] ?? forbidden,
       }),
     ];
+  });
+};
+
+const oneUsedPerBattleFindings = (
+  selection: ArmySelection,
+  cardNames: CardNames,
+): readonly Finding[] => {
+  const taken = takenCardTargets(selection);
+  return battleCardPairsOneUsedPerBattle.flatMap(([card, other]) => {
+    const target = taken.get(card);
+    return target && taken.has(other)
+      ? [
+          finding('battleCardsOneUsedPerBattle', target, {
+            card: cardNames[card],
+            other: cardNames[other],
+          }),
+        ]
+      : [];
   });
 };
 
@@ -685,6 +716,7 @@ export const validateArmy = (
     ),
     ...purchaseLimitFindings(points, named),
     ...forbiddenTroopTypeFindings(points, selection, names, named),
+    ...oneUsedPerBattleFindings(selection, named),
   ];
 };
 

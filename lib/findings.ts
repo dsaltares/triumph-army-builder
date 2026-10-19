@@ -84,6 +84,10 @@ const render: {
     key: 'battleCardForbidsTroopType',
     values,
   }),
+  battleCardsOneUsedPerBattle: (values) => ({
+    key: 'battleCardsOneUsedPerBattle',
+    values,
+  }),
 };
 
 export const describeFinding = (finding: Finding, t: FindingTranslator) => {

@@ -901,7 +901,8 @@
     "battleCardStandsExceedOption": "{card} se aplica a {applied, plural, one {# peana} other {# peanas}}, y {option} tiene {taken, plural, one {# peana} other {# peanas}}",
     "battleCardBoughtForEmptyOption": "{card} se ha comprado para {option}, que no tiene peanas",
     "battleCardPurchaseLimit": "Un ejército puede comprar {limit} cartas {card}, y hay {purchases} elegidas",
-    "battleCardForbidsTroopType": "{card} no se puede llevar con {troopType} en el ejército"
+    "battleCardForbidsTroopType": "{card} no se puede llevar con {troopType} en el ejército",
+    "battleCardsOneUsedPerBattle": "{card} y {other} pueden comprarse las dos, pero en una batalla solo puede usarse una"
   },
   "admin": {
     "rangeLabel": "Periodo",

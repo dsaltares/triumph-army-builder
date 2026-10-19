@@ -72,7 +72,8 @@
     "battleCardStandsExceedOption": "{card} is applied to {applied, plural, one {# stand} other {# stands}}, {option} has {taken, plural, one {# stand} other {# stands}}",
     "battleCardBoughtForEmptyOption": "{card} is bought for {option}, which has no stands",
     "battleCardPurchaseLimit": "An army may purchase {limit} {card} cards, {purchases} selected",
-    "battleCardForbidsTroopType": "{card} may not be taken with {troopType} in the army"
+    "battleCardForbidsTroopType": "{card} may not be taken with {troopType} in the army",
+    "battleCardsOneUsedPerBattle": "{card} and {other} may both be bought, but only one may be used in a battle"
   },
   "sheet": {
     "battleLine": "Battle line",

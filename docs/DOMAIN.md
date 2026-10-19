@@ -237,8 +237,9 @@ at least 2 stands*, the name the rest of the app prints, never the `CHT` the dat
 | `battleCardPurchaseLimit` | error | Hold the Line's card text caps how many an army may buy |
 | `battleCardNeedsPairsOfStands` | error | Separated Valets goes on pairs of stands, so an odd number is wrong |
 | `battleCardForbidsTroopType` | error | an army with Elephant Screen may field no elephant stands |
+| `battleCardsOneUsedPerBattle` | warning | Fortified Camp and Pack Train and Herds are both bought, and the card text lets only one of them be used in a battle |
 
-Six readings are ours rather than the rulebook's:
+Seven readings are ours rather than the rulebook's:
 
 - **Over the cap is an error, under it a warning.** An army short of 48 points breaks no rule; it
   is almost always a list still being built, and a builder that shouts at every intermediate state
@@ -256,6 +257,11 @@ Six readings are ours rather than the rulebook's:
   is one group and spends one slot: the two stay distinct, but they arrive in one choice.
 - **An optional contingent stand may be the general.** Its troops are part of the main army, so the
   only checks that apply are the troop type and the allied-contingent ban.
+- **Both camp cards is a warning, not an error.** The text of Fortified Camp and of Pack Train and
+  Herds says both may be purchased for an army and only one used in a single battle, so a list
+  holding both breaks no construction rule; it is flagged because the second point is almost
+  always wasted. `battleCardPairsOneUsedPerBattle` in `validation.ts` holds the pair, the way
+  `battleCardForbiddenTroopTypes` holds Elephant Screen's ban (#49).
 - **The cap is a rule, not a constant.** `triumphRules` in `lib/domain/games/triumph-rules.ts` is
   `{ pointsCap: 48 }`, the Triumph! module's `rules`, and the fourth argument takes any other, which is the seam Grand Triumph (#55) and event profiles (#57) extend.
 
@@ -481,8 +487,8 @@ negative battle card line rather than as a cheaper stand. Nothing here caps the 
 is the validator's job (§4.1).
 
 Some cards also carry exclusions in prose — Fortified Camp and Pack Train and Herds may both be
-bought, but only one used in a battle. That is a play-time restriction, not a construction one, and
-the builder does not check it.
+bought, but only one used in a battle. That is a play-time restriction, not a construction one, so
+the points engine prices both and the validator reports the pair as a warning (§4.1, #49).
 
 ## 7. Troop types
 
