@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
@@ -64,7 +65,17 @@ export async function TriumphBuilderPage({
       <PageHeader
         back={{ href: armyUrl(armyId), label: army.name }}
         title={<ListTitle armyName={army.name} />}
-        description={`${army.name} · ${formatYearSpan(army, locale)}`}
+        description={
+          <>
+            <Link
+              href={armyUrl(armyId)}
+              className="underline underline-offset-3 hover:text-foreground"
+            >
+              {army.name}
+            </Link>
+            {` · ${formatYearSpan(army, locale)}`}
+          </>
+        }
         action={
           <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
             <BuilderActions />
