@@ -13,7 +13,7 @@ export function PageHeader({
 }: {
   title: ReactNode;
   meta?: ReactNode;
-  description?: string | undefined;
+  description?: ReactNode;
   action?: ReactNode;
   back?: { href: string; label: string };
 }) {
