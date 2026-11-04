@@ -10,6 +10,7 @@ import { TagField } from '@/components/collection/tag-field';
 import { EmptyState, EmptyStateText } from '@/components/empty-state';
 import { ChosenCard } from '@/components/fantasy/chosen-card';
 import { unitAnchor } from '@/components/fantasy/fantasy-anchors';
+import { FantasyCardInfo } from '@/components/fantasy/fantasy-card-info';
 import { PickerDialog } from '@/components/fantasy/picker-dialog';
 import { usePointsWords } from '@/components/fantasy/points-words';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
@@ -540,6 +541,7 @@ function UnitCard({
               </ul>
             )}
             <PickerDialog<FantasyCardCode>
+              info={(code) => <FantasyCardInfo code={code} />}
               trigger={t('addCard')}
               title={t('addCardTo', { bearer: name })}
               description={t('addCardDescription')}

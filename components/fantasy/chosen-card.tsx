@@ -4,6 +4,7 @@ import { IconX } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { useId } from 'react';
+import { FantasyCardInfo } from '@/components/fantasy/fantasy-card-info';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -109,6 +110,7 @@ export function ChosenCard({
     <li className="flex flex-col gap-2 rounded-md border px-3 py-2">
       <div className="flex items-center gap-2">
         <p className="min-w-0 flex-1 text-sm font-medium">{name}</p>
+        <FantasyCardInfo code={code} />
         <span className="text-xs text-muted-foreground tabular-nums">
           {cost}
         </span>

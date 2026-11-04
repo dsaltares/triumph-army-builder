@@ -10,6 +10,7 @@ import {
 import { ArmyCardsSection } from '@/components/fantasy/army-cards-section';
 import { fantasyAnchors } from '@/components/fantasy/fantasy-anchors';
 import { usePublishFantasySnapshot } from '@/components/fantasy/fantasy-builder-state';
+import { FantasyCardInfoProvider } from '@/components/fantasy/fantasy-card-info';
 import {
   FormatSection,
   PointsTotalField,
@@ -134,7 +135,7 @@ export function FantasyBuilderView({
   );
 
   return (
-    <>
+    <FantasyCardInfoProvider reference={reference}>
       <PointsMeterBar
         meter={meter}
         subtotals={t('subtotals', {
@@ -191,6 +192,6 @@ export function FantasyBuilderView({
       />
       <GeneralSection selection={selection} names={names} onEdit={onEdit} />
       <FindingsPanel report={report} anchors={anchors} presenter={presenter} />
-    </>
+    </FantasyCardInfoProvider>
   );
 }

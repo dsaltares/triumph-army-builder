@@ -1,5 +1,6 @@
 import { IconChevronRight } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 import { Section } from '@/components/layout/section';
 import { MarkdownProse } from '@/components/reference/markdown-prose';
 import { Badge } from '@/components/ui/badge';
@@ -170,7 +171,13 @@ function CardFacts({
   );
 }
 
-function FantasyCardEntry({ card }: { card: FantasyReferenceCard }) {
+export function FantasyCardDetails({
+  card,
+  rules,
+}: {
+  card: FantasyReferenceCard;
+  rules?: ReactNode;
+}) {
   const t = useTranslations('fantasyCards');
   const locale = useLocale();
   const cost = card.cost.map((line) => {
@@ -179,6 +186,35 @@ function FantasyCardEntry({ card }: { card: FantasyReferenceCard }) {
       ? amount
       : `${line.qualifiers.map((qualifier) => qualifierText(qualifier, t, locale)).join(' · ')}: ${amount}`;
   });
+  return (
+    <>
+      <dl className="flex max-w-reading flex-col gap-3">
+        <CardFacts label={t('cost')} items={cost} />
+        {card.choices.length > 0 && (
+          <CardFacts
+            label={t('choices')}
+            items={card.choices.map((options) => joinWithOr(options, locale))}
+          />
+        )}
+        {card.constraints.length > 0 && (
+          <CardFacts
+            label={t('restrictions')}
+            items={card.constraints.map((constraint) =>
+              constraintText(constraint, t, locale),
+            )}
+          />
+        )}
+      </dl>
+      {rules ?? (
+        <MarkdownProse blocks={parseMarkdown(card.text)} headingLevel={4} />
+      )}
+    </>
+  );
+}
+
+function FantasyCardEntry({ card }: { card: FantasyReferenceCard }) {
+  const t = useTranslations('fantasyCards');
+  const locale = useLocale();
   return (
     <li>
       <details
@@ -195,26 +231,7 @@ function FantasyCardEntry({ card }: { card: FantasyReferenceCard }) {
           </Badge>
         </summary>
         <div className="flex flex-col gap-3 px-3 pb-3 pl-9">
-          <dl className="flex max-w-reading flex-col gap-3">
-            <CardFacts label={t('cost')} items={cost} />
-            {card.choices.length > 0 && (
-              <CardFacts
-                label={t('choices')}
-                items={card.choices.map((options) =>
-                  joinWithOr(options, locale),
-                )}
-              />
-            )}
-            {card.constraints.length > 0 && (
-              <CardFacts
-                label={t('restrictions')}
-                items={card.constraints.map((constraint) =>
-                  constraintText(constraint, t, locale),
-                )}
-              />
-            )}
-          </dl>
-          <MarkdownProse blocks={parseMarkdown(card.text)} headingLevel={4} />
+          <FantasyCardDetails card={card} />
         </div>
       </details>
     </li>
