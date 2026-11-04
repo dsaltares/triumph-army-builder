@@ -136,7 +136,7 @@ function ChoiceRow({
               onClick={onOpenRules}
             >
               {name}
-              <span className="sr-only">rules</span>
+              <span className="sr-only">{t('rulesWord')}</span>
               <IconInfoCircle className="size-3.5 text-muted-foreground" />
             </button>
             <span

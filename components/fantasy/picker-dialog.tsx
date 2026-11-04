@@ -2,6 +2,7 @@
 
 import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { SearchField } from '@/components/search-field';
 import { Button } from '@/components/ui/button';
@@ -46,6 +47,7 @@ export function PickerDialog<Value extends string>({
   groups,
   empty,
   disabled = false,
+  info,
   onPick,
 }: {
   trigger: string;
@@ -54,6 +56,7 @@ export function PickerDialog<Value extends string>({
   groups: readonly PickerGroup<Value>[];
   empty: string;
   disabled?: boolean;
+  info?: (value: Value) => ReactNode;
   onPick: (value: Value) => void;
 }) {
   const t = useTranslations('fantasyBuilder');
@@ -114,14 +117,14 @@ export function PickerDialog<Value extends string>({
                 </h3>
                 <ul>
                   {options.map(({ value, label, detail }) => (
-                    <li key={value}>
+                    <li key={value} className="flex items-center gap-1">
                       <button
                         type="button"
                         onClick={() => {
                           onPick(value);
                           changeOpen(false);
                         }}
-                        className="flex min-h-11 w-full items-baseline justify-between gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        className="flex min-h-11 min-w-0 flex-1 items-baseline justify-between gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                       >
                         <span className="text-sm font-medium">{label}</span>
                         {detail && (
@@ -130,6 +133,7 @@ export function PickerDialog<Value extends string>({
                           </span>
                         )}
                       </button>
+                      {info?.(value)}
                     </li>
                   ))}
                 </ul>

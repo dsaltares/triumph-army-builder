@@ -6,6 +6,7 @@ import { findingAnchorClass } from '@/components/builder/finding-anchor';
 import { Stepper } from '@/components/builder/stepper';
 import { ChosenCard } from '@/components/fantasy/chosen-card';
 import { armyCardsAnchor } from '@/components/fantasy/fantasy-anchors';
+import { FantasyCardInfo } from '@/components/fantasy/fantasy-card-info';
 import { PickerDialog } from '@/components/fantasy/picker-dialog';
 import { usePointsWords } from '@/components/fantasy/points-words';
 import type { SelectionEdit } from '@/components/fantasy/selection-edit';
@@ -123,6 +124,7 @@ export function ArmyCardsSection({
             </ul>
           )}
           <PickerDialog<FantasyCardCode>
+            info={(code) => <FantasyCardInfo code={code} />}
             trigger={t('addArmyCard')}
             title={t('addArmyCard')}
             description={t('addArmyCardDescription')}

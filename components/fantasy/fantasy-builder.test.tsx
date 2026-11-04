@@ -377,6 +377,33 @@ describe('a unit', () => {
     expect(total()).toContain('3/ 51');
   });
 
+  it('shows a card’s cost, restrictions and rules from the picker and once taken', async () => {
+    const { user } = await openBuilder();
+    await addUnit(user, 'War Wagons');
+    const card = unitCard();
+
+    await user.click(card.getByRole('button', { name: 'Add card' }));
+    const dialog = within(await screen.findByRole('dialog'));
+    await user.click(dialog.getByRole('button', { name: 'Rules for Brittle' }));
+
+    expect(
+      await screen.findByText(
+        'The stand is shattered whenever it is beaten in close combat.',
+      ),
+    ).toBeVisible();
+    expect(screen.getByText('Cost')).toBeVisible();
+
+    await user.keyboard('{Escape}');
+    await user.click(dialog.getByRole('button', { name: /^Brittle/ }));
+    await user.click(card.getByRole('button', { name: 'Rules for Brittle' }));
+
+    expect(
+      await screen.findByText(
+        'The stand is shattered whenever it is beaten in close combat.',
+      ),
+    ).toBeVisible();
+  });
+
   it('narrows the offered cards to a search, across every group', async () => {
     const { user } = await openBuilder();
     await addUnit(user, 'War Wagons');

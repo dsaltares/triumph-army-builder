@@ -243,25 +243,30 @@ const describer = ({
   };
 };
 
+export const fantasyCardDescriber = (naming: FantasyCardNaming) => {
+  const describe = describer(naming);
+  return (card: BundledFantasyCard, text: string): FantasyReferenceCard => ({
+    code: card.code,
+    name: card.name,
+    cost: describe.cost(card),
+    choices: unpricedChoices(card),
+    constraints: describe.constraints(card),
+    text,
+  });
+};
+
 export const fantasyCardReference = (
   naming: FantasyCardNaming,
   text: Readonly<FantasyCardText>,
 ): readonly FantasyReferenceCardGroup[] => {
-  const describe = describer(naming);
+  const describe = fantasyCardDescriber(naming);
   return fantasyCardCategories
     .map((category) => ({
       category,
       cards: naming.cards
         .filter((card) => card.category === category)
         .sort(by((card) => card.name))
-        .map((card) => ({
-          code: card.code,
-          name: card.name,
-          cost: describe.cost(card),
-          choices: unpricedChoices(card),
-          constraints: describe.constraints(card),
-          text: text[card.code],
-        })),
+        .map((card) => describe(card, text[card.code])),
     }))
     .filter((group) => group.cards.length > 0);
 };
